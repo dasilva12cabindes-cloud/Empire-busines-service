@@ -75,7 +75,36 @@ function esqueciSenhaAdmin(){ var email=document.getElementById('email').value.t
 function criarNovoAdmin(){ var em=document.getElementById('email').value.trim(); var pw=document.getElementById('pass').value; if(!emailValido(em)) return alert("⚠️ Para criar NOVO Admin, escreve primeiro um e-mail NOVO que tu lembras!\n\nEx: teuemail@gmail.com"); if(!pw || pw.length<6) return alert("⚠️ Escreve uma senha nova com no mínimo 6 caracteres!\n\nE clica no olho 👁️ para veres se está certa."); if(!confirm("Criar NOVO Admin com:\n\nE-mail: "+em+"\nSenha: "+pw+"\n\nTens a certeza? Anota estes dados!")) return; auth.createUserWithEmailAndPassword(em,pw).then(function(){ isAdmin=true; modoAdmin=true; alert("✅ NOVO Admin criado!\n\nE-mail: "+em+"\n\nANOTA! Já estás dentro do Painel."); mostrarAdmin(); }).catch(function(e){ alert("Erro: "+e.message+"\n\nSe diz que o e-mail já existe, clica em ENTRAR ou em Esqueci a senha."); }); }
 function registar(){ criarNovoAdmin(); }
 function logout(){ auth.signOut().then(function(){ isAdmin=false; modoAdmin=false; clienteEmail=""; clienteNome=""; atualizarHeaderCliente(); mostrarLoja(); }); }
-if(auth){ auth.onAuthStateChanged(function(u){ if(u && modoAdmin){ isAdmin=true; } else if(u && !clienteEmail){ db.collection("clientes").doc(u.uid).get().then(function(s){ if(s.exists){ clienteEmail=u.email; clienteNome=s.data().nome||""; atualizarHeaderCliente(); } }); } }); }
+// ===== EMPIRE V4 - FICAR LIGADO SEMPRE =====
+// Guarda login no telefone, só sai quando clicar em SAIR
+if(auth){
+  auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(){});
+  auth.onAuthStateChanged(function(u){
+    if(!u){
+      // Sem utilizador, não faz nada
+      return;
+    }
+    // 1. Tenta ver se é CLIENTE
+    db.collection("clientes").doc(u.uid).get().then(function(s){
+      if(s.exists){
+        clienteEmail = u.email;
+        clienteNome = s.data().nome || "";
+        isAdmin = false;
+        atualizarHeaderCliente();
+      } else {
+        // 2. Se não é cliente, é ADMIN - fica ligado como Admin
+        isAdmin = true;
+        modoAdmin = true;
+        clienteEmail = u.email;
+        clienteNome = "Admin";
+        // Mostra o botão Admin porque já estás ligado
+        var b = document.getElementById('btnAdminEscondido');
+        if(b) b.style.display = 'block';
+        atualizarHeaderCliente();
+      }
+    });
+  });
+} }
 function editar(id){ db.collection("produtos").doc(id).get().then(function(s){ if(!s.exists) return; var p=s.data(); document.getElementById('nome').value=p.nome||""; document.getElementById('preco').value=p.preco||""; document.getElementById('desc').value=p.desc||""; document.getElementById('chkDestaque').checked=!!p.destaque; document.getElementById('categoria').value=p.categoria||"outro"; fotosArray=p.fotos&&p.fotos.length?p.fotos.slice():(p.foto?[p.foto]:[]); renderPreview(); editandoId=id; document.getElementById('adminTitle').innerText="✏️ A editar: "+p.nome; document.getElementById('btnSalvar').innerText="💾 SALVAR ALTERAÇÃO"; document.getElementById('btnCancelar').style.display="block"; mostrarAba('prod'); mostrarAdmin(); }); }
 function cancelarEdicao(){ editandoId=null; fotosArray=[]; renderPreview(); document.getElementById('nome').value=""; document.getElementById('preco').value=""; document.getElementById('desc').value=""; document.getElementById('chkDestaque').checked=false; document.getElementById('categoria').value="perfume"; document.getElementById('adminTitle').innerText="Adicionar Produto"; document.getElementById('btnSalvar').innerText="+ ADICIONAR PRODUTO À LOJA"; document.getElementById('btnCancelar').style.display="none"; }
 function salvarProduto(){ var nome=document.getElementById('nome').value, preco=document.getElementById('preco').value, desc=document.getElementById('desc').value, dest=document.getElementById('chkDestaque').checked, cat=document.getElementById('categoria').value||"outro"; if(!nome||!preco) return alert("Preenche nome e preço"); if(!fotosArray.length) return alert("Escolhe pelo menos 1 foto!"); if(editandoId){ db.collection("produtos").doc(editandoId).update({nome:nome,preco:Number(preco),fotos:fotosArray,foto:fotosArray[0],desc:desc,destaque:dest,categoria:cat}).then(function(){alert("Editado ✅"); cancelarEdicao();}); } else { db.collection("produtos").add({nome:nome,preco:Number(preco),fotos:fotosArray,foto:fotosArray[0],desc:desc,destaque:dest,categoria:cat,criado:Date.now()}).then(function(){alert("Adicionado ✅"); cancelarEdicao();}); } }
