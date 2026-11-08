@@ -137,7 +137,109 @@ function lerComprovativo(e){ var f=e.target.files[0]; if(!f) return; if(f.size>3
 function confirmarPedido(){ if(precisaLogin()) return; var nome=document.getElementById('cliNome').value.trim(); var whats=document.getElementById('cliWhats').value.trim(); var emailPag=document.getElementById('cliEmailPag').value.trim(); var metodo=document.getElementById('metodoPag').value; var total=carrinho.reduce(function(s,i){return s+i.preco*(i.qtd||1)},0); if(!nome||!whats) return alert("Preenche nome e WhatsApp"); if(emailPag && !emailValido(emailPag)) return alert("⚠️ O e-mail está mal escrito! Ou corrige ou deixa vazio, que é opcional."); if(!metodo) return alert("Escolhe o método"); if(!comprovativoBase64) return alert("⚠️ Tens de subir o COMPROVATIVO!"); var numeroLoja=(CFG.whats||"244972370499").replace(/\D/g,''); db.collection("pedidos").add({ nome:nome, whatsapp:whats, emailPagamento:emailPag||"", metodo:metodo, comprovativo:comprovativoBase64||"", comprovativoNome:comprovativoNome||"", comprovativoTipo:comprovativoTipo||"", itens:carrinho, total:total, estado:"Pendente", clienteEmail:clienteEmail, clienteNome:clienteNome, criado:Date.now() }).then(function(){ var msg="Olá EMPIRE 👑 Novo Pedido:%0ACliente: "+nome+"%0AConta: "+clienteEmail+"%0AE-mail Recibo: "+(emailPag||"não informou")+"%0AWhats: "+whats+"%0AMétodo: "+metodo+"%0A"+carrinho.map(function(i){return "- "+(i.qtd||1)+"x "+i.nome+" - "+(i.preco*(i.qtd||1))+" Kz"}).join("%0A")+"%0ATotal: "+total+" Kz%0AComprovativo ("+comprovativoNome+") enviado na loja."; window.open("https://wa.me/"+numeroLoja+"?text="+msg,"_blank"); alert("Pedido enviado ✅ Vai para o WhatsApp 972 370 499"); carrinho=[]; atualizarContadorCarrinho(); comprovativoBase64=""; comprovativoNome=""; comprovativoTipo=""; document.getElementById('prevCompBox').innerHTML=''; document.getElementById('inputComp').value=''; document.getElementById('compMsg').innerText='⚠️ Ainda não subiste o comprovativo'; document.getElementById('compMsg').style.color='#ff4444'; document.getElementById('pagModal').style.display='none'; }); }
 function confirmarEntrega(id){ db.collection("pedidos").doc(id).update({estado:"Confirmado ✅", dataConfirmacao:Date.now()}).then(function(){alert("Pedido confirmado! Agora já podes gerar o Recibo PDF ✅")}); }
 function recusarPedido(id){ if(confirm("Recusar este pedido?")){ db.collection("pedidos").doc(id).update({estado:"Recusado ❌", dataConfirmacao:Date.now()}).then(function(){alert("Pedido recusado ❌");}); } }
-function apagarPedido(id){ if(confirm("Apagar pedido?")) db.collection("pedidos").doc(id).delete(); }
+function apagarPedido(id){ if(confirm("Apagar pedido?")) db.collection("pedidos").doc(id).delete(); }// ===== EMPIRE V2 - ADMIN ESCONDIDO + DETALHE CLIENTE + ZOOM FIX =====
+
+// 1. ESCONDER BOTÃO ADMIN DO CLIENTE
+(function(){
+  function esconderAdmin(){
+    var btns = document.querySelectorAll('button');
+    btns.forEach(function(b){
+      if(b.innerText.indexOf('Admin')>=0 && b.getAttribute('onclick') && b.getAttribute('onclick').indexOf('btnAdminClick')>=0){
+        b.style.display='none';
+        b.id='btnAdminEscondido';
+      }
+    });
+    // também esconde por id se existir
+    var a=document.getElementById('btnAdmin'); if(a) a.style.display='none';
+  }
+  setTimeout(esconderAdmin,500);
+  setTimeout(esconderAdmin,2000);
+
+  // ACESSO SECRETO: 5 toques no logo OU ?admin=1
+  var toques=0, ultimo=0;
+  document.addEventListener('click', function(e){
+    var logo=document.getElementById('logoTexto')||document.getElementById('logo');
+    if(logo && (logo.contains(e.target))){
+      var agora=Date.now();
+      if(agora-ultimo>800) toques=0;
+      ultimo=agora; toques++;
+      if(toques>=5){ toques=0; btnAdminClick(); }
+    }
+  });
+  if(window.location.search.indexOf('admin=1')>=0){
+    setTimeout(function(){ btnAdminClick(); },800);
+  }
+})();
+
+// 2. CLIENTES COM DETALHE - TOTAL GASTO + ÚLTIMO PEDIDO + O QUE COMPROU
+function verDetalheCliente(idCliente){
+  var c=null;
+  todosClientes.forEach(function(o){ if(o.id==idCliente) c=o.data; });
+  if(!c) return alert('Cliente não encontrado');
+
+  // Pedidos deste cliente - procura por email ou nome ou whatsapp
+  var pedidosCliente = todosPedidos.filter(function(o){
+    var p=o.data;
+    return (p.clienteEmail && p.clienteEmail==c.email) ||
+           (p.emailPagamento && p.emailPagamento==c.email) ||
+           (p.email && p.email==c.email) ||
+           (p.whatsapp && c.whatsapp && p.whatsapp.replace(/\D/g,'')==String(c.whatsapp).replace(/\D/g,'')) ||
+           (p.nome && c.nome && p.nome.toLowerCase()==c.nome.toLowerCase());
+  });
+
+  // Só confirmados contam para total gasto
+  var confirmados = pedidosCliente.filter(function(o){ return o.data.estado && o.data.estado.indexOf('Confirmado')>=0; });
+  var totalGasto = confirmados.reduce(function(s,o){ return s+Number(o.data.total||0); },0);
+
+  // Último pedido
+  var ordenados = pedidosCliente.slice().sort(function(a,b){ return (b.data.criado||0)-(a.data.criado||0); });
+  var ultimo = ordenados[0] ? ordenados[0].data : null;
+  var ultimoTexto = ultimo ? new Date(ultimo.criado||Date.now()).toLocaleDateString('pt-PT')+' - '+(ultimo.itens||[]).map(function(i){return (i.qtd||1)+'x '+i.nome}).join(', ')+' - '+Number(ultimo.total||0).toLocaleString()+' Kz ('+(ultimo.estado||'Pendente')+')' : 'Nenhum pedido ainda';
+
+  // Histórico
+  var hist = ordenados.length ? ordenados.map(function(o){
+    var p=o.data;
+    var itens=(p.itens||[]).map(function(i){return (i.qtd||1)+'x '+i.nome}).join(', ');
+    return '<div style="background:#1a1a1a;padding:10px;border-radius:10px;margin:6px 0"><b>'+new Date(p.criado||Date.now()).toLocaleDateString('pt-PT')+'</b> - '+itens+'<br><span style="color:#d4af37">'+Number(p.total||0).toLocaleString()+' Kz</span> - '+(p.estado||'Pendente')+' - '+p.metodo+'</div>';
+  }).join('') : '<p>Este cliente ainda não comprou nada.</p>';
+
+  var modal=document.createElement('div');
+  modal.id='modalDetalheCliente';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:flex-start;justify-content:center;padding:15px;overflow:auto';
+  modal.innerHTML='<div style="background:#111;color:#fff;width:100%;max-width:480px;border-radius:16px;padding:18px;margin-top:20px">'+
+  '<div style="display:flex;justify-content:space-between"><h3 style="margin:0">👤 Detalhe do Cliente</h3><button onclick="document.getElementById(\'modalDetalheCliente\').remove()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px;cursor:pointer">X</button></div>'+
+  '<div style="text-align:center;margin:15px 0"><div style="width:60px;height:60px;background:#d4af37;color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;margin:0 auto">'+(c.nome||'?').charAt(0).toUpperCase()+'</div><h3 style="margin:8px 0 2px">'+(c.nome||'Sem nome')+'</h3><p style="color:#aaa;margin:0;font-size:13px">'+c.email+'</p></div>'+
+  '<p>📱 <b>Telefone / WhatsApp:</b> '+(c.whatsapp||'-')+'</p>'+
+  '<p>📧 <b>Email:</b> '+c.email+'</p>'+
+  '<p>💰 <b>Total já gastou:</b> <b style="color:#00ff88">'+totalGasto.toLocaleString()+' Kz</b></p>'+
+  '<p>🛒 <b>Total de pedidos:</b> '+pedidosCliente.length+' ('+confirmados.length+' confirmados)</p>'+
+  '<p>🕒 <b>Último pedido:</b><br>'+ultimoTexto+'</p>'+
+  '<h4>📦 Histórico do que comprou:</h4>'+hist+
+  '<button onclick="window.open(\'https://wa.me/'+String(c.whatsapp||'').replace(/\\D/g,'')+'\',\'_blank\')" style="width:100%;background:#25D366;border:0;padding:12px;border-radius:12px;font-weight:800;margin-top:10px;cursor:pointer">💬 FALAR NO WHATSAPP</button>'+
+  '<button onclick="document.getElementById(\'modalDetalheCliente\').remove()" style="width:100%;background:#222;border:1px solid #444;color:#fff;padding:12px;border-radius:12px;margin-top:8px;cursor:pointer">FECHAR</button></div>';
+  document.body.appendChild(modal);
+}
+
+// SUBSTITUI A LISTA ANTIGA DE CLIENTES
+function renderClientes(){
+  var elCount=document.getElementById('cliCount'); if(elCount) elCount.innerText=todosClientes.length;
+  var div=document.getElementById('listaClientes'); if(!div) return;
+  if(!todosClientes.length){ div.innerHTML="<p class='small'>Ainda nenhum cliente criou conta.</p>"; return; }
+  div.innerHTML=todosClientes.map(function(o){
+    var c=o.data;
+    // calcula total rápido para a lista
+    var tot=0, ult='';
+    todosPedidos.forEach(function(op){
+      var p=op.data;
+      var ehMeu=(p.clienteEmail==c.email)||(p.emailPagamento==c.email);
+      if(ehMeu && p.estado && p.estado.indexOf('Confirmado')>=0) tot+=Number(p.total||0);
+    });
+    var meus=todosPedidos.filter(function(op){return op.data.clienteEmail==c.email||op.data.emailPagamento==c.email}).sort(function(a,b){return (b.data.criado||0)-(a.data.criado||0)});
+    if(meus[0]) ult=new Date(meus[0].data.criado||Date.now()).toLocaleDateString('pt-PT');
+    var data=new Date(c.criado||Date.now()).toLocaleDateString('pt-PT');
+    return '<div class="relItem" style="align-items:center"><div style="width:42px;height:42px;background:#d4af37;color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;flex-shrink:0">'+(c.nome||c.email||"?").charAt(0).toUpperCase()+'</div><div style="flex:1;min-width:0"><b>'+(c.nome||"Sem nome")+'</b><br><span class="small">📱 '+(c.whatsapp||'-')+' • '+c.email+'</span><br><span class="small" style="color:#00ff88">💰 Gastou: '+tot.toLocaleString()+' Kz • Último: '+(ult||'—')+' • Entrou: '+data+'</span></div><button onclick="verDetalheCliente(\''+o.id+'\')" style="background:#d4af37;border:0;color:#000;padding:9px 12px;border-radius:10px;font-weight:800;cursor:pointer;white-space:nowrap">👁️ Detalhes</button></div>';
+  }).join('');
+}
 mostrarLoja();
 verHoje();
 aplicarLoja();
