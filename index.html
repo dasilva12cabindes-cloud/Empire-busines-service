@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMPIRE 👑 - Loja Oficial</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="logo" onclick="mostrarLoja()"><span id="logoImgBox"></span><span><span id="logoTexto">EMPIRE<span>👑</span></span><small id="logoSlogan">LOJA OFICIAL</small></span></div><nav><span id="areaClienteHeader"></span><button class="outline" onclick="btnAdminClick()">⚙️ Admin</button><button onclick="verCarrinho()">🛒 Carrinho (<span id="cartCountTop">0</span>)</button></nav></header>
+<div id="debugBox"></div>
+<div id="areaLoja">
+<div class="hero">
+<img id="bannerImg" class="bannerImg" style="display:none">
+<span class="badge">✨ ENTREGA RÁPIDA EM LUANDA • PAGAMENTO SEGURO</span>
+<h1 id="bannerTitulo">ESTILO QUE<br><span>IMPÕE RESPEITO</span></h1>
+<p id="bannerSub">Perfumes, ténis, roupas e acessórios premium. Qualidade EMPIRE, preço justo.</p>
+<div class="stats"><div class="stat"><b id="statProd">0</b><span>Produtos</span></div><div class="stat"><b>24h</b><span>Entrega</span></div><div class="stat"><b>⭐ 4.9</b><span>Clientes felizes</span></div></div>
+<div class="searchBar"><input id="pesquisa" placeholder="🔍 Pesquisa perfume, ténis, roupa..." oninput="filtrar()"><button onclick="filtrar()">Pesquisar</button></div>
+<div class="filtros"><button class="ativo" onclick="setFiltro('todos',this)">Todos</button><button onclick="setFiltro('perfume',this)">Perfumes</button><button onclick="setFiltro('tenis',this)">Ténis</button><button onclick="setFiltro('roupa',this)">Roupas</button><button onclick="setFiltro('relogio',this)">Relógios</button></div>
+</div>
+<div id="avisoVisitante" class="avisoLogin"><b>👀 Estás a visitar como visitante</b><br><span class="small">Podes ver tudo! Mas para comprar tens de ter conta na EMPIRE.</span><br><button class="btn" style="background:#00ff88;color:#000;max-width:280px;margin-top:10px" onclick="abrirLoginCliente()">🔐 CRIAR CONTA / ENTRAR PARA COMPRAR</button></div>
+<div id="avisoCliente" class="avisoLogin" style="display:none"><b>✅ Olá, <span id="nomeClienteTop"></span>! Podes comprar à vontade 👑</b><br><span class="small" id="emailClienteTop"></span></div>
+<div id="areaDestaque" style="display:none"><div class="sectionTitle"><h2>⭐ Produtos em Destaque</h2><span>Escolhidos por ti</span></div><div id="produtosDestaque"></div></div>
+<div class="sectionTitle"><h2>🔥 Todos os Produtos</h2><span id="qtdMostra">A carregar...</span></div>
+<p class="small" id="status" style="padding:0 20px">A ligar à nuvem...</p>
+<div id="produtos"><p style="padding:20px">A carregar produtos...</p></div>
+
+<div class="sobreBox" style="border-color:#00ff88">
+<h2>🔗 Link da Minha Loja - Partilha com Clientes</h2>
+<p class="small">Copia este link e manda no WhatsApp, Facebook, TikTok, Instagram. Quem clicar entra direto na tua loja!</p>
+<div class="linkBox" id="linkLojaTexto">A carregar link...</div>
+<button class="btn" style="background:#00ff88;color:#000" onclick="copiarLinkLoja()">📋 COPIAR LINK DA LOJA</button>
+<button class="btn" style="background:#25D366;color:#000;margin-top:8px" onclick="partilharWhatsAppLoja()">💬 PARTILHAR LOJA NO WHATSAPP</button>
+</div>
+
+<div class="sobreBox">
+<h2 id="sobreTitulo">👑 Sobre a EMPIRE</h2>
+<p id="sobreTexto" style="color:#ccc;line-height:1.6">A EMPIRE nasceu em Luanda com um objetivo: trazer estilo, qualidade e confiança para todos. Produtos originais, entrega rápida e atendimento que respeita o cliente.</p>
+<div class="sobreGrid">
+<div class="sobreCard"><b>👁️ Nossa Visão</b><p id="visaoTexto" style="color:#aaa;margin-top:6px;line-height:1.5">Ser a loja mais confiável de Angola, onde cada cliente se sente rei.</p></div>
+<div class="sobreCard"><b>🎯 Nossa Missão</b><p id="missaoTexto" style="color:#aaa;margin-top:6px;line-height:1.5">Entregar produtos premium com preço justo e atendimento rápido em Luanda.</p></div>
+</div>
+<p class="small" id="sobreExtra" style="margin-top:14px">📍 Luanda, Angola • 📞 Entrega em 24h • 💳 Pagamento seguro • 📱 WhatsApp: +244 972 370 499</p>
+</div>
+<footer><span id="footerTexto">EMPIRE 👑 © 2026 • Luanda, Angola • WhatsApp +244 972 370 499</span></footer>
+</div>
+
+<div id="clienteModal" class="modal"><div>
+<div style="text-align:center;font-size:40px">👑</div>
+<h2 style="text-align:center">Conta Cliente EMPIRE</h2>
+<p class="small" style="text-align:center">Visita quem quiser. Compra só quem tem conta!</p>
+<div class="tabAuth">
+<button id="btnTabEntrar" class="ativo" onclick="mostrarTelaLogin()">🔐 JÁ TENHO CONTA</button>
+<button id="btnTabCriar" onclick="mostrarTelaCriar()">✨ CRIAR CONTA</button>
+</div>
+<div id="telaLogin">
+<label>Teu E-mail</label><input id="cliEmail" type="email" placeholder="Ex: cliente@gmail.com">
+<label>Tua Senha</label><div class="senhaBox"><input id="cliSenha" type="password" placeholder="A tua senha"><button type="button" class="olho" onclick="verSenha('cliSenha',this)">👁️</button></div>
+<button class="btn" style="background:#00ff88;color:#000" onclick="entrarCliente()">🔐 ENTRAR NA MINHA CONTA</button>
+<button class="btn btnLink" onclick="esqueceuSenha()">❓ Esqueceu a sua conta? / Esqueceu a senha? Clica aqui</button>
+<p class="small" style="text-align:center">Ainda não tens conta?<br><a href="#" onclick="mostrarTelaCriar();return false;" style="color:#00ff88;font-weight:800">Clica aqui para CRIAR CONTA GRÁTIS →</a></p>
+</div>
+<div id="telaCriar" style="display:none">
+<label>Teu Nome Completo</label><input id="cliNomeConta" placeholder="Ex: João Silva">
+<label>Teu E-mail</label><input id="cliEmailCriar" type="email" placeholder="Ex: cliente@gmail.com">
+<label>Teu WhatsApp</label><input id="cliWhatsConta" placeholder="Ex: 923000000">
+<label>Cria uma Senha</label><div class="senhaBox"><input id="cliSenhaCriar" type="password" placeholder="Mínimo 6 letras / números"><button type="button" class="olho" onclick="verSenha('cliSenhaCriar',this)">👁️</button></div>
+<label>Confirmar Senha</label><div class="senhaBox"><input id="cliSenhaConfirmar" type="password" placeholder="Repete a senha"><button type="button" class="olho" onclick="verSenha('cliSenhaConfirmar',this)">👁️</button></div>
+<button class="btn" style="background:#d4af37" onclick="criarContaCliente()">✨ CRIAR A MINHA CONTA</button>
+<p class="small" style="text-align:center">Já tens conta?<br><a href="#" onclick="mostrarTelaLogin();return false;" style="color:#00ff88;font-weight:800">← Voltar para ENTRAR</a></p>
+</div>
+<div id="telaEsqueceu" style="display:none">
+<h3 style="text-align:center">🔑 Recuperar Senha</h3>
+<p class="small" style="text-align:center">Mete o teu e-mail, vamos enviar um link para criares uma senha nova.</p>
+<label>Teu E-mail</label><input id="cliEmailEsqueceu" type="email" placeholder="Ex: cliente@gmail.com">
+<button class="btn" style="background:#00ff88;color:#000" onclick="enviarRecuperacao()">📧 ENVIAR LINK PARA O MEU E-MAIL</button>
+<button class="btn" style="background:#1a1a1a;color:#fff;margin-top:8px" onclick="mostrarTelaLogin()">← VOLTAR PARA ENTRAR</button>
+</div>
+<p id="msgCliente" class="small" style="text-align:center;margin-top:10px;color:#00ff88"></p>
+<button class="btn" style="background:transparent;color:#888;margin-top:8px" onclick="fecharLoginCliente()">Continuar só a visitar 👀</button>
+</div></div>
+
+<div id="loginBox"><div style="text-align:center;font-size:40px">👑</div><h2 style="text-align:center">Login Admin</h2>
+<p class="small" style="text-align:center">Se perdeste o e-mail e a senha antiga, cria um NOVO Admin em baixo!</p>
+<label>E-mail Admin</label><input id="email" type="email" placeholder="Ex: meuemail@gmail.com">
+<label>Senha Admin</label><div class="senhaBox"><input id="pass" type="password" placeholder="Senha"><button type="button" class="olho" onclick="verSenha('pass',this)">👁️</button></div>
+<button class="btn" onclick="login()">ENTRAR NO PAINEL →</button>
+<button class="btn" style="background:transparent;color:#00ff88;text-decoration:underline" onclick="esqueciSenhaAdmin()">❓ Esqueci a minha senha de Admin</button>
+<button class="btn" style="background:#00ff88;color:#000;margin-top:8px" onclick="criarNovoAdmin()">🆘 Perdi o e-mail - CRIAR NOVO ADMIN</button>
+<p class="small" style="text-align:center;margin-top:8px">Escreve um e-mail novo + senha nova em cima e clica em CRIAR NOVO ADMIN.</p>
+<button class="btn" style="background:transparent;color:#888;margin-top:8px" onclick="mostrarLoja()">← VOLTAR PARA LOJA</button><p id="loginMsg" class="small" style="text-align:center"></p></div>
+
+<div id="adminPanel">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px"><h2>👑 Painel Admin</h2><button onclick="mostrarLoja()" style="background:#d4af37;border:0;padding:10px 18px;border-radius:30px;font-weight:800;cursor:pointer">← VER LOJA</button></div>
+<div class="boxAdmin" style="border-color:#00ff88;margin-bottom:15px">
+<h3>🔗 Link da Tua Loja</h3>
+<p class="small">Manda este link para os clientes entrarem na loja e criarem conta!</p>
+<div class="linkBox" id="linkLojaAdmin">A carregar...</div>
+<button class="btn" style="background:#00ff88;color:#000" onclick="copiarLinkLoja()">📋 COPIAR LINK</button>
+</div>
+<div style="margin-bottom:15px"><button class="tabBtn ativo" id="tabProd" onclick="mostrarAba('prod')">📦 Produtos</button><button class="tabBtn" id="tabPed" onclick="mostrarAba('ped')">🧾 Pedidos (<span id="pedCount">0</span>)</button><button class="tabBtn" id="tabRel" onclick="mostrarAba('rel')">📊 Relatório Diário</button><button class="tabBtn" id="tabLoja" onclick="mostrarAba('loja')">🏪 Personalizar Loja</button><button class="tabBtn" id="tabPag" onclick="mostrarAba('pag')">💳 Pagamentos</button><button class="tabBtn" id="tabCli" onclick="mostrarAba('cli')">👥 Clientes (<span id="cliCount">0</span>)</button></div>
+<div id="abaProd" class="boxAdmin">
+<h2 id="adminTitle">Adicionar Produto</h2>
+<input id="nome" placeholder="Nome do produto"><input id="preco" type="number" placeholder="Preço em Kz">
+<label>Categoria do produto (para as abas funcionarem)</label>
+<select id="categoria"><option value="perfume">Perfume</option><option value="tenis">Ténis</option><option value="roupa">Roupa</option><option value="relogio">Relógio</option><option value="outro">Outro</option></select>
+<input type="file" id="inputFoto" accept="image/*" multiple style="display:none" onchange="lerFotos(event)">
+<button type="button" class="btn btnFoto" onclick="document.getElementById('inputFoto').click()">📸 ESCOLHER VÁRIAS FOTOS</button>
+<div id="previewFotos"></div><p class="small" id="fotoMsg">Nenhuma foto escolhida.</p>
+<textarea id="desc" placeholder="Descrição"></textarea>
+<label><input type="checkbox" id="chkDestaque" style="width:auto;margin-right:8px"> ⭐ Colocar este produto em DESTAQUE na loja?</label>
+<button class="btn" id="btnSalvar" onclick="salvarProduto()">+ ADICIONAR PRODUTO À LOJA</button>
+<button class="btn" id="btnCancelar" style="background:#1a1a1a;color:#fff;margin-top:8px;display:none" onclick="cancelarEdicao()">CANCELAR EDIÇÃO</button>
+<div id="produtosAdmin" style="margin-top:20px"></div>
+</div>
+<div id="abaPed" class="boxAdmin" style="display:none"><h2>🧾 Pedidos</h2><p class="small">Depois de CONFIRMAR, podes gerar o Recibo PDF e mandar por E-mail ou WhatsApp.</p><div id="listaPedidos"></div></div>
+<div id="abaRel" class="boxAdmin" style="display:none">
+<h2>📊 Relatório Diário de Vendas</h2>
+<p class="small">⚠️ Só contam os pedidos que tu clicaste em CONFIRMAR.</p>
+<label>Escolhe o dia para ver:</label>
+<input type="date" id="dataRel" onchange="renderRelatorio()">
+<div style="display:flex;gap:8px;margin-top:6px"><button id="btnHoje" class="btn btnData" onclick="verHoje()">📅 HOJE</button><button id="btnOntem" class="btn btnData" onclick="verOntem()">📅 ONTEM</button></div>
+<p class="small" id="dataSelecionadaMsg" style="color:#d4af37;margin-top:6px"></p>
+<div class="relGrid">
+<div class="relCard" style="border-color:#00ff88"><b id="relTotal" style="color:#00ff88">0 Kz</b><span>💰 Vendas Confirmadas</span></div>
+<div class="relCard"><b id="relQtd">0</b><span>✅ Pedidos Confirmados</span></div>
+<div class="relCard"><b id="relPend">0</b><span>⏳ Pendentes (não contam)</span></div>
+<div class="relCard"><b id="relRec">0</b><span>❌ Recusados (não contam)</span></div>
+</div>
+<div class="relGrid">
+<div class="relCard"><b id="relTotalGeral">0 Kz</b><span>📈 Total Geral Confirmado</span></div>
+<div class="relCard"><b id="relQtdGeral">0</b><span>Pedidos Confirmados no Total</span></div>
+</div>
+<h3 style="margin-top:16px">📋 Vendas confirmadas neste dia:</h3><div id="listaRel"></div>
+<h3 style="margin-top:16px">🏆 Produtos mais vendidos (confirmados):</h3><div id="listaTop"></div>
+</div>
+<div id="abaLoja" class="boxAdmin" style="display:none">
+<h2>🏪 Personalizar a Minha Loja</h2>
+<div class="boxPag"><h3>🖼️ LOGOTIPO</h3><label>Nome da Loja</label><input id="cfgNomeLoja" placeholder="Ex: EMPIRE"><label>Frase pequena por baixo do nome</label><input id="cfgSloganLoja" placeholder="Ex: LOJA OFICIAL"><label>Foto do Logotipo</label><input type="file" id="inputLogo" accept="image/*" onchange="lerLogo(event)"><img id="prevLogo" style="width:90px;height:90px;object-fit:cover;border-radius:50%;border:2px solid #d4af37;display:none;margin-top:8px"><button class="btn" style="background:#ff4444;margin-top:8px" onclick="removerLogo()">🗑️ Remover foto do logo</button></div>
+<div class="boxPag"><h3>🎡 BANNER</h3><label>Título grande do banner</label><input id="cfgBannerTitulo" placeholder="Ex: ESTILO QUE IMPÕE RESPEITO"><label>Texto pequeno por baixo</label><input id="cfgBannerSub" placeholder="Ex: Perfumes, ténis e roupas premium..."><label>Foto do Banner</label><input type="file" id="inputBanner" accept="image/*" onchange="lerBanner(event)"><img id="prevBanner" style="width:100%;max-height:160px;object-fit:cover;border-radius:12px;display:none;margin-top:8px"><button class="btn" style="background:#ff4444;margin-top:8px" onclick="removerBanner()">🗑️ Remover banner</button></div>
+<div class="boxPag"><h3>✍️ SOBRE A LOJA, VISÃO E MISSÃO</h3><label>Título Sobre Nós</label><input id="cfgSobreTitulo" placeholder="Ex: 👑 Sobre a EMPIRE"><label>Sobre a Loja</label><textarea id="cfgSobreTexto" rows="4"></textarea><label>👁️ Nossa Visão</label><textarea id="cfgVisao" rows="3"></textarea><label>🎯 Nossa Missão</label><textarea id="cfgMissao" rows="3"></textarea><label>📍 Informações extra</label><input id="cfgSobreExtra"><label>Texto do rodapé</label><input id="cfgFooter"></div>
+<button class="btn" style="background:#00ff88;color:#000;font-size:16px" onclick="salvarLoja()">💾 SALVAR TUDO DA LOJA</button><p class="small" id="msgLoja"></p>
+</div>
+<div id="abaPag" class="boxAdmin" style="display:none">
+<h2>💳 Meus Números de Pagamento</h2>
+<div class="boxPag"><label>📱 NÚMERO MULTICAIXA EXPRESS</label><input id="cfgExpress" placeholder="Ex: 923000000"><label>Nome no Express</label><input id="cfgNomeExpress" placeholder="Ex: EMPIRE"></div>
+<div class="boxPag"><label>📱 NÚMERO UNITEL MONEY</label><input id="cfgUnitel" placeholder="Ex: 923000000"><label>Nome no Unitel Money</label><input id="cfgNomeUnitel" placeholder="Ex: EMPIRE"></div>
+<div class="boxPag"><label>📱 NÚMERO PAYPAY</label><input id="cfgPaypay" placeholder="Ex: 923000000"><label>Nome no PayPay</label><input id="cfgNomePaypay" placeholder="Ex: EMPIRE"></div>
+<div class="boxPag"><label>🏦 IBAN</label><input id="cfgIban" placeholder="Ex: AO06 ..."><label>Banco</label><input id="cfgBanco" placeholder="Ex: BAI"><label>Nome no Banco</label><input id="cfgNomeBanco" placeholder="Ex: EMPIRE LDA"></div>
+<div class="boxPag"><label>💬 TEU WHATSAPP - Onde chegam os pedidos</label><input id="cfgWhats" placeholder="244972370499" value="244972370499"><p class="small" style="color:#00ff88">✅ O teu número é 244972370499 - deixa assim!</p></div>
+<button class="btn" style="background:#00ff88;color:#000" onclick="salvarConfigPag()">💾 SALVAR NÚMEROS</button><p class="small" id="msgConfig"></p>
+</div>
+<div id="abaCli" class="boxAdmin" style="display:none"><h2>👥 Clientes com Conta na Loja</h2><p class="small">Aqui vês todos os clientes que criaram conta para comprar.</p><div id="listaClientes"></div></div>
+<button class="btn" style="background:#ff4444;margin-top:12px" onclick="logout()">SAIR</button>
+</div>
+<div id="cart">🛒 <span id="cartCount">0</span> Ver Carrinho</div>
+<div id="cartModal" class="modal"><div><h2>🛒 Teu Carrinho</h2><div id="cartItems"></div><h3 id="cartTotal" style="margin:14px 0"></h3><button class="btn" onclick="abrirPagamento()">💳 PAGAR AGORA →</button><button class="btn btnRecuar" style="margin-top:8px" onclick="recuarParaLoja()">← RECUAR - Continuar a comprar</button><button class="btn" style="background:#1a1a1a;color:#fff;margin-top:8px" onclick="fecharCarrinho()">Fechar</button></div></div>
+<div id="pagModal" class="modal"><div><h2>💳 Pagamento</h2><p class="small" id="pagResumo"></p><p class="small" id="pagCliente" style="color:#00ff88"></p>
+<input id="cliNome" placeholder="Teu nome completo *">
+<input id="cliWhats" placeholder="Teu WhatsApp *">
+<label style="font-size:13px">📧 Teu E-mail (OPCIONAL - para receberes o recibo)</label>
+<input id="cliEmailPag" type="email" placeholder="Ex: cliente@gmail.com (opcional, podes deixar vazio)" style="border:1px solid #00ff88;font-size:15px;padding:16px">
+<p class="small" style="color:#00ff88">✅ Se meteres o e-mail, recebes o recibo por e-mail. Se não quiseres, deixa vazio que a compra funciona na mesma!</p>
+<label>Escolhe o método:</label><select id="metodoPag" onchange="mostrarDadosPag()"><option value="">-- Escolhe --</option><option value="Unitel Money">Unitel Money</option><option value="Multicaixa Express">Multicaixa Express</option><option value="PayPay">PayPay</option><option value="Transferência via IBAN">Transferência via IBAN</option></select><div id="infoPag" class="dados-pag" style="display:none"></div><div class="compBox"><label>📎 COMPROVATIVO OBRIGATÓRIO</label><p class="small">Pode ser Foto, Documento ou PDF.</p><div style="display:flex;gap:8px;margin:10px 0"><button type="button" class="btn" style="background:#0072ff" onclick="document.getElementById('inputComp').click()">📸 FOTO / DOCUMENTO / PDF</button></div><input type="file" id="inputComp" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none" onchange="lerComprovativo(event)"><div id="prevCompBox"></div><p class="small" id="compMsg" style="color:#ff4444">⚠️ Ainda não subiste o comprovativo</p></div><button class="btn" onclick="confirmarPedido()">✅ CONFIRMAR PEDIDO</button><button class="btn btnRecuar" style="margin-top:8px" onclick="recuarParaCarrinho()">← RECUAR - Aumentar / Mudar Itens</button><button class="btn" style="background:#1a1a1a;color:#fff;margin-top:8px;border:1px solid #333" onclick="fecharPagamento()">Cancelar</button></div></div>
+<div id="imgModal" onclick="fecharImg()"><img id="imgGrande" src=""><button style="margin-top:14px;background:#d4af37;border:0;padding:12px 24px;border-radius:30px;font-weight:800;cursor:pointer" onclick="fecharImg()">❌ FECHAR</button><p class="small" style="margin-top:8px">Analisa bem: nome, valor, data e hora no comprovativo</p></div>
+<script src="script.js"></script>
+</body>
+</html>   
