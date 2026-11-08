@@ -5,6 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EMPIRE 👑 - Loja Oficial</title>
 <style>
+  .luz-verde{
+  width:12px;
+  height:12px;
+  background:#00ff00;
+  border-radius:50%;
+  display:inline-block;
+  box-shadow:0 0 12px #00ff00;
+  animation:piscar 1s infinite;
+}
+@keyframes piscar{
+  0%,100%{ opacity:1; transform:scale(1); }
+  50%{ opacity:0.2; transform:scale(0.8); }
+}
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
 body{background:#0a0a0a;color:#fff;padding-bottom:80px}
 .topo{position:sticky;top:0;background:#111;padding:12px 15px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #222;z-index:99}
@@ -93,7 +106,7 @@ input,select,textarea{width:100%;background:#1a1a1a;border:1px solid #333;color:
     <h1>Boa noite,<br><span id="nomeClienteTop">Visitante!</span></h1>
     <p id="emailClienteTop">Cria conta para comprar 👑</p>
     <p id="avisoVisitante" class="small">Podes visitar à vontade. Para comprar, cria conta.</p>
-    <p id="avisoCliente" class="small" style="display:none;color:#00ff88">✅ Estás ligado! Podes comprar.</p>
+    <span style="display:flex;align-items:center;gap:8px;color:#00ff7f;font-weight:700"><span class="luz-verde"></span> ✅ Estás ligado! Podes comprar.</span>
     <div id="areaClienteHeader" style="margin-top:10px"></div>
   </div>
 
