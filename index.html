@@ -7,16 +7,16 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
 body{background:#0a0a0a;color:#fff;padding-bottom:80px}
-.topo{position:sticky;top:0;background:#111;padding:12px 15px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #222;z-index:99}
-.topo .logo{font-weight:900;font-size:20px;letter-spacing:2px}
+.topo{position:sticky;top:0;background:#111;padding:12px 15px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #222;z-index:99}
+.topo .logo{font-weight:900;font-size:20px;letter-spacing:2px;cursor:pointer}
 .topo .logo span{color:#d4af37}
-.iconBtn{background:#1a1a1a;border:1px solid #333;width:40px;height:40px;border-radius:12px;color:#fff;font-size:18px;cursor:pointer}
+.iconBtn{background:#1a1a1a;border:1px solid #333;min-width:40px;height:40px;border-radius:12px;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .saudacao{padding:20px 15px 10px}
 .saudacao h1{font-size:26px;line-height:1.2}
 .saudacao p{color:#888;font-size:13px;margin-top:4px}
 .pesquisaBox{margin:0 15px;background:#1a1a1a;border:1px solid #333;border-radius:16px;padding:14px;display:flex;gap:10px;align-items:center}
 .pesquisaBox input{flex:1;background:transparent;border:0;color:#fff;outline:none;font-size:15px}
-.acoes{ display:flex;gap:8px;overflow:auto;padding:15px; }
+.acoes{display:flex;gap:8px;overflow:auto;padding:15px}
 .acoes button{background:#1a1a1a;border:1px solid #333;color:#fff;padding:10px 16px;border-radius:30px;white-space:nowrap;cursor:pointer;font-weight:700}
 .acoes button.ativo{background:#d4af37;color:#000;border-color:#d4af37}
 .secao{margin:5px 15px 15px;background:#111;border:1px solid #222;border-radius:16px;padding:15px}
@@ -27,81 +27,223 @@ body{background:#0a0a0a;color:#fff;padding-bottom:80px}
 .barraBaixo button{background:none;border:0;color:#aaa;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
 .barraBaixo button.ativo{color:#d4af37}
 .barraBaixo span{font-size:22px}
-#produtos, #produtosDestaque{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.card{background:#1a1a1a;border-radius:14px;overflow:hidden;border:1px solid #222}
-.card img{width:100%;height:130px;object-fit:cover}
+#produtos,#produtosDestaque{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:#1a1a1a;border-radius:14px;overflow:hidden;border:1px solid #222;position:relative}
+.card img.main{width:100%;height:130px;object-fit:cover}
 .card .info{padding:10px}
 .card h3{font-size:13px}
+.card p{font-size:11px;color:#aaa;margin:4px 0}
 .card .preco{color:#d4af37;font-weight:900;margin:6px 0}
 .card button{width:100%;background:#d4af37;border:0;padding:9px;border-radius:10px;font-weight:800;cursor:pointer}
+.btnBloqueado{width:100%;background:#222!important;border:1px solid #444!important;color:#aaa!important;padding:9px;border-radius:10px;cursor:pointer}
+.badgeDestaque{position:absolute;top:8px;left:8px;background:#d4af37;color:#000;font-size:10px;font-weight:900;padding:4px 8px;border-radius:20px}
+.badgeNovo{position:absolute;top:8px;left:8px;background:#00ff88;color:#000;font-size:10px;font-weight:900;padding:4px 8px;border-radius:20px}
+.badgeQtd{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.7);font-size:10px;padding:4px 8px;border-radius:20px}
+.btn{width:100%;background:#d4af37;border:0;padding:12px;border-radius:12px;font-weight:800;cursor:pointer;margin-top:8px}
+.btnCliente{background:#d4af37;border:0;padding:8px 14px;border-radius:20px;font-weight:800;cursor:pointer;color:#000}
+.btnSair{background:#333;border:1px solid #444;color:#fff;padding:8px 12px;border-radius:20px;cursor:pointer}
+input,select,textarea{width:100%;background:#1a1a1a;border:1px solid #333;color:#fff;padding:12px;border-radius:12px;margin:6px 0;outline:none}
+.filtros{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.filtros button{background:#1a1a1a;border:1px solid #333;color:#fff;padding:8px 14px;border-radius:20px;cursor:pointer}
+.filtros button.ativo{background:#d4af37;color:#000}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;display:none;align-items:center;justify-content:center;padding:15px}
+.modalBox{background:#111;width:100%;max-width:480px;border-radius:16px;padding:18px;max-height:90vh;overflow:auto}
+.small{font-size:12px;color:#888}
+.pedidoCard,.relItem{background:#1a1a1a;border:1px solid #222;border-radius:12px;padding:12px;margin:8px 0;display:flex;gap:10px}
+.relItem img{width:50px;height:50px;object-fit:cover;border-radius:10px}
+.itensPedido{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.itemPedido{background:#222;border-radius:10px;padding:8px;text-align:center;font-size:12px}
+.itemPedido img{width:100%;height:90px;object-fit:cover;border-radius:8px}
+.comp{width:100%;border-radius:12px;margin-top:8px;border:1px solid #333}
+.docBox{background:#fff;color:#000;padding:15px;border-radius:12px;text-align:center;margin-top:8px}
+.item{display:flex;gap:10px;background:#1a1a1a;padding:10px;border-radius:12px;margin:8px 0;align-items:center}
+.item img{width:60px;height:60px;object-fit:cover;border-radius:10px}
+.itemInfo{flex:1}
+.qtdBox{display:inline-flex;align-items:center;gap:10px;background:#222;padding:4px 10px;border-radius:20px;margin-top:6px}
+.qtdBtn{width:28px;height:28px;border-radius:50%;border:0;font-size:18px;cursor:pointer;font-weight:900}
+.miniWrap{position:relative;width:70px;height:70px}
+.miniWrap img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+.miniWrap button{position:absolute;top:-6px;right:-6px;background:#ff4444;border:0;color:#fff;width:22px;height:22px;border-radius:50%;cursor:pointer}
 </style>
 </head>
 <body>
 
-<!-- TOPO IGUAL AO GITHUB -->
-<div class="topo">
-  <button class="iconBtn" onclick="mostrarLoja()">☰</button>
-  <div class="logo" id="logoTexto">EMPIRE<span>👑</span></div>
-  <div style="flex:1"></div>
-  <button class="iconBtn" onclick="document.getElementById('pesquisa').focus()">🔍</button>
-  <button class="iconBtn" onclick="verCarrinho()">🛒 <span id="cartCountTop">0</span></button>
-  <button class="iconBtn" onclick="abrirLoginCliente()">👤</button>
+<div id="debugBox" style="display:none;background:#ff4444;color:#fff;padding:10px;margin:10px;border-radius:10px"></div>
+
+<!-- ===== LOJA - ESTRUTURA GITHUB ===== -->
+<div id="areaLoja">
+  <div class="topo">
+    <button class="iconBtn" onclick="mostrarLoja()">☰</button>
+    <div class="logo" id="logoTexto" onclick="mostrarLoja()">EMPIRE<span>👑</span></div>
+    <div style="flex:1"></div>
+    <button class="iconBtn" onclick="document.getElementById('pesquisa').focus()">🔍</button>
+    <button class="iconBtn" id="cart" onclick="verCarrinho()">🛒 <span id="cartCount">0</span></button>
+    <button class="iconBtn" onclick="abrirLoginCliente()">👤</button>
+  </div>
+  <div style="display:none"><span id="logoSlogan"></span><span id="logoImgBox"></span><img id="bannerImg" style="display:none"><span id="cartCountTop">0</span></div>
+
+  <div class="saudacao">
+    <h1>Boa noite,<br><span id="nomeClienteTop">Visitante!</span></h1>
+    <p id="emailClienteTop">Cria conta para comprar 👑</p>
+    <p id="avisoVisitante" class="small">Podes visitar à vontade. Para comprar, cria conta.</p>
+    <p id="avisoCliente" class="small" style="display:none;color:#00ff88">✅ Estás ligado! Podes comprar.</p>
+    <div id="areaClienteHeader" style="margin-top:10px"></div>
+  </div>
+
+  <div class="pesquisaBox">
+    <span>🔍</span>
+    <input id="pesquisa" placeholder="Pesquisa produto... ex: Perfume, Ténis" oninput="filtrar()">
+    <span onclick="filtrar()" style="cursor:pointer">➤</span>
+  </div>
+
+  <div class="acoes filtros">
+    <button class="ativo" onclick="setFiltro('todos',this)">🏠 Todos</button>
+    <button onclick="setFiltro('perfume',this)">🌸 Perfumes</button>
+    <button onclick="setFiltro('tenis',this)">👟 Ténis</button>
+    <button onclick="setFiltro('roupa',this)">👕 Roupas</button>
+    <button onclick="setFiltro('relogio',this)">⌚ Relógios</button>
+    <button onclick="setFiltro('acessorio',this)">💍 Acessórios</button>
+  </div>
+
+  <div class="secao" id="areaDestaque">
+    <div class="secaoTop"><b>⭐ Produtos em Destaque</b><a href="#" onclick="setFiltro('todos',document.querySelector('.filtros button'));return false">Ver tudo</a></div>
+    <div id="produtosDestaque"></div>
+  </div>
+
+  <div class="secao">
+    <div class="secaoTop"><b>🛍️ Todos os Produtos</b><span id="qtdMostra" style="color:#888;font-size:12px"></span></div>
+    <div id="produtos"></div>
+    <p id="status" style="color:#888;font-size:12px;margin-top:10px;text-align:center">A carregar...</p>
+    <p style="display:none"><span id="statProd">0</span></p>
+  </div>
+
+  <div class="secao">
+    <div class="secaoTop"><b>👑 Sobre a EMPIRE</b></div>
+    <h3 id="sobreTitulo" style="font-size:14px"></h3>
+    <p id="bannerTitulo" style="display:none"></p><p id="bannerSub" style="display:none"></p>
+    <p id="sobreTexto" style="color:#aaa;font-size:13px;line-height:1.5;margin-top:6px"></p>
+    <p style="margin-top:10px"><b>Visão:</b> <span id="visaoTexto"></span></p>
+    <p><b>Missão:</b> <span id="missaoTexto"></span></p>
+    <p id="sobreExtra" style="color:#d4af37;font-size:12px;margin-top:8px"></p>
+    <p id="footerTexto" style="color:#888;font-size:11px;margin-top:10px"></p>
+    <p style="margin-top:10px"><b>Link da loja:</b> <span id="linkLojaTexto" style="color:#00aaff;font-size:11px;word-break:break-all"></span></p>
+    <button class="btn" onclick="copiarLinkLoja()">🔗 COPIAR LINK DA LOJA</button>
+    <button class="btn" style="background:#25D366;color:#000" onclick="partilharWhatsAppLoja()">💬 PARTILHAR NO WHATSAPP</button>
+    <button class="btn" style="background:#222;border:1px solid #444;color:#fff" onclick="btnAdminClick()">⚙️ Admin</button>
+  </div>
 </div>
 
-<!-- SAUDAÇÃO IGUAL AO GITHUB -->
-<div class="saudacao">
-  <h1 id="saudacaoTexto">Boa noite,<br>Visitante!</h1>
-  <p id="emailClienteTop">Cria conta para comprar 👑</p>
-  <div id="areaClienteHeader" style="margin-top:10px"></div>
+<!-- ===== LOGIN ADMIN ===== -->
+<div id="loginBox" style="display:none;padding:20px">
+  <h2>🔐 Entrar - Admin</h2>
+  <p class="small">Só o dono da loja entra aqui.</p>
+  <input id="email" placeholder="E-mail admin">
+  <div style="position:relative"><input id="pass" type="password" placeholder="Senha"><button onclick="verSenha('pass',this)" style="position:absolute;right:10px;top:14px;background:none;border:0;font-size:18px">👁️</button></div>
+  <p id="loginMsg" style="color:#ff8888;font-size:13px"></p>
+  <button class="btn" onclick="login()">ENTRAR</button>
+  <button class="btn" style="background:#222;border:1px solid #444;color:#fff" onclick="esqueciSenhaAdmin()">Esqueci a senha</button>
+  <button class="btn" style="background:#00ff88;color:#000" onclick="criarNovoAdmin()">+ CRIAR NOVO ADMIN</button>
+  <button class="btn" style="background:#333" onclick="mostrarLoja()">← Voltar para Loja</button>
 </div>
 
-<!-- PESQUISA GRANDE -->
-<div class="pesquisaBox">
-  <span>🔍</span>
-  <input id="pesquisa" placeholder="Pesquisa produto... ex: Perfume, Ténis" oninput="filtrar()">
-  <span onclick="filtrar()" style="cursor:pointer">➤</span>
+<!-- ===== PAINEL ADMIN ===== -->
+<div id="adminPanel" style="display:none;padding:15px">
+  <div style="display:flex;justify-content:space-between;align-items:center"><h2>⚙️ Painel Admin</h2><button class="btnSair" onclick="logout()">Sair</button></div>
+  <p class="small">Link da loja: <span id="linkLojaAdmin"></span></p>
+  <div class="filtros">
+    <button id="tabProd" class="ativo" onclick="mostrarAba('prod')">📦 Produtos</button>
+    <button id="tabPed" onclick="mostrarAba('ped')">🧾 Pedidos (<span id="pedCount">0</span>)</button>
+    <button id="tabRel" onclick="mostrarAba('rel')">📊 Relatório</button>
+    <button id="tabLoja" onclick="mostrarAba('loja')">🏪 Loja</button>
+    <button id="tabPag" onclick="mostrarAba('pag')">💳 Pagamentos</button>
+    <button id="tabCli" onclick="mostrarAba('cli')">👥 Clientes (<span id="cliCount">0</span>)</button>
+  </div>
+
+  <div id="abaProd">
+    <h3 id="adminTitle">Adicionar Produto</h3>
+    <input id="nome" placeholder="Nome do produto - ex: Relógio Casio">
+    <input id="preco" type="number" placeholder="Preço em Kz">
+    <input id="desc" placeholder="Descrição">
+    <select id="categoria"><option value="perfume">Perfume</option><option value="tenis">Ténis</option><option value="roupa">Roupa</option><option value="relogio">Relógio</option><option value="acessorio">Acessório</option><option value="outro">Outro</option></select>
+    <label style="display:flex;gap:8px;align-items:center;margin:8px 0"><input type="checkbox" id="chkDestaque" style="width:auto"> ⭐ Colocar em Destaque</label>
+    <input type="file" accept="image/*" multiple onchange="lerFotos(event)">
+    <div id="previewFotos" style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0"></div>
+    <p id="fotoMsg" class="small">Nenhuma foto escolhida. Máximo 3 fotos pequenas!</p>
+    <button class="btn" id="btnSalvar" onclick="salvarProduto()">+ ADICIONAR PRODUTO À LOJA</button>
+    <button class="btn" id="btnCancelar" style="display:none;background:#333" onclick="cancelarEdicao()">Cancelar Edição</button>
+    <div id="produtosAdmin"></div>
+  </div>
+
+  <div id="abaPed" style="display:none"><h3>Pedidos</h3><div id="listaPedidos"></div></div>
+
+  <div id="abaRel" style="display:none">
+    <h3>📊 Relatório</h3>
+    <input type="date" id="dataRel">
+    <div style="display:flex;gap:8px"><button class="btn" id="btnHoje" onclick="verHoje()">📅 HOJE</button><button class="btn" id="btnOntem" onclick="verOntem()">📅 ONTEM</button></div>
+    <p id="dataSelecionadaMsg" class="small"></p>
+    <div class="secao"><p>Total do dia: <b id="relTotal">0 Kz</b> | Vendas: <b id="relQtd">0</b> | Pendentes: <b id="relPend">0</b> | Recusados: <b id="relRec">0</b></p><p>Total geral: <b id="relTotalGeral">0 Kz</b> | Total vendas: <b id="relQtdGeral">0</b></p></div>
+    <h4>Vendas do dia</h4><div id="listaRel"></div>
+    <h4>Mais vendidos</h4><div id="listaTop"></div>
+  </div>
+
+  <div id="abaLoja" style="display:none">
+    <h3>🏪 Personalizar Loja</h3>
+    <input id="cfgNomeLoja" placeholder="Nome da loja"><input id="cfgSloganLoja" placeholder="Slogan"><input id="cfgBannerTitulo" placeholder="Título do banner"><input id="cfgBannerSub" placeholder="Subtítulo"><input id="cfgSobreTitulo" placeholder="Título Sobre"><textarea id="cfgSobreTexto" placeholder="Texto Sobre"></textarea><input id="cfgVisao" placeholder="Visão"><input id="cfgMissao" placeholder="Missão"><input id="cfgSobreExtra" placeholder="Info extra"><input id="cfgFooter" placeholder="Rodapé">
+    <label>Logo</label><input type="file" id="inputLogo" accept="image/*" onchange="lerLogo(event)"><img id="prevLogo" style="display:none;width:100px;border-radius:10px"><button class="btn" style="background:#333" onclick="removerLogo()">Remover Logo</button>
+    <label>Banner</label><input type="file" id="inputBanner" accept="image/*" onchange="lerBanner(event)"><img id="prevBanner" style="display:none;width:100%;border-radius:10px"><button class="btn" style="background:#333" onclick="removerBanner()">Remover Banner</button>
+    <button class="btn" onclick="salvarLoja()">💾 SALVAR LOJA</button>
+  </div>
+
+  <div id="abaPag" style="display:none">
+    <h3>💳 Pagamentos</h3>
+    <input id="cfgExpress" placeholder="Número Express"><input id="cfgNomeExpress" placeholder="Nome Express"><input id="cfgUnitel" placeholder="Número Unitel Money"><input id="cfgNomeUnitel" placeholder="Nome Unitel"><input id="cfgPaypay" placeholder="Número PayPay"><input id="cfgNomePaypay" placeholder="Nome PayPay"><input id="cfgIban" placeholder="IBAN"><input id="cfgBanco" placeholder="Banco"><input id="cfgNomeBanco" placeholder="Nome Banco"><input id="cfgWhats" placeholder="WhatsApp da loja - 244...">
+    <button class="btn" onclick="salvarConfigPag()">💾 SALVAR PAGAMENTOS</button>
+  </div>
+
+  <div id="abaCli" style="display:none"><h3>👥 Clientes</h3><div id="listaClientes"></div></div>
+  <button class="btn" style="background:#333" onclick="mostrarLoja()">← Voltar para Loja</button>
 </div>
 
-<!-- BOTÕES RÁPIDOS -->
-<div class="acoes">
-  <button class="ativo" onclick="setFiltro('todos',this)">🏠 Todos</button>
-  <button onclick="setFiltro('perfume',this)">🌸 Perfumes</button>
-  <button onclick="setFiltro('tenis',this)">👟 Ténis</button>
-  <button onclick="setFiltro('roupa',this)">👕 Roupas</button>
-  <button onclick="setFiltro('acessorio',this)">⌚ Acessórios</button>
-  <button onclick="mostrarAdmin()">⚙️ Painel</button>
+<!-- ===== MODAL CLIENTE ===== -->
+<div id="clienteModal" class="modal">
+  <div class="modalBox">
+    <div style="display:flex;justify-content:space-between"><h3>👤 Conta EMPIRE</h3><button onclick="fecharLoginCliente()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px;cursor:pointer">X</button></div>
+    <div style="display:flex;gap:8px;margin:12px 0"><button id="btnTabEntrar" class="btn" style="flex:1" onclick="mostrarTelaLogin()">Entrar</button><button id="btnTabCriar" class="btn" style="flex:1;background:#222;color:#fff;border:1px solid #444" onclick="mostrarTelaCriar()">Criar Conta</button></div>
+    <div id="telaLogin">
+      <input id="cliEmail" placeholder="E-mail"><div style="position:relative"><input id="cliSenha" type="password" placeholder="Senha"><button onclick="verSenha('cliSenha',this)" style="position:absolute;right:10px;top:14px;background:none;border:0">👁️</button></div>
+      <button class="btn" onclick="entrarCliente()">ENTRAR</button>
+      <p style="text-align:center;color:#00aaff;cursor:pointer;margin-top:8px" onclick="esqueceuSenha()">Esqueceu a senha?</p>
+    </div>
+    <div id="telaCriar" style="display:none">
+      <input id="cliNomeConta" placeholder="Teu nome"><input id="cliEmailCriar" placeholder="E-mail"><input id="cliWhatsConta" placeholder="WhatsApp - 9xx xxx xxx"><input id="cliSenhaCriar" type="password" placeholder="Cria senha (mín 6)"><input id="cliSenhaConfirmar" type="password" placeholder="Repete a senha">
+      <button class="btn" onclick="criarContaCliente()">CRIAR CONTA</button>
+    </div>
+    <div id="telaEsqueceu" style="display:none">
+      <input id="cliEmailEsqueceu" placeholder="Teu e-mail"><button class="btn" onclick="enviarRecuperacao()">ENVIAR LINK</button><p style="text-align:center;color:#00aaff;cursor:pointer;margin-top:8px" onclick="mostrarTelaLogin()">← Voltar</p>
+    </div>
+    <p id="msgCliente" style="color:#ff8888;font-size:13px;margin-top:8px"></p>
+  </div>
 </div>
 
-<!-- SECÇÃO DESTAQUES -->
-<div class="secao" id="areaDestaque">
-  <div class="secaoTop"><b>⭐ Produtos em Destaque</b><a href="#" onclick="setFiltro('todos',this);return false">Ver tudo</a></div>
-  <div id="produtosDestaque"></div>
+<!-- ===== MODAL CARRINHO ===== -->
+<div id="cartModal" class="modal">
+  <div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>🛒 Carrinho</h3><button onclick="fecharCarrinho()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><div id="cartItems"></div><h3 id="cartTotal">Total: 0 Kz</h3><button class="btn" onclick="abrirPagamento()">💳 PAGAR</button></div>
 </div>
 
-<!-- SECÇÃO TODOS -->
-<div class="secao">
-  <div class="secaoTop"><b>🛍️ Todos os Produtos</b><span id="qtdMostra" style="color:#888;font-size:12px"></span></div>
-  <div id="produtos"></div>
-  <p id="status" style="color:#888;font-size:12px;margin-top:10px;text-align:center"></p>
+<!-- ===== MODAL PAGAMENTO ===== -->
+<div id="pagModal" class="modal">
+  <div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>💳 Pagamento</h3><button onclick="fecharPagamento()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p id="pagCliente" class="small"></p><pre id="pagResumo" style="white-space:pre-wrap;background:#1a1a1a;padding:10px;border-radius:10px;font-size:12px"></pre><input id="cliNome" placeholder="Teu nome"><input id="cliWhats" placeholder="WhatsApp"><input id="cliEmailPag" placeholder="E-mail para recibo (opcional)"><select id="metodoPag" onchange="mostrarDadosPag()"><option value="">Escolhe método...</option><option>Unitel Money</option><option>Multicaixa Express</option><option>PayPay</option><option>Transferência via IBAN</option></select><div id="infoPag" style="display:none;background:#1a1a1a;padding:12px;border-radius:12px;white-space:pre-wrap;font-size:13px"></div><label style="font-size:13px">📎 Comprovativo (foto ou PDF)</label><input type="file" id="inputComp" accept="image/*,.pdf" onchange="lerComprovativo(event)"><div id="prevCompBox"></div><p id="compMsg" style="color:#ff4444;font-size:12px">⚠️ Ainda não subiste o comprovativo</p><button class="btn" onclick="confirmarPedido()">✅ CONFIRMAR PEDIDO</button><button class="btn" style="background:#333" onclick="recuarParaCarrinho()">← Voltar ao Carrinho</button></div>
 </div>
 
-<!-- SECÇÃO SOBRE -->
-<div class="secao">
-  <div class="secaoTop"><b>👑 Sobre a EMPIRE</b></div>
-  <p id="sobreTexto" style="color:#aaa;font-size:13px;line-height:1.5"></p>
-  <p id="sobreExtra" style="color:#d4af37;font-size:12px;margin-top:8px"></p>
-</div>
+<!-- ===== MODAL IMAGEM ===== -->
+<div id="imgModal" class="modal" onclick="fecharImg()"><img id="imgGrande" style="max-width:95%;max-height:90vh;border-radius:12px"></div>
 
-<!-- BARRA EM BAIXO IGUAL AO GITHUB -->
+<!-- BARRA EM BAIXO -->
 <div class="barraBaixo">
   <button class="ativo" onclick="mostrarLoja()"><span>🏠</span>Loja</button>
   <button onclick="verCarrinho()"><span>🛒</span>Carrinho</button>
   <button onclick="abrirLoginCliente()"><span>👤</span>Conta</button>
 </div>
-
-<!-- AQUI MANTÉM O RESTO DO TEU index.html ANTIGO -->
-<!-- O adminPanel, loginBox, clienteModal, cartModal, pagModal, imgModal, etc. -->
-<!-- Cola eles aqui em baixo sem apagar, para o script.js continuar a funcionar! -->
 
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
