@@ -160,6 +160,36 @@ function renderClientes(){
     return '<div class="relItem" style="align-items:center"><div style="width:42px;height:42px;background:#d4af37;color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;flex-shrink:0">'+(c.nome||c.email||"?").charAt(0).toUpperCase()+'</div><div style="flex:1;min-width:0"><b>'+(c.nome||"Sem nome")+'</b><br><span class="small">📱 '+(c.whatsapp||'-')+' • '+c.email+'</span><br><span class="small" style="color:#00ff88">💰 Gastou: '+tot.toLocaleString()+' Kz • Último: '+(ult||'—')+' • Entrou: '+data+'</span></div><button onclick="verDetalheCliente(\''+o.id+'\')" style="background:#d4af37;border:0;color:#000;padding:9px 12px;border-radius:10px;font-weight:800;cursor:pointer;white-space:nowrap">👁️ Detalhes</button></div>';
   }).join('');
 }
+function gerarRelatorioMensal(){
+  var hoje=new Date();
+  var mes=hoje.getMonth(), ano=hoje.getFullYear();
+  var nomesMes=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+  var doMes=todosPedidos.filter(function(o){
+    var d=new Date(o.data.dataConfirmacao||o.data.criado||Date.now());
+    return d.getMonth()==mes && d.getFullYear()==ano && o.data.estado && o.data.estado.indexOf('Confirmado')>=0;
+  });
+  // Agrupa por cliente
+  var porCliente={};
+  doMes.forEach(function(o){
+    var p=o.data; var chave=p.clienteEmail||p.emailPagamento||p.nome;
+    if(!porCliente[chave]) porCliente[chave]={nome:p.nome, email:chave, whats:p.whatsapp, qtd:0, total:0, pedidos:0};
+    porCliente[chave].pedidos++;
+    p.itens.forEach(function(i){ porCliente[chave].qtd+=(i.qtd||1); });
+    porCliente[chave].total+=Number(p.total||0);
+  });
+  var lista=Object.keys(porCliente).map(function(k){return porCliente[k]}).sort(function(a,b){return b.total-a.total});
+  var totalMes=doMes.reduce(function(s,o){return s+Number(o.data.total||0)},0);
+  var qtdTotal=lista.reduce(function(s,c){return s+c.qtd},0);
+  var linhas=lista.map(function(c,i){
+    return "<tr><td>"+(i+1)+"</td><td><b>"+c.nome+"</b><br><small>"+c.email+"<br>"+c.whats+"</small></td><td style='text-align:center'>"+c.pedidos+"</td><td style='text-align:center'>"+c.qtd+"</td><td style='text-align:right'><b>"+c.total.toLocaleString()+" Kz</b></td></tr>";
+  }).join('');
+  var detalhe=doMes.map(function(o){
+    var p=o.data; var d=new Date(p.dataConfirmacao||p.criado);
+    return "<tr><td>"+d.toLocaleDateString('pt-PT')+"</td><td>"+p.nome+"<br><small>"+(p.clienteEmail||"")+"</small></td><td>"+p.itens.map(function(i){return (i.qtd||1)+"x "+i.nome}).join("<br>")+"</td><td>"+p.metodo+"</td><td style='text-align:right'>"+Number(p.total).toLocaleString()+" Kz</td></tr>";
+  }).join('');
+  var html="<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Relatorio EMPIRE - "+nomesMes[mes]+" "+ano+"</title><style>body{font-family:Arial;padding:30px;color:#000}h1{text-align:center;letter-spacing:3px}table{width:100%;border-collapse:collapse;margin:15px 0}th{background:#000;color:#fff;padding:10px;text-align:left}td{padding:10px;border-bottom:1px solid #ddd}.total{font-size:22px;text-align:right;margin-top:10px}.box{background:#f5f5f5;padding:15px;border-radius:10px}@media print{.noPrint{display:none}}</style></head><body><h1>EMPIRE 👑</h1><p style='text-align:center'>RELATÓRIO DE VENDAS - "+nomesMes[mes]+" "+ano+"</p><div class='box'><b>Total de vendas confirmadas:</b> "+doMes.length+" pedidos<br><b>Total de produtos vendidos:</b> "+qtdTotal+"<br><b>Total de clientes que compraram:</b> "+lista.length+"<br><b>SOMA TOTAL DO MÊS:</b> "+totalMes.toLocaleString()+" Kz</div><h2>👥 Por Cliente</h2><table><tr><th>Nº</th><th>Cliente</th><th>Pedidos</th><th>Qtd Produtos</th><th>Total Gasto</th></tr>"+(linhas||"<tr><td colspan='5'>Sem vendas neste mês</td></tr>")+"</table><h2>📋 Detalhe de Todas as Vendas</h2><table><tr><th>Data</th><th>Cliente</th><th>Produtos</th><th>Método</th><th>Total</th></tr>"+detalhe+"</table><div class='total'>TOTAL GERAL: <b>"+totalMes.toLocaleString()+" Kz</b></div><p style='text-align:center;color:#888;margin-top:30px'>EMPIRE © 2026 • Luanda • WhatsApp +244 972 370 499</p><div class='noPrint' style='text-align:center'><button onclick='window.print()' style='background:#d4af37;border:0;padding:15px 30px;border-radius:30px;font-weight:800;font-size:16px;cursor:pointer'>🖨️ IMPRIMIR / GUARDAR PDF</button></div></body></html>";
+  var win=window.open('','_blank'); win.document.write(html); win.document.close();
+}
 mostrarLoja();
 verHoje();
 aplicarLoja();
