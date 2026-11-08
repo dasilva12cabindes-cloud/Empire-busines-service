@@ -169,5 +169,22 @@
 <label>Escolhe o método:</label><select id="metodoPag" onchange="mostrarDadosPag()"><option value="">-- Escolhe --</option><option value="Unitel Money">Unitel Money</option><option value="Multicaixa Express">Multicaixa Express</option><option value="PayPay">PayPay</option><option value="Transferência via IBAN">Transferência via IBAN</option></select><div id="infoPag" class="dados-pag" style="display:none"></div><div class="compBox"><label>📎 COMPROVATIVO OBRIGATÓRIO</label><p class="small">Pode ser Foto, Documento ou PDF.</p><div style="display:flex;gap:8px;margin:10px 0"><button type="button" class="btn" style="background:#0072ff" onclick="document.getElementById('inputComp').click()">📸 FOTO / DOCUMENTO / PDF</button></div><input type="file" id="inputComp" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none" onchange="lerComprovativo(event)"><div id="prevCompBox"></div><p class="small" id="compMsg" style="color:#ff4444">⚠️ Ainda não subiste o comprovativo</p></div><button class="btn" onclick="confirmarPedido()">✅ CONFIRMAR PEDIDO</button><button class="btn btnRecuar" style="margin-top:8px" onclick="recuarParaCarrinho()">← RECUAR - Aumentar / Mudar Itens</button><button class="btn" style="background:#1a1a1a;color:#fff;margin-top:8px;border:1px solid #333" onclick="fecharPagamento()">Cancelar</button></div></div>
 <div id="imgModal" onclick="fecharImg()"><img id="imgGrande" src=""><button style="margin-top:14px;background:#d4af37;border:0;padding:12px 24px;border-radius:30px;font-weight:800;cursor:pointer" onclick="fecharImg()">❌ FECHAR</button><p class="small" style="margin-top:8px">Analisa bem: nome, valor, data e hora no comprovativo</p></div>
 <script src="script.js"></script>
+  <script>
+function mostrarWhatsSeLogado(){
+  var btn = document.getElementById('cart');
+  if(!btn) return;
+  // Se tem botão SAIR visível = está logado
+  var sair = document.querySelector('.btnSair');
+  var logado = sair && sair.style.display !== 'none' && sair.offsetParent !== null;
+  // Ou se tem cliente guardado
+  var temCliente = localStorage.getItem('clienteLogado') || localStorage.getItem('cliente') || localStorage.getItem('user');
+  if(logado || temCliente){
+    btn.style.display = 'block';
+  } else {
+    btn.style.display = 'none';
+  }
+}
+setInterval(mostrarWhatsSeLogado, 1000);
+</script>
 </body>
 </html>   
