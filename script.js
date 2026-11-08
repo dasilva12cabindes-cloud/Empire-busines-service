@@ -190,6 +190,33 @@ function gerarRelatorioMensal(){
   var html="<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Relatorio EMPIRE - "+nomesMes[mes]+" "+ano+"</title><style>body{font-family:Arial;padding:30px;color:#000}h1{text-align:center;letter-spacing:3px}table{width:100%;border-collapse:collapse;margin:15px 0}th{background:#000;color:#fff;padding:10px;text-align:left}td{padding:10px;border-bottom:1px solid #ddd}.total{font-size:22px;text-align:right;margin-top:10px}.box{background:#f5f5f5;padding:15px;border-radius:10px}@media print{.noPrint{display:none}}</style></head><body><h1>EMPIRE 👑</h1><p style='text-align:center'>RELATÓRIO DE VENDAS - "+nomesMes[mes]+" "+ano+"</p><div class='box'><b>Total de vendas confirmadas:</b> "+doMes.length+" pedidos<br><b>Total de produtos vendidos:</b> "+qtdTotal+"<br><b>Total de clientes que compraram:</b> "+lista.length+"<br><b>SOMA TOTAL DO MÊS:</b> "+totalMes.toLocaleString()+" Kz</div><h2>👥 Por Cliente</h2><table><tr><th>Nº</th><th>Cliente</th><th>Pedidos</th><th>Qtd Produtos</th><th>Total Gasto</th></tr>"+(linhas||"<tr><td colspan='5'>Sem vendas neste mês</td></tr>")+"</table><h2>📋 Detalhe de Todas as Vendas</h2><table><tr><th>Data</th><th>Cliente</th><th>Produtos</th><th>Método</th><th>Total</th></tr>"+detalhe+"</table><div class='total'>TOTAL GERAL: <b>"+totalMes.toLocaleString()+" Kz</b></div><p style='text-align:center;color:#888;margin-top:30px'>EMPIRE © 2026 • Luanda • WhatsApp +244 972 370 499</p><div class='noPrint' style='text-align:center'><button onclick='window.print()' style='background:#d4af37;border:0;padding:15px 30px;border-radius:30px;font-weight:800;font-size:16px;cursor:pointer'>🖨️ IMPRIMIR / GUARDAR PDF</button></div></body></html>";
   var win=window.open('','_blank'); win.document.write(html); win.document.close();
 }
+function atualizarSaudacaoELuz(){
+  var hora = new Date().getHours();
+  var saud = "Boa noite,";
+  if(hora >= 5 && hora < 12) saud = "Bom dia,";
+  else if(hora >= 12 && hora < 18) saud = "Boa tarde,";
+  else saud = "Boa noite,";
+
+  var nomeEl = document.getElementById('nomeClienteTop');
+  var nome = nomeEl ? nomeEl.innerText : "";
+  // Se ainda está "Visitante", é porque ninguém ligou
+  var logado = nome && nome !== "Visitante" && nome.trim() !== "";
+
+  var txt = document.getElementById('textoSaudacao');
+  if(txt) txt.innerText = saud;
+
+  var luz = document.getElementById('areaLogado');
+  var aviso = document.getElementById('avisoVisitante');
+  if(logado){
+    if(luz) luz.style.display = 'block'; // ACENDE A LUZ
+    if(aviso) aviso.style.display = 'none';
+  } else {
+    if(luz) luz.style.display = 'none'; // APAGA A LUZ
+    if(aviso) aviso.style.display = 'block';
+  }
+}
+setInterval(atualizarSaudacaoELuz, 1000);
+document.addEventListener('DOMContentLoaded', atualizarSaudacaoELuz);
 mostrarLoja();
 verHoje();
 aplicarLoja();
