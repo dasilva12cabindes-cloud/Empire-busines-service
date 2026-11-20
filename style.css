@@ -118,3 +118,6 @@ input[type=checkbox]{width:auto}
 .topo .logo{font-size:15px;letter-spacing:1px;line-height:1.2;min-width:0}
 .iconBtn{flex-shrink:0;white-space:nowrap;gap:4px;padding:0 10px}
 #avisoCliente{display:none!important}
+#emailClienteTop{display:none!important}
+p:has(#linkLojaTexto){display:none!important}
+p:has(#linkLojaAdmin){display:none!important}
