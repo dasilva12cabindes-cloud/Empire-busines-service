@@ -197,22 +197,23 @@ function atualizarSaudacaoELuz(){
   else if(hora >= 12 && hora < 18) saud = "Boa tarde,";
   else saud = "Boa noite,";
 
-  var nomeEl = document.getElementById('nomeClienteTop');
-  var nome = nomeEl ? nomeEl.innerText : "";
-  // Se ainda está "Visitante", é porque ninguém ligou
-  var logado = nome && nome !== "Visitante" && nome.trim() !== "";
-
   var txt = document.getElementById('textoSaudacao');
   if(txt) txt.innerText = saud;
 
+  // AGORA VERIFICA PELO EMAIL, NÃO PELO NOME!
+  var logado = !!clienteEmail;
+
   var luz = document.getElementById('areaLogado');
   var aviso = document.getElementById('avisoVisitante');
+  var aviso2 = document.getElementById('avisoCliente');
   if(logado){
-    if(luz) luz.style.display = 'block'; // ACENDE A LUZ
+    if(luz) luz.style.display = 'flex';
     if(aviso) aviso.style.display = 'none';
+    if(aviso2) aviso2.style.display = 'block';
   } else {
-    if(luz) luz.style.display = 'none'; // APAGA A LUZ
+    if(luz) luz.style.display = 'none';
     if(aviso) aviso.style.display = 'block';
+    if(aviso2) aviso2.style.display = 'none';
   }
 }
 setInterval(atualizarSaudacaoELuz, 1000);
