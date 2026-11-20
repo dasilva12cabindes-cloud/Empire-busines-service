@@ -115,3 +115,6 @@ input[type=checkbox]{width:auto}
 .miniWrap{position:relative;width:70px;height:70px}
 .miniWrap img{width:100%;height:100%;object-fit:cover;border-radius:10px}
 .miniWrap button{position:absolute;top:-6px;right:-6px;background:var(--erro);border:0;color:#fff;width:22px;height:22px;border-radius:50%;cursor:pointer}
+.topo .logo{font-size:15px;letter-spacing:1px;line-height:1.2;min-width:0}
+.iconBtn{flex-shrink:0;white-space:nowrap;gap:4px;padding:0 10px}
+#avisoCliente{display:none!important}
