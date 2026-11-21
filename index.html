@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=14">
+<link rel="stylesheet" href="style.css?v=15">
 <style>
 #novoLogin{position:fixed;inset:0;background:#0f0f0f;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;font-family:sans-serif}
 #novoLogin.mostrar{display:flex}
@@ -180,8 +180,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="script.js?v=14"></script>
-<script src="menu.js?v=14"></script>
+<script src="script.js?v=15"></script>
+<script src="menu.js?v=15"></script>
 <div id="novoLogin"><div class="card"><h2>Bem-vindo de Volta</h2><p class="sub">Entra para continuar</p><label>E-mail</label><div class="campo"><span>📧</span><input id="loginEmail" type="email" placeholder="Teu e-mail"></div><label>Palavra-passe</label><div class="campo"><span>🔒</span><input id="loginSenha" type="password" placeholder="Tua palavra-passe"><span onclick="var i=document.getElementById('loginSenha'); if(i.type==='password'){i.type='text'; this.innerText='🙈';} else {i.type='password'; this.innerText='👁️';}" style="cursor:pointer;margin-left:8px">👁️</span></div><button class="btnLogin" onclick="entrarNovoLogin()">ENTRAR</button><p class="esqueci" onclick="esqueciSenhaNovoLogin()">Esqueci a senha?</p><div class="criar">Não tens conta? <b onclick="criarContaAdminNovo()">Criar conta</b></div><p id="loginErro" style="color:#ff6b6b;font-size:13px;margin-top:10px"></p></div></div>
 <script>
 try{ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL); }catch(e){}
@@ -252,7 +252,7 @@ function carregarNotificacoesAdmin(){
   }).catch(function(){ box.innerHTML='<div class="notif-card">Não foi possível carregar. Carrega em ATUALIZAR.</div>'; });
 }
 
-// ===== MULTICAIXA EXPRESS - V14 SEM POP-UP DO IPHONE =====
+// ===== MULTICAIXA EXPRESS - V15 CORRIGIDO - SEM BOTÃO ABRIR APP, SEM TOTAL DUPLICADO =====
 var _timerExpress=null;
 var _segundosExpress=120;
 function mostrarDadosPagExpress(){
@@ -278,12 +278,7 @@ function mostrarDadosPagExpress(){
     if(typeof mostrarDadosPag==='function' && mostrarDadosPag!==mostrarDadosPagExpress){ try{ mostrarDadosPag(); }catch(e){} }
   }
 }
-function abrirExpressManual(){
-  // Só abre quando o cliente CARREGA no botão - assim o iPhone não bloqueia como pop-up automático
-  // Se não tiver app, vai para a App Store / site
-  try{ window.location.href='multicaixaexpress://'; }catch(e){}
-  setTimeout(function(){ /* se não abriu, fica na mesma página */ }, 1500);
-}
+// APAGADO abrirExpressManual() - era ele que causava "Algo correu mal. Não foi possível abrir a aplicação."
 function confirmarPedidoExpress(){
   var metodo=document.getElementById('metodoPag').value;
   if(metodo!=='Multicaixa Express'){
@@ -296,9 +291,8 @@ function confirmarPedidoExpress(){
   window._numeroExpressCliente=numero;
   window._nomeClienteExpress=(document.getElementById('cliNome') && document.getElementById('cliNome').value) || '';
   var totalEl=document.getElementById('cartTotal');
-  var totalTxt= totalEl ? totalEl.innerText : '';
-  // REMOVIDO: window.open('multicaixaexpress://') - era isso que causava o pop-up "Este site está a tentar abrir outra aplicação"
-  // Agora NÃO abre nada sozinho. O cliente abre manualmente.
+  // CORRIGIDO: tira o "Total:" duplicado - agora fica só "22 500 Kz"
+  var totalTxt= totalEl ? totalEl.innerText.replace('Total:','').trim() : '';
   var modal=document.getElementById('pagModal'); if(modal) modal.style.display='none';
   var antigo=document.getElementById('processandoExpress'); if(antigo) antigo.remove();
   var box=document.createElement('div');
@@ -309,7 +303,6 @@ function confirmarPedidoExpress(){
     + '<p>Pedido criado para <b>Multicaixa Express</b></p>'
     + '<p>Teu número: <b>'+numero+'</b><br>Valor a pagar: <b>'+totalTxt+'</b></p>'
     + '<p style="background:#fff3cd;padding:10px;border-radius:10px;text-align:left">1. Sai daqui e abre tu mesmo o teu app <b>Multicaixa Express</b><br>2. Faz transferência / pagamento de <b>'+totalTxt+'</b> para <b>942788931 - COSME BENTO</b><br>3. Mete o teu PIN e confirma<br>4. Volta aqui e carrega em JÁ PAGUEI</p>'
-    + '<button onclick="abrirExpressManual()" style="background:#000;color:#fff;border:0;padding:10px;width:100%;border-radius:10px;margin-bottom:8px;cursor:pointer">📱 ABRIR MEU EXPRESS AGORA (opcional)</button>'
     + '<h1 id="tempoExpress" style="font-size:48px;color:#ff4444;margin:10px 0">02:00</h1>'
     + '<p>À espera da tua confirmação...</p>'
     + '<button onclick="pagamentoExpressConfirmado()" style="background:#00d26a;color:#fff;border:0;padding:12px;width:100%;border-radius:10px;font-weight:800;cursor:pointer">✅ JÁ PAGUEI NO EXPRESS</button>'
