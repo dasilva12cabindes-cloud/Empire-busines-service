@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=12">
+<link rel="stylesheet" href="style.css?v=13">
 <style>
 #novoLogin{position:fixed;inset:0;background:#0f0f0f;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;font-family:sans-serif}
 #novoLogin.mostrar{display:flex}
@@ -47,6 +47,7 @@
 .tab-alerta{ background:#ff4444!important; color:#fff!important; animation: pisca 1s infinite; }
 @keyframes pisca{ 50%{ opacity:.7; } }
 .btnMeusPedidos{ background:#d4af37!important; color:#000!important; font-weight:800; border:0; padding:10px 14px; border-radius:10px; cursor:pointer; margin-top:8px; }
+#boxNumeroExpress input{ color:#000!important; background:#fff!important; }
 </style>
 </head>
 <body>
@@ -77,7 +78,6 @@
   <button onclick="fecharMenuAdmin();logout()" style="background:#ff4444">🚪 Sair</button>
   <button onclick="fecharMenuAdmin()" style="background:#333">← Fechar</button>
 </div>
-
 <div id="areaLoja">
   <div class="topo">
     <button class="iconBtn" onclick="abrirMenuLateral()">☰</button>
@@ -111,7 +111,6 @@
   <div class="secao"><div class="secaoTop"><b>🛍️ Todos os Produtos</b><span id="qtdMostra" style="color:#b9d6dd;font-size:12px"></span></div><div id="produtos"></div><p id="status" style="color:#b9d6dd;font-size:12px;margin-top:10px;text-align:center"><span class="barras-loader"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span><br>A carregar...</p><p style="display:none"><span id="statProd">0</span></p></div>
   <div class="secao"><div class="secaoTop"><b> Sobre nós </b></div><h3 id="sobreTitulo" style="font-size:14px"></h3><p id="bannerTitulo" style="display:none"></p><p id="bannerSub" style="display:none"></p><p id="sobreTexto" style="color:#d6e8ec;font-size:13px;line-height:1.5;margin-top:6px"></p><p style="margin-top:10px"><b>Visão:</b> <span id="visaoTexto"></span></p><p><b>Missão:</b> <span id="missaoTexto"></span></p><p id="sobreExtra" style="color:#d4af37;font-size:12px;margin-top:8px"></p><p id="footerTexto" style="color:#b9d6dd;font-size:11px;margin-top:10px"></p><p style="margin-top:10px"><b>Link da loja:</b> <span id="linkLojaTexto" style="color:#d4af37;font-size:11px;word-break:break-all"></span></p><button class="btn" onclick="copiarLinkLoja()">🔗 COPIAR LINK DA LOJA</button><button class="btn" style="background:#25D366;color:#000" onclick="partilharWhatsAppLoja()">💬 PARTILHAR NO WHATSAPP</button></div>
 </div>
-
 <div id="loginBox" style="display:none;padding:20px">
   <h2>🔐 Entrar - Admin</h2><p class="small">Só o dono da loja entra aqui.</p>
   <input id="email" placeholder="E-mail admin">
@@ -121,7 +120,6 @@
   <button class="btn" style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.14);color:#fff" onclick="esqueciSenhaAdmin()">Esqueci a senha</button>
   <button class="btn" style="background:#333;color:#fff" onclick="mostrarLoja()">← Voltar para Loja</button>
 </div>
-
 <div id="adminPanel" style="display:none;padding:15px">
   <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
     <button class="btnMenuAdmin" onclick="abrirMenuAdmin()">☰</button>
@@ -169,27 +167,22 @@
   <div id="abaCli" style="display:none"><h3>👥 Clientes</h3><div id="listaClientes"></div></div>
   <button class="btn" style="background:#333;color:#fff" onclick="mostrarLoja()">← Voltar para Loja</button>
 </div>
-
 <div id="clienteModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>👤 Conta EMPIRE</h3><button onclick="fecharLoginCliente()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px;cursor:pointer">X</button></div><div style="display:flex;gap:8px;margin:12px 0"><button id="btnTabEntrar" class="btn" style="flex:1" onclick="mostrarTelaLogin()">Entrar</button><button id="btnTabCriar" class="btn" style="flex:1;background:rgba(0,0,0,.3);color:#fff;border:1px solid rgba(255,255,255,.14)" onclick="mostrarTelaCriar()">Criar Conta</button></div><div id="telaLogin"><input id="cliEmail" placeholder="E-mail"><div style="position:relative"><input id="cliSenha" type="password" placeholder="Senha"><button onclick="verSenha('cliSenha',this)" style="position:absolute;right:10px;top:14px;background:none;border:0">👁️</button></div><button class="btn" onclick="entrarCliente()">ENTRAR</button><p style="text-align:center;color:#d4af37;cursor:pointer;margin-top:8px" onclick="esqueceuSenha()">Esqueceu a senha?</p></div><div id="telaCriar" style="display:none"><input id="cliNomeConta" placeholder="Teu nome"><input id="cliEmailCriar" placeholder="E-mail"><input id="cliWhatsConta" placeholder="WhatsApp - 9xx xxx xxx"><input id="cliSenhaCriar" type="password" placeholder="Cria senha (mín 6)"><input id="cliSenhaConfirmar" type="password" placeholder="Repete a senha"><button class="btn" onclick="criarContaCliente()">CRIAR CONTA</button></div><div id="telaEsqueceu" style="display:none"><input id="cliEmailEsqueceu" placeholder="Teu e-mail"><button class="btn" onclick="enviarRecuperacao()">ENVIAR LINK</button><p style="text-align:center;color:#d4af37;cursor:pointer;margin-top:8px" onclick="mostrarTelaLogin()">← Voltar</p></div><p id="msgCliente" style="color:#ffb3b3;font-size:13px;margin-top:8px"></p></div></div>
 <div id="meusPedidosModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>📦 Meus Pedidos</h3><button onclick="fecharMeusPedidos()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p class="small">🟡 Pendente = à espera do Admin. ✅ Aceite / ❌ Recusado / 🚫 Cancelado = some após 24h. Pendente nunca some até o Admin decidir.</p><div id="listaMeusPedidos"></div></div></div>
 <div id="cartModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>🛒 Carrinho</h3><button onclick="fecharCarrinho()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><div id="cartItems"></div><h3 id="cartTotal">Total: 0 Kz</h3><button class="btn" onclick="abrirPagamento()">💳 PAGAR</button></div></div>
-
-<!-- PAGAMENTO - COM CAMPO NÚMERO EXPRESS -->
 <div id="pagModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>💳 Pagamento</h3><button onclick="fecharPagamento()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p id="pagCliente" class="small"></p><pre id="pagResumo" style="white-space:pre-wrap;background:rgba(0,0,0,.25);padding:10px;border-radius:12px;font-size:12px"></pre><input id="cliNome" placeholder="Teu nome"><input id="cliWhats" placeholder="WhatsApp"><input id="cliEmailPag" placeholder="E-mail para recibo (opcional)"><select id="metodoPag" onchange="mostrarDadosPagExpress()"><option value="">Escolhe método...</option><option>Unitel Money</option><option>Multicaixa Express</option><option>PayPay</option><option>Transferência via IBAN</option></select>
-<div id="boxNumeroExpress" style="display:none;background:#fff3cd;padding:12px;border-radius:12px;margin:8px 0"><label style="font-size:13px;font-weight:800;color:#000">📱 Número Multicaixa Express</label><input id="numeroExpress" placeholder="Ex: 923 000 000" style="margin-top:6px"><p style="font-size:12px;color:#000;margin:4px 0">Mete o número que está ligado ao teu Express. Ao confirmar, vamos processar e abrir o teu Express já com o valor total.</p></div>
-<div id="infoPag" style="display:none;background:rgba(0,0,0,.25);padding:12px;border-radius:12px;white-space:pre-wrap;font-size:13px"></div><label style="font-size:13px">📎 Comprovativo (foto ou PDF)</label><input type="file" id="inputComp" accept="image/*,.pdf" onchange="lerComprovativo(event)"><div id="prevCompBox"></div><p id="compMsg" style="color:#ff8888;font-size:12px">⚠️ Ainda não subiste o comprovativo</p><button class="btn" onclick="confirmarPedidoExpress()">✅ CONFIRMAR PEDIDO</button><button class="btn" style="background:#333;color:#fff" onclick="recuarParaCarrinho()">← Voltar ao Carrinho</button></div></div>
-
+<div id="boxNumeroExpress" style="display:none;background:#fff3cd;padding:12px;border-radius:12px;margin:8px 0"><label style="font-size:13px;font-weight:800;color:#000">📱 O TEU número Multicaixa Express</label><input id="numeroExpress" placeholder="Ex: 923 000 000" style="margin-top:6px"><p style="font-size:12px;color:#000;margin:4px 0">Mete o número que está ligado ao TEU Express. Não é o número da loja.</p></div>
+<div id="infoPag" style="display:none;background:rgba(0,0,0,.25);padding:12px;border-radius:12px;white-space:pre-wrap;font-size:13px"></div>
+<div id="boxComprovativo" style="display:block"><label style="font-size:13px">📎 Comprovativo (foto ou PDF)</label><input type="file" id="inputComp" accept="image/*,.pdf" onchange="lerComprovativo(event)"><div id="prevCompBox"></div><p id="compMsg" style="color:#ff8888;font-size:12px">⚠️ Ainda não subiste o comprovativo</p></div>
+<button class="btn" onclick="confirmarPedidoExpress()">✅ CONFIRMAR PEDIDO</button><button class="btn" style="background:#333;color:#fff" onclick="recuarParaCarrinho()">← Voltar ao Carrinho</button></div></div>
 <div id="imgModal" class="modal" onclick="fecharImg()"><img id="imgGrande" style="max-width:95%;max-height:90vh;border-radius:12px"></div>
 <div class="barraBaixo"><button class="ativo" onclick="mostrarLoja()"><span>🏠</span>Loja</button><button onclick="verCarrinho()"><span>🛒</span>Carrinho</button><button onclick="abrirMeusPedidos()"><span>📦</span>Meus Pedidos</button><button onclick="abrirLoginCliente()"><span>👤</span>Conta</button></div>
-
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="script.js?v=12"></script>
-<script src="menu.js?v=12"></script>
-
+<script src="script.js?v=13"></script>
+<script src="menu.js?v=13"></script>
 <div id="novoLogin"><div class="card"><h2>Bem-vindo de Volta</h2><p class="sub">Entra para continuar</p><label>E-mail</label><div class="campo"><span>📧</span><input id="loginEmail" type="email" placeholder="Teu e-mail"></div><label>Palavra-passe</label><div class="campo"><span>🔒</span><input id="loginSenha" type="password" placeholder="Tua palavra-passe"><span onclick="var i=document.getElementById('loginSenha'); if(i.type==='password'){i.type='text'; this.innerText='🙈';} else {i.type='password'; this.innerText='👁️';}" style="cursor:pointer;margin-left:8px">👁️</span></div><button class="btnLogin" onclick="entrarNovoLogin()">ENTRAR</button><p class="esqueci" onclick="esqueciSenhaNovoLogin()">Esqueci a senha?</p><div class="criar">Não tens conta? <b onclick="criarContaAdminNovo()">Criar conta</b></div><p id="loginErro" style="color:#ff6b6b;font-size:13px;margin-top:10px"></p></div></div>
-
 <script>
 try{ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL); }catch(e){}
 function linkLimpo(){ return window.location.origin + window.location.pathname; }
@@ -197,7 +190,6 @@ function getLinkAdmin(){ return linkLimpo() + "?admin=1"; }
 function copiarLinkLoja(){ var l=linkLimpo(); if(navigator.clipboard) navigator.clipboard.writeText(l); alert('Link da Loja copiado! ✅ Universal\nCada cliente entra com a sua conta.\n'+l); }
 function copiarLinkAdmin(){ var l=getLinkAdmin(); if(navigator.clipboard) navigator.clipboard.writeText(l); alert('Link ADMIN copiado! 🔐\nAbre direto na tela Admin com e-mail fixo.\nSó falta a palavra-passe.\n'+l); }
 function partilharWhatsAppLoja(){ var l=linkLimpo(); window.open('https://wa.me/?text='+encodeURIComponent('Visita a minha loja EMPIRE: '+l),'_blank'); }
-
 function abrirMenuAdmin(){ document.getElementById('menuAdminLateral').classList.add('aberto'); document.getElementById('overlayMenuAdmin').classList.add('mostrar'); }
 function fecharMenuAdmin(){ document.getElementById('menuAdminLateral').classList.remove('aberto'); document.getElementById('overlayMenuAdmin').classList.remove('mostrar'); }
 function marcarAbaPedidosAlerta(qtd){
@@ -260,41 +252,50 @@ function carregarNotificacoesAdmin(){
   }).catch(function(){ box.innerHTML='<div class="notif-card">Não foi possível carregar. Carrega em ATUALIZAR.</div>'; });
 }
 
-// ===== MULTICAIXA EXPRESS - NOVO FLUXO COMPLETO =====
+// ===== MULTICAIXA EXPRESS - RESOLVIDO - NÃO USA MAIS O mostrarDadosPag ANTIGO =====
 var _timerExpress=null;
 var _segundosExpress=120;
-var _confirmarPedidoOriginal = window.confirmarPedido;
 function mostrarDadosPagExpress(){
   var metodo=document.getElementById('metodoPag').value;
   var box=document.getElementById('boxNumeroExpress');
-  if(box) box.style.display = (metodo==='Multicaixa Express') ? 'block' : 'none';
-  // Chama a função antiga se existir para mostrar dados de pagamento
-  if(typeof mostrarDadosPag==='function' && mostrarDadosPag!==mostrarDadosPagExpress){ try{ mostrarDadosPag(); }catch(e){} }
+  var info=document.getElementById('infoPag');
+  var boxComp=document.getElementById('boxComprovativo');
+  var compMsg=document.getElementById('compMsg');
   if(metodo==='Multicaixa Express'){
-    var info=document.getElementById('infoPag');
-    if(info){ info.style.display='block'; info.innerText='Multicaixa Express\nMete o teu número do Express abaixo.\nAo confirmar, vamos processar e tentar abrir o teu app Express já com o valor total.'; }
+    if(box) box.style.display='block';
+    // NÃO chama o mostrarDadosPag antigo - ele é que apagava a caixa
+    // Usa os dados que estão guardados no Admin, ou o fallback
+    var numLoja=(document.getElementById('cfgExpress') && document.getElementById('cfgExpress').value) || '942788931';
+    var nomeLoja=(document.getElementById('cfgNomeExpress') && document.getElementById('cfgNomeExpress').value) || 'COSME BENTO';
+    if(info){ info.style.display='block'; info.innerText='💳 Vais pagar PARA:\nMulticaixa Express\nNúmero da LOJA: '+numLoja+'\nNome: '+nomeLoja+'\n\nO TEU número metes na caixa amarela acima.'; }
+    if(boxComp) boxComp.style.display='none';
+    if(compMsg) compMsg.innerText='✅ No Express não precisa comprovativo.';
+    var w=document.getElementById('cliWhats');
+    var n=document.getElementById('numeroExpress');
+    if(w && n && w.value && !n.value) n.value=w.value;
+  } else {
+    if(box) box.style.display='none';
+    if(boxComp) boxComp.style.display='block';
+    if(compMsg) compMsg.innerText='⚠️ Ainda não subiste o comprovativo';
+    // Para os outros métodos, chama o antigo normalmente
+    if(typeof mostrarDadosPag==='function' && mostrarDadosPag!==mostrarDadosPagExpress){ try{ mostrarDadosPag(); }catch(e){} }
   }
 }
 function confirmarPedidoExpress(){
   var metodo=document.getElementById('metodoPag').value;
-  // Se NÃO for Express, segue o fluxo normal antigo
+  // Se NÃO for Express, usa o fluxo antigo normal (com comprovativo)
   if(metodo!=='Multicaixa Express'){
-    if(_confirmarPedidoOriginal) return _confirmarPedidoOriginal();
     if(typeof confirmarPedido==='function' && confirmarPedido!==confirmarPedidoExpress) return confirmarPedido();
     return;
   }
-  // É EXPRESS: pede número
   var numeroEl=document.getElementById('numeroExpress');
   var numero=(numeroEl && numeroEl.value.trim()) || (document.getElementById('cliWhats') && document.getElementById('cliWhats').value.trim()) || '';
-  if(!numero || numero.replace(/\D/g,'').length < 9){ alert('Mete o teu número do Multicaixa Express primeiro. Ex: 923 000 000'); if(numeroEl) numeroEl.focus(); return; }
-  // Guarda número para o pedido
-  window._numeroExpressCliente = numero;
+  if(!numero || numero.replace(/\D/g,'').length < 9){ alert('Mete o TEU número do Multicaixa Express primeiro. Ex: 923 000 000'); if(numeroEl) numeroEl.focus(); return; }
+  window._numeroExpressCliente=numero;
+  window._nomeClienteExpress=(document.getElementById('cliNome') && document.getElementById('cliNome').value) || '';
   var totalEl=document.getElementById('cartTotal');
   var totalTxt= totalEl ? totalEl.innerText : '';
-  var totalNum = totalTxt.replace(/\D/g,'') || '0';
-  // Tenta abrir o app Express do cliente
   try{ window.open('multicaixaexpress://', '_blank'); }catch(e){}
-  // Esconde modal de pagamento e mostra PROCESSANDO
   var modal=document.getElementById('pagModal'); if(modal) modal.style.display='none';
   var antigo=document.getElementById('processandoExpress'); if(antigo) antigo.remove();
   var box=document.createElement('div');
@@ -303,8 +304,8 @@ function confirmarPedidoExpress(){
   box.innerHTML='<div style="background:#fff;color:#000;border-radius:16px;padding:24px;max-width:360px;width:100%;text-align:center">'
     + '<h2>⏳ A PROCESSAR...</h2>'
     + '<p>Enviamos o pedido para o teu <b>Multicaixa Express</b></p>'
-    + '<p>Número: <b>'+numero+'</b><br>Valor a pagar: <b>'+totalTxt+'</b></p>'
-    + '<p style="background:#fff3cd;padding:10px;border-radius:10px;text-align:left">1. Abre o teu app <b>Multicaixa Express</b><br>2. Aceita o pagamento de <b>'+totalTxt+'</b> para <b>EMPIRE</b><br>3. Mete o teu PIN e confirma</p>'
+    + '<p>Teu número: <b>'+numero+'</b><br>Valor a pagar: <b>'+totalTxt+'</b></p>'
+    + '<p style="background:#fff3cd;padding:10px;border-radius:10px;text-align:left">1. Abre o teu app <b>Multicaixa Express</b><br>2. Aceita o pagamento de <b>'+totalTxt+'</b> para <b>EMPIRE / COSME BENTO</b><br>3. Mete o teu PIN e confirma</p>'
     + '<h1 id="tempoExpress" style="font-size:48px;color:#ff4444;margin:10px 0">02:00</h1>'
     + '<p>À espera da tua confirmação no Express...</p>'
     + '<button onclick="pagamentoExpressConfirmado()" style="background:#00d26a;color:#fff;border:0;padding:12px;width:100%;border-radius:10px;font-weight:800;cursor:pointer">✅ JÁ PAGUEI NO EXPRESS</button>'
@@ -325,19 +326,39 @@ function pagamentoExpressConfirmado(){
   clearInterval(_timerExpress);
   var box=document.getElementById('processandoExpress'); if(box) box.remove();
   window._pagouExpress=true;
-  window._metodoPagamentoFinal='Multicaixa Express - Pago no Express: '+ (window._numeroExpressCliente||'');
-  // Cria o pedido no Firebase com a função antiga
-  if(_confirmarPedidoOriginal) _confirmarPedidoOriginal();
-  else if(typeof confirmarPedido==='function') { try{ confirmarPedido(); }catch(e){} }
-  setTimeout(function(){ alert('✅ PAGAMENTO FEITO COM SUCESSO!\nO Admin já recebeu o teu pedido e vai confirmar.\nVê em Meus Pedidos.'); }, 800);
+  // CRIA O PEDIDO DIRETO NO FIREBASE - sem passar pelo comprovativo antigo que travava
+  var user=firebase.auth().currentUser;
+  var nome=(document.getElementById('cliNome') && document.getElementById('cliNome').value) || (user && user.email) || 'Cliente';
+  var whats=(document.getElementById('cliWhats') && document.getElementById('cliWhats').value) || '';
+  var emailPag=(document.getElementById('cliEmailPag') && document.getElementById('cliEmailPag').value) || (user && user.email) || '';
+  var resumoEl=document.getElementById('pagResumo');
+  var resumo= resumoEl ? resumoEl.innerText : '';
+  var totalEl=document.getElementById('cartTotal');
+  var totalNum= totalEl ? Number((totalEl.innerText||'0').replace(/\D/g,'')) : 0;
+  var itens='';
+  try{ if(window.carrinho && window.carrinho.length){ itens=window.carrinho.map(function(i){ return (i.nome||i.name||'Produto')+' x'+(i.qtd||i.quantidade||1); }).join(', '); } }catch(e){}
+  if(!itens) itens=resumo || 'Pedido via Multicaixa Express';
+  firebase.firestore().collection('pedidos').add({
+    nome:nome, whats:whats, email:emailPag, metodo:'Multicaixa Express', numeroExpress: window._numeroExpressCliente||'',
+    total: totalNum, itens: itens, resumo: itens,
+    status:'pendente', pagoExpress:true, comprovativo:'Express - sem comprovativo',
+    uid: user ? user.uid : '', criadoEm: firebase.firestore.FieldValue.serverTimestamp(), atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(function(){
+    alert('✅ PAGAMENTO FEITO COM SUCESSO!\nO Admin já recebeu o teu pedido e vai confirmar.\nVê em Meus Pedidos.');
+    try{ if(window.carrinho) window.carrinho=[]; if(typeof atualizarCarrinho==='function') atualizarCarrinho(); if(typeof verCarrinho==='function'){ var cm=document.getElementById('cartModal'); if(cm) cm.style.display='none'; } }catch(e){}
+    var pm=document.getElementById('pagModal'); if(pm) pm.style.display='none';
+    if(user) setTimeout(function(){ abrirMeusPedidos(); }, 600);
+  }).catch(function(e){
+    // Se falhar, tenta o método antigo como backup
+    alert('A criar pedido... se falhar, tenta de novo.');
+    if(typeof confirmarPedido==='function') { try{ confirmarPedido(); }catch(err){} }
+  });
 }
 function cancelarExpress(){
   clearInterval(_timerExpress);
   var box=document.getElementById('processandoExpress'); if(box) box.remove();
   var modal=document.getElementById('pagModal'); if(modal) modal.style.display='flex';
 }
-
-// ===== SOM + ALERTA ADMIN =====
 var _primeiroLoadPedidos=true;
 var _adminListenerOn=false;
 function iniciarListenerAdmin(){
