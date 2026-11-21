@@ -75,7 +75,6 @@
     <p style="margin-top:10px"><b>Link da loja:</b> <span id="linkLojaTexto" style="color:#d4af37;font-size:11px;word-break:break-all"></span></p>
     <button class="btn" onclick="copiarLinkLoja()">🔗 COPIAR LINK DA LOJA</button>
     <button class="btn" style="background:#25D366;color:#000" onclick="partilharWhatsAppLoja()">💬 PARTILHAR NO WHATSAPP</button>
-  
   </div>
 </div>
 
@@ -195,6 +194,7 @@ if(location.search.includes('admin=1')){
     if(typeof mostrarLoginAdmin==='function') mostrarLoginAdmin();
   }, 1200);
 }
+</script>
 <style>
 #novoLogin{position:fixed;inset:0;background:#0f0f0f;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;font-family:sans-serif}
 #novoLogin.mostrar{display:flex}
@@ -211,7 +211,6 @@ if(location.search.includes('admin=1')){
 #novoLogin .criar b{color:#2b6cb0}
 #novoLogin .faixa{position:fixed;left:0;right:0;bottom:0;height:70px;background:#e65a4a}
 </style>
-
 <div id="novoLogin">
   <div class="card">
     <h2>Welcome Back</h2>
@@ -226,7 +225,6 @@ if(location.search.includes('admin=1')){
   </div>
   <div class="faixa"></div>
 </div>
-
 <script>
 function entrarNovoLogin(){
   var email=document.getElementById('loginEmail').value.trim();
@@ -238,9 +236,7 @@ function entrarNovoLogin(){
     location.reload();
   }).catch(function(e){document.getElementById('loginErro').innerText='E-mail ou senha errada';});
 }
-var _oldMostrar = typeof mostrarLoginAdmin==='function' ? mostrarLoginAdmin : null;
 mostrarLoginAdmin=function(){ document.getElementById('novoLogin').classList.add('mostrar'); };
-</script>
 </script>
 </body>
 </html>
