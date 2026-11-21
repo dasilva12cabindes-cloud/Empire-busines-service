@@ -153,10 +153,67 @@
     inpCidade.value=(window.LOJA&&window.LOJA.cidade)||'';
   }
 
-  var _alert=window.alert, _confirm=window.confirm, _prompt=window.prompt, _open=window.open;
-  window.alert=function(t){ return _alert.call(window,trocaNome(t)); };
-  window.confirm=function(t){ return _confirm.call(window,trocaNome(t)); };
+  var _prompt=window.prompt, _open=window.open;
   window.prompt=function(t,d){ return _prompt.call(window,trocaNome(t),d); };
+
+  // ----- Caixas de aviso da própria loja (sem "xxx.github.io diz") -----
+  var cs=document.createElement('style');
+  cs.textContent=
+    '#caixaFundo{position:fixed;inset:0;background:rgba(0,20,28,.75);z-index:1300;display:none;align-items:center;justify-content:center;padding:20px}'+
+    '#caixaBox{background:var(--fundo,#04566b);border:1px solid var(--borda,rgba(255,255,255,.14));border-radius:20px;padding:22px;width:100%;max-width:340px;text-align:center}'+
+    '#caixaMsg{white-space:pre-line;font-size:15px;line-height:1.5;margin-bottom:18px;word-break:break-word}'+
+    '#caixaBtns{display:flex;gap:10px}'+
+    '#caixaBtns button{flex:1;border:0;border-radius:14px;padding:13px;font-weight:700;font-size:14px;cursor:pointer}'+
+    '#caixaOk{background:var(--destaque,#d4af37);color:#000}'+
+    '#caixaNao{background:rgba(0,0,0,.3);color:#fff}'+
+    '#toastLoja{position:fixed;left:50%;bottom:95px;transform:translateX(-50%);background:var(--destaque,#d4af37);color:#000;font-weight:700;padding:12px 20px;border-radius:30px;z-index:1300;max-width:90%;text-align:center;display:none;box-shadow:0 6px 20px rgba(0,0,0,.35)}';
+  document.head.appendChild(cs);
+  var cx=document.createElement('div');
+  cx.id='caixaFundo';
+  cx.innerHTML='<div id="caixaBox"><div id="caixaMsg"></div><div id="caixaBtns"><button id="caixaNao">Cancelar</button><button id="caixaOk">OK</button></div></div>';
+  document.body.appendChild(cx);
+  var toast=document.createElement('div'); toast.id='toastLoja'; document.body.appendChild(toast);
+
+  var fila=[], aberta=false, toastT;
+  function proxima(){
+    if(aberta||!fila.length) return;
+    var it=fila.shift(); aberta=true;
+    document.getElementById('caixaMsg').textContent=trocaNome(it.msg);
+    document.getElementById('caixaNao').style.display=it.conf?'block':'none';
+    document.getElementById('caixaOk').textContent=it.conf?'Sim':'OK';
+    cx.style.display='flex';
+    function fim(r){ cx.style.display='none'; aberta=false; it.res(r); proxima(); }
+    document.getElementById('caixaOk').onclick=function(){ fim(true); };
+    document.getElementById('caixaNao').onclick=function(){ fim(false); };
+  }
+  function caixa(msg,conf){ return new Promise(function(res){ fila.push({msg:String(msg),conf:conf,res:res}); proxima(); }); }
+
+  window.alert=function(t){
+    t=String(t);
+    if(/adicionado!/.test(t)){ // aviso curto do carrinho
+      toast.textContent=trocaNome(t); toast.style.display='block';
+      clearTimeout(toastT); toastT=setTimeout(function(){ toast.style.display='none'; },1800);
+      return;
+    }
+    caixa(t,false);
+  };
+
+  // Funções que perguntam "Tens a certeza?" passam a usar a caixa da loja
+  function comConfirmacao(nome){
+    var orig=window[nome]; if(typeof orig!=='function') return;
+    window[nome]=function(){
+      var args=arguments, self=this, msg=null, real=window.confirm;
+      window.confirm=function(t){ msg=t; return false; };
+      try{ orig.apply(self,args); } finally { window.confirm=real; }
+      if(msg===null) return;
+      caixa(msg,true).then(function(ok){
+        if(!ok) return;
+        window.confirm=function(){ return true; };
+        try{ orig.apply(self,args); } finally { window.confirm=real; }
+      });
+    };
+  }
+  ['sairCliente','logout','diminuirQtd','removerItemCarrinho','recusarPedido','apagarPedido','apagar'].forEach(comConfirmacao);
   window.open=function(url,alvo,feat){
     var w=_open.call(window,trocaNomeUrl(url),alvo,feat);
     if(w && url===''){ // janelas de recibo e relatório: depois de escritas, troca o nome no cabeçalho e no texto
@@ -183,6 +240,39 @@
     if(el) new MutationObserver(ajustaCards).observe(el,{childList:true});
   });
   ajustaCards();
+
+  // ===== Continuar ligado ao atualizar a página =====
+  // Antes, o site só mostrava a conta depois de ler o Firestore; com rede fraca isso falhava
+  // e parecia que a pessoa tinha saído. Agora a conta aparece logo que o Firebase a reconhece.
+  // (Isto só muda o que se vê; quem protege os dados são as Regras do Firestore.)
+  var ADMIN_EMAIL='dasilva12cabindes@gmail.com';
+  function marcaAdmin(){
+    window.isAdmin=true; window.modoAdmin=true;
+    var b=document.getElementById('btnAdminEscondido'); if(b) b.style.display='block';
+  }
+  if(window.auth){
+    window.auth.onAuthStateChanged(function(u){
+      if(!u) return;
+      var email=u.email||'';
+      if(!window.clienteEmail){
+        window.clienteEmail=email;
+        window.clienteNome=window.clienteNome||u.displayName||email.split('@')[0];
+        atualizarHeaderCliente();
+      }
+      var ehAdmin=email.toLowerCase()===ADMIN_EMAIL;
+      if(ehAdmin){ marcaAdmin(); setTimeout(marcaAdmin,3000); }
+      window.db.collection('clientes').doc(u.uid).get().then(function(s){
+        if(s.exists&&s.data().nome){ window.clienteNome=s.data().nome; atualizarHeaderCliente(); }
+        if(ehAdmin) marcaAdmin();
+      }).catch(function(){});
+    });
+  }
+  var adminOriginal=window.btnAdminClick;
+  window.btnAdminClick=function(){
+    var u=window.auth&&window.auth.currentUser;
+    if(u&&(u.email||'').toLowerCase()===ADMIN_EMAIL){ marcaAdmin(); mostrarAdmin(); return; }
+    adminOriginal();
+  };
 
   // ===== Liga ao botão ☰ do topo =====
   var hamb=document.querySelector('.topo .iconBtn');
