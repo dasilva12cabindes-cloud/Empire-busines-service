@@ -203,6 +203,18 @@ body.claro #emailClienteTop{color:#7A746B!important}
 <button class="btn btnConecte" onclick="criarContaCliente()" style="margin-top:14px">Criar conta</button>
 <p style="text-align:center;color:#1A6AE1;cursor:pointer" onclick="mostrarTelaLogin()">← Voltar</p>
 </div>
+<div id="telaSocial" style="display:none">
+<label class="loginLabel" id="socialTitulo">Continue with Google</label>
+<input id="socialEmail" class="loginInput" placeholder="Escreve o teu Gmail">
+<button class="btn btnConecte" onclick="confirmarSocial()" style="margin-top:14px">Entrar</button>
+<p style="text-align:center;color:#1A6AE1;cursor:pointer" onclick="voltarSocial()">← Voltar</p>
+</div>
+<div id="telaRecuperar" style="display:none">
+<label class="loginLabel">Recuperar senha</label>
+<input id="recEmail" class="loginInput" placeholder="Escreve o teu e-mail">
+<button class="btn btnConecte" onclick="confirmarRecuperar()" style="margin-top:14px">Enviar link</button>
+<p style="text-align:center;color:#1A6AE1;cursor:pointer" onclick="voltarSocial()">← Voltar</p>
+</div>
 <p id="msgCliente" style="color:red"></p>
 </div></div>
 <div id="meusPedidosModal" class="modal"><div class="box"><h3>📦 Meus Pedidos <button onclick="fecharMeusPedidos()" style="float:right">X</button></h3><div id="listaMeusPedidos"></div></div></div>
@@ -296,29 +308,40 @@ function irParaAbaAdmin(aba){['prod','ped','cli'].forEach(function(a){var el=$id
 function marcarAdmin(el){document.querySelectorAll('#adminPanel .menuItem').forEach(function(i){i.classList.remove('ativo')});if(el)el.classList.add('ativo')}
 function abrirLoginCliente(){if(clienteEmail){alert('Já estás ligado: '+clienteEmail);return}$id('clienteModal').style.display='flex';mostrarTelaLogin()}
 function fecharLoginCliente(){$id('clienteModal').style.display='none'}
-function mostrarTelaLogin(){$id('telaLogin').style.display='block';$id('telaCriar').style.display='none'}
-function mostrarTelaCriar(){$id('telaLogin').style.display='none';$id('telaCriar').style.display='block'}
+function mostrarTelaLogin(){$id('telaLogin').style.display='block';$id('telaCriar').style.display='none';if($id('telaSocial'))$id('telaSocial').style.display='none';if($id('telaRecuperar'))$id('telaRecuperar').style.display='none';}
+function mostrarTelaCriar(){$id('telaLogin').style.display='none';$id('telaCriar').style.display='block';if($id('telaSocial'))$id('telaSocial').style.display='none';if($id('telaRecuperar'))$id('telaRecuperar').style.display='none';}
 function verSenhaCliente(){var i=$id('cliSenha');if(i)i.type=(i.type==='password'?'text':'password');}
-function esqueceuSenha(){var e=prompt('Esqueceu a senha?\nEscreve o teu e-mail que enviamos o link:');if(e)alert('✅ Se '+e+' existir, enviámos o link de recuperação.');}
+function esqueceuSenha(){$id('telaLogin').style.display='none';$id('telaCriar').style.display='none';if($id('telaSocial'))$id('telaSocial').style.display='none';$id('telaRecuperar').style.display='block';}
+function confirmarRecuperar(){var e=($id('recEmail').value||'').trim();if(e.indexOf('@')<0){alert('Escreve um e-mail válido');return}alert('✅ Se '+e+' existir, enviámos o link de recuperação.');voltarSocial();}
+var _socialTipo='Google';
 function entrarComGoogle(){
-  var e=prompt('Continue with Google\n\nEscreve o teu Gmail:');
-  if(!e)return;
-  e=e.trim();
-  if(e.indexOf('@')<0){alert('Escreve um e-mail válido');return}
-  clienteEmail=e;clienteNome=e.split('@')[0];
-  localStorage.setItem('lc_email',e);localStorage.setItem('lc_nome',clienteNome);
-  fecharLoginCliente();atualizarHeader();
-  alert('✅ Entraste com Google como '+e);
+  _socialTipo='Google';
+  $id('socialTitulo').innerText='Continue with Google';
+  $id('socialEmail').placeholder='Escreve o teu Gmail';
+  $id('socialEmail').value='';
+  $id('telaLogin').style.display='none';$id('telaCriar').style.display='none';if($id('telaRecuperar'))$id('telaRecuperar').style.display='none';
+  $id('telaSocial').style.display='block';
 }
 function entrarComMeta(){
-  var e=prompt('Continue with Meta\n\nEscreve o teu e-mail do Facebook / Instagram:');
-  if(!e)return;
-  e=e.trim();
+  _socialTipo='Meta';
+  $id('socialTitulo').innerText='Continue with Meta';
+  $id('socialEmail').placeholder='E-mail do Facebook / Instagram';
+  $id('socialEmail').value='';
+  $id('telaLogin').style.display='none';$id('telaCriar').style.display='none';if($id('telaRecuperar'))$id('telaRecuperar').style.display='none';
+  $id('telaSocial').style.display='block';
+}
+function voltarSocial(){
+  if($id('telaSocial'))$id('telaSocial').style.display='none';
+  if($id('telaRecuperar'))$id('telaRecuperar').style.display='none';
+  $id('telaLogin').style.display='block';
+}
+function confirmarSocial(){
+  var e=($id('socialEmail').value||'').trim();
   if(e.indexOf('@')<0){alert('Escreve um e-mail válido');return}
   clienteEmail=e;clienteNome=e.split('@')[0];
   localStorage.setItem('lc_email',e);localStorage.setItem('lc_nome',clienteNome);
   fecharLoginCliente();atualizarHeader();
-  alert('✅ Entraste com Meta como '+e);
+  alert('✅ Entraste com '+_socialTipo+' como '+e);
 }
 function entrarCliente(){
   var email=($id('cliEmail').value||'').trim(), s=$id('cliSenha').value||'';
