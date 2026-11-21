@@ -27,7 +27,7 @@ function setTexto(id,txt){ var e=document.getElementById(id); if(e) e.innerText=
 function dataDeHoje(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function dataOntem(){ var d=new Date(); d.setDate(d.getDate()-1); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function horaDe(ts){ if(!ts) return ''; var d=new Date(ts); return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
-function saudacaoPorHora(){ var h=new Date().getHours(); if(h>=5&&h<12) return "Bom dia,"; if(h>=12&&h<18) return "Boa tarde,"; return "Boa noite,"; }
+function saudacaoPorHora(){ var h=new Date().getHours(); if(h>=00&&h<12) return "Bom dia,"; if(h>=12&&h<18) return "Boa tarde,"; return "Boa noite,"; }
 function verSenha(id,btn){ var i=document.getElementById(id); if(!i) return; if(i.type==="password"){ i.type="text"; if(btn) btn.innerText="🙈"; } else { i.type="password"; if(btn) btn.innerText="👁️"; } }
 function verImg(src){ var m=document.getElementById('imgModal'); var im=document.getElementById('imgGrande'); im.src=src; m.style.display='flex'; }
 function fecharImg(){ document.getElementById('imgModal').style.display='none'; }
