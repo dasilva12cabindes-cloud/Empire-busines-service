@@ -107,3 +107,4 @@ function mostrarProcessamento(){
     setTimeout(function(){ m.style.display='none'; confirmarPedidoExpress(); }, 1100);
   }, 2900);
 }
+#telaCarregamento{pointer-events:none}
