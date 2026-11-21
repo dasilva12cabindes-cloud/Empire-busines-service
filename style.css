@@ -124,3 +124,12 @@ input[type=checkbox]{width:auto}
 #areaClienteHeader{color:#fff}
 .btnEscuro{background:#333!important;color:#fff!important}
 .comp{opacity:1!important;background:#fff;padding:6px}
+/* CORRECAO CONTRASTE v7 */
+.small{color:#ffffff!important;font-weight:600}
+.itemInfo span{color:#ffffff!important;font-weight:600}
+.pedidoCard,.pedidoCard p,.pedidoCard .small{color:#ffffff!important}
+.pedidoCard b{color:#ffffff!important}
+.card p{color:#ffffff!important}
+.itemPedido b{color:#fff!important}
+.itemPedido{color:#fff!important}
+.comp{opacity:1!important;background:#fff!important;padding:6px}
