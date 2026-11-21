@@ -31,6 +31,25 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd
 .btn{width:100%;background:#d4af37;border:0;padding:14px;border-radius:12px;font-weight:800;margin:6px 0;cursor:pointer}
 #telaDetalhe{display:none;position:fixed;inset:0;background:#0a2a33;z-index:9999;overflow-y:auto}
 #telaCarregamento{position:fixed;inset:0;background:#0a2a33;z-index:99999;display:flex;align-items:center;justify-content:center}
+/* ESTILO DA FOTO - MENU + ADMIN */
+#menuNovo,#adminPanel{background:#0b1220!important;color:#fff!important}
+#menuNovo{position:fixed;top:0;left:0;width:300px;max-width:85%;height:100%;z-index:100001;padding:16px;overflow-y:auto;display:none}
+#adminPanel{padding:16px!important;min-height:100vh;display:none}
+.menuTop{display:flex;align-items:center;gap:10px;padding:6px 6px 14px}
+.menuLogo{width:44px;height:44px;border-radius:50%;background:#d4af37;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#000;flex-shrink:0}
+.menuFecha{margin-left:auto;background:rgba(255,255,255,.1);border:0;color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer}
+.menuSec{font-size:11px;letter-spacing:1px;color:#8a94a6;font-weight:800;margin:18px 6px 8px}
+.menuItem{display:flex;align-items:center;gap:12px;background:#1a2233;padding:12px;border-radius:14px;margin-bottom:10px;cursor:pointer;border:1px solid rgba(255,255,255,.05)}
+.menuItem.ativo{border:1px solid rgba(212,175,55,.5)}
+.menuIco{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.menuItem b{font-size:14px;color:#fff;display:block}
+.menuItem span{font-size:12px;color:#9aa5b8}
+.menuBadge{margin-left:auto;font-size:10px;font-weight:800;padding:4px 8px;border-radius:20px;white-space:nowrap}
+.menuSeta{margin-left:auto;color:#6b7688}
+.menuFoot{text-align:center;font-size:11px;color:#6b7688;margin-top:18px}
+.boxAdmin{background:#1a2233;border-radius:14px;padding:14px;margin-top:10px}
+.boxAdmin h3{color:#fff!important}
+.boxAdmin input,.boxAdmin select{background:#0b1220!important;color:#fff!important;border:1px solid rgba(255,255,255,.15)!important}
 </style>
 </head>
 <body>
@@ -69,31 +88,41 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd
 <button class="btn" onclick="login()">ENTRAR</button>
 <button class="btn" onclick="mostrarLoja()" style="background:#eee">← Voltar</button>
 </div>
-<div id="adminPanel" style="display:none;padding:15px;background:#fff;color:#111;min-height:100vh">
-<h2>⚙️ Painel Admin</h2>
-<p id="adminEmailTxt"></p>
-<button class="btn" onclick="irParaAbaAdmin('prod')">📦 Produtos</button>
-<button class="btn" onclick="irParaAbaAdmin('ped')">🧾 Pedidos (<span id="pedCount">0</span>)</button>
-<button class="btn" onclick="irParaAbaAdmin('cli')">👥 Clientes (<span id="cliCount">0</span>)</button>
-<div id="abaProd">
-<h3>Adicionar Produto</h3>
-<input id="nome" placeholder="Nome">
-<input id="preco" type="number" placeholder="Preço em Kz">
-<input id="desc" placeholder="Descrição">
-<select id="categoria"><option value="perfume">Perfume</option><option value="tenis">Ténis</option><option value="roupa">Roupa</option><option value="relogio">Relógio</option><option value="acessorio">Acessório</option></select>
-<input id="prodCores" placeholder="Cores - ex: Preto, Branco">
-<input id="prodTamanhos" placeholder="Tamanhos - ex: S, M, L">
-<input id="estoque" type="number" placeholder="Stock">
-<label><input type="checkbox" id="chkDestaque" style="width:auto"> ⭐ Destaque</label>
-<input type="file" accept="image/*" onchange="lerFotos(event)">
-<div id="previewFotos"></div>
-<button class="btn" onclick="salvarProduto()">+ ADICIONAR</button>
-<div id="produtosAdmin"></div>
-</div>
-<div id="abaPed" style="display:none"><h3>🧾 Pedidos</h3><div id="listaPedidos"></div></div>
-<div id="abaCli" style="display:none"><h3>👥 Clientes</h3><div id="listaClientes"></div></div>
-<button class="btn" onclick="mostrarLoja()" style="background:#eee">← Voltar</button>
-<button class="btn" onclick="logout()" style="background:#ff4444;color:#fff">🚪 SAIR</button>
+<!-- ADMIN NO ESTILO DA FOTO -->
+<div id="adminPanel">
+  <div class="menuTop"><div class="menuLogo">L</div><div><b style="font-size:16px">LISSANTE</b><br><span style="font-size:11px;letter-spacing:2px;color:#8a94a6">ADMIN • PAINEL</span></div><button class="menuFecha" onclick="mostrarLoja()">✕</button></div>
+  <p id="adminEmailTxt" style="font-size:12px;color:#9aa5b8;padding:0 6px"></p>
+  <div class="menuItem ativo" onclick="irParaAbaAdmin('prod');marcarAdmin(this)"><div class="menuIco" style="background:#ff5a5a">📦</div><div style="flex:1"><b>Produtos</b><span>Adicionar, ver e apagar</span></div><span class="menuBadge" style="background:#ff5a5a;color:#fff">Ativo</span></div>
+  <div class="menuItem" onclick="irParaAbaAdmin('ped');marcarAdmin(this)"><div class="menuIco" style="background:#2a3448">🧾</div><div style="flex:1"><b>Pedidos</b><span>Confirmar pedidos dos clientes</span></div><span class="menuBadge" style="background:#ff5a5a;color:#fff"><span id="pedCount">0</span> novos</span></div>
+  <div class="menuItem" onclick="irParaAbaAdmin('cli');marcarAdmin(this)"><div class="menuIco" style="background:#2a3448">👥</div><div style="flex:1"><b>Clientes</b><span>Quem comprou na tua loja</span></div><span class="menuBadge" style="background:#2a3448;color:#fff"><span id="cliCount">0</span> clientes</span></div>
+  <div class="menuSec">RECURSOS & ATENDIMENTO</div>
+  <div class="menuItem" onclick="abrirAssistenteIAAdmin()"><div class="menuIco" style="background:#ff5a5a">✨</div><div style="flex:1"><b>Assistente IA da Loja</b><span>Ideias de preços e descrições</span></div><span class="menuBadge" style="background:#3a2a00;color:#ffcc00;border:1px solid #ffcc00">SMART</span></div>
+  <div class="menuItem" onclick="abrirRelatorioAdmin()"><div class="menuIco" style="background:#3a2a00;border:1px solid #d4af37">📊</div><div style="flex:1"><b style="color:#ffcc00">Relatório de Vendas</b><span>Total vendido e mais vendidos</span></div><span class="menuBadge" style="background:#3a2a00;color:#ffcc00;border:1px solid #ffcc00">MODA</span></div>
+  <div class="menuItem" onclick="partilharLojaMenu()"><div class="menuIco" style="background:#3a2a00;border:1px solid #d4af37">🔗</div><div style="flex:1"><b>Partilhar Loja</b><span>WhatsApp, Facebook ou copiar link</span></div><span class="menuSeta">›</span></div>
+  <div class="menuItem" onclick="ativarAlertas()"><div class="menuIco" style="background:#3a2a00;border:1px solid #d4af37">🔔</div><div style="flex:1"><b>Alertas no Telemóvel</b><span>Aviso quando chegar pedido novo</span></div><span class="menuBadge" style="background:#3a2a00;color:#ff9aa0;border:1px solid #ff9aa0">PUSH</span></div>
+  <div class="menuSec">APARÊNCIA & ACESSO</div>
+  <div class="menuItem" onclick="adicionarEcrãPrincipal()"><div class="menuIco" style="background:#0f3d2e;border:1px solid #00d26a">📱</div><div style="flex:1"><b style="color:#00e676">Adicionar ao Ecrã Principal</b><span>Atalho com logótipo oficial</span></div><span class="menuBadge" style="background:#0f3d2e;color:#00e676;border:1px solid #00e676">APP</span></div>
+  <div class="menuItem" onclick="trocarTema()"><div class="menuIco" style="background:#3a2a00;border:1px solid #d4af37">☀️</div><div style="flex:1"><b>Tema Claro (Modo Branco)</b><span>Mudar para interface clara</span></div><span class="menuBadge" style="background:#3a2a00;color:#ffcc00;border:1px solid #ffcc00">☀️ Claro</span></div>
+  <div id="abaProd" class="boxAdmin">
+    <h3>Adicionar Produto</h3>
+    <input id="nome" placeholder="Nome">
+    <input id="preco" type="number" placeholder="Preço em Kz">
+    <input id="desc" placeholder="Descrição">
+    <select id="categoria"><option value="perfume">Perfume</option><option value="tenis">Ténis</option><option value="roupa">Roupa</option><option value="relogio">Relógio</option><option value="acessorio">Acessório</option></select>
+    <input id="prodCores" placeholder="Cores - ex: Preto, Branco">
+    <input id="prodTamanhos" placeholder="Tamanhos - ex: S, M, L">
+    <input id="estoque" type="number" placeholder="Stock">
+    <label style="color:#fff"><input type="checkbox" id="chkDestaque" style="width:auto"> ⭐ Destaque</label>
+    <input type="file" accept="image/*" onchange="lerFotos(event)">
+    <div id="previewFotos"></div>
+    <button class="btn" onclick="salvarProduto()">+ ADICIONAR</button>
+    <div id="produtosAdmin"></div>
+  </div>
+  <div id="abaPed" class="boxAdmin" style="display:none"><h3>🧾 Pedidos</h3><div id="listaPedidos"></div></div>
+  <div id="abaCli" class="boxAdmin" style="display:none"><h3>👥 Clientes</h3><div id="listaClientes"></div></div>
+  <div class="menuItem" onclick="mostrarLoja()" style="background:#d4af37"><div class="menuIco" style="background:#000">🏠</div><div style="flex:1"><b style="color:#000">Ver Loja</b><span style="color:#333">Voltar como cliente</span></div><span class="menuSeta" style="color:#000">›</span></div>
+  <div class="menuItem" onclick="logout()" style="background:#3a0d0d;border:1px solid #ff4444"><div class="menuIco" style="background:#ff4444">🚪</div><div style="flex:1"><b>Sair do Admin</b><span>Terminar sessão</span></div><span class="menuSeta">›</span></div>
+  <div class="menuFoot">LISSANTE • Plataforma SaaS Angola</div>
 </div>
 <div id="clienteModal" class="modal"><div class="box">
 <h3>Entrar <button onclick="fecharLoginCliente()" style="float:right;border:0;background:none;font-size:20px">✕</button></h3>
@@ -150,13 +179,23 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd
 <button class="btn" onclick="detComprarAgora()" style="background:#25D366;color:#fff">💳 COMPRAR AGORA</button>
 </div>
 </div>
-<div id="menuSimples" style="display:none;position:fixed;top:0;left:0;width:260px;height:100%;background:#0a2a33;z-index:100001;padding:20px">
-<h3>☰ Menu</h3>
-<button class="btn" onclick="fecharMenu();mostrarLoja()">🏠 Loja</button>
-<button class="btn" onclick="fecharMenu();verCarrinho()">🛒 Carrinho</button>
-<button class="btn" onclick="fecharMenu();abrirMeusPedidos()">📦 Meus Pedidos</button>
-<button class="btn" onclick="fecharMenu();abrirLoginAdmin()">⚙️ Admin</button>
-<button class="btn" onclick="fecharMenu()" style="background:#333;color:#fff">← Fechar</button>
+<!-- MENU CLIENTE NO MESMO ESTILO DA FOTO -->
+<div id="menuNovo">
+  <div class="menuTop"><div class="menuLogo">L</div><div><b style="font-size:16px">LISSANTE</b><br><span style="font-size:11px;letter-spacing:2px;color:#8a94a6">FASHION</span></div><button class="menuFecha" onclick="fecharMenu()">✕</button></div>
+  <div class="menuItem ativo" onclick="fecharMenu();mostrarLoja()"><div class="menuIco" style="background:#ff5a5a">🏠</div><div style="flex:1"><b>Início</b><span>Página principal e destaques</span></div><span class="menuBadge" style="background:#ff5a5a;color:#fff">Ativo</span></div>
+  <div class="menuItem" onclick="fecharMenu();mostrarLoja();setFiltro('todos')"><div class="menuIco" style="background:#2a3448">⊞</div><div style="flex:1"><b>Catálogo Completo</b><span>Todos os artigos e filtros</span></div><span class="menuSeta">›</span></div>
+  <div class="menuItem" onclick="fecharMenu();abrirMeusPedidos()"><div class="menuIco" style="background:#2a3448">📦</div><div style="flex:1"><b>Meus Pedidos</b><span>Acompanhar os teus pedidos</span></div><span class="menuSeta">›</span></div>
+  <div class="menuItem" onclick="fecharMenu();abrirSobreLoja()"><div class="menuIco" style="background:#2a3448">ⓘ</div><div style="flex:1"><b>Sobre a Loja</b><span>História, endereço e contactos</span></div><span class="menuSeta">›</span></div>
+  <div class="menuSec">RECURSOS & ATENDIMENTO</div>
+  <div class="menuItem" onclick="fecharMenu();abrirAssistenteIA()"><div class="menuIco" style="background:#ff5a5a">✨</div><div style="flex:1"><b>Assistente IA da Loja</b><span>Dúvidas e recomendações</span></div><span class="menuBadge" style="background:#3a2a00;color:#ffcc00;border:1px solid #ffcc00">SMART</span></div>
+  <div class="menuItem" onclick="fecharMenu();abrirLookEstilista()"><div class="menuIco" style="background:#3a2a00;border:1px solid #d4af37">👕</div><div style="flex:1"><b style="color:#ffcc00">Modo Look & Estilista</b><span>Combine peças para o look perfeito</span></div><span class="menuBadge" style="background:#3a2a00;color:#ffcc00;border:1px solid #ffcc00">MODA</span></div>
+  <div class="menuItem" onclick="fecharMenu();partilharLojaMenu()"><div class="menuIco" style="background:#3a2a00;border:1px solid #d4af37">🔗</div><div style="flex:1"><b>Partilhar Loja</b><span>WhatsApp, Facebook ou copiar link</span></div><span class="menuSeta">›</span></div>
+  <div class="menuItem" onclick="fecharMenu();ativarAlertas()"><div class="menuIco" style="background:#3a2a00;border:1px solid #d4af37">🔔</div><div style="flex:1"><b>Alertas no Telemóvel</b><span>Avisos de lançamentos e pedidos</span></div><span class="menuBadge" style="background:#3a2a00;color:#ff9aa0;border:1px solid #ff9aa0">PUSH</span></div>
+  <div class="menuSec">APARÊNCIA & ACESSO</div>
+  <div class="menuItem" onclick="fecharMenu();adicionarEcrãPrincipal()"><div class="menuIco" style="background:#0f3d2e;border:1px solid #00d26a">📱</div><div style="flex:1"><b style="color:#00e676">Adicionar ao Ecrã Principal</b><span>Atalho com logótipo oficial</span></div><span class="menuBadge" style="background:#0f3d2e;color:#00e676;border:1px solid #00e676">APP</span></div>
+  <div class="menuItem" onclick="fecharMenu();trocarTema()"><div class="menuIco" style="background:#3a2a00;border:1px solid #d4af37">☀️</div><div style="flex:1"><b>Tema Claro (Modo Branco)</b><span>Interface clara e luminosa</span></div><span class="menuBadge" style="background:#3a2a00;color:#ffcc00;border:1px solid #ffcc00">☀️ Claro</span></div>
+  <div class="menuItem" onclick="fecharMenu();abrirLoginAdmin()" style="background:#d4af37"><div class="menuIco" style="background:#000">⚙️</div><div style="flex:1"><b style="color:#000">Área Admin</b><span style="color:#333">Só o dono da loja</span></div><span class="menuSeta" style="color:#000">›</span></div>
+  <div class="menuFoot">LISSANTE • Plataforma SaaS Angola</div>
 </div>
 <div id="overlaySimples" onclick="fecharMenu()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100000"></div>
 <div id="procModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999999;align-items:center;justify-content:center">
@@ -187,8 +226,8 @@ function $id(i){return document.getElementById(i)}
 function temFirebase(){ return (typeof firebase!=="undefined" && firebase.apps && firebase.apps.length>0); }
 function esconderTudo(){['areaLoja','loginBox','adminPanel'].forEach(function(i){var e=$id(i);if(e)e.style.display='none'});['clienteModal','meusPedidosModal','cartModal','pagModal','telaDetalhe'].forEach(function(i){var e=$id(i);if(e)e.style.display='none'});fecharMenu();}
 function mostrarLoja(){esconderTudo();$id('areaLoja').style.display='block';document.body.style.overflow='';window.scrollTo(0,0)}
-function abrirMenu(){$id('menuSimples').style.display='block';$id('overlaySimples').style.display='block'}
-function fecharMenu(){var a=$id('menuSimples');if(a)a.style.display='none';var b=$id('overlaySimples');if(b)b.style.display='none'}
+function abrirMenu(){var m=$id('menuNovo');if(m)m.style.display='block';var o=$id('overlaySimples');if(o)o.style.display='block'}
+function fecharMenu(){var m=$id('menuNovo');if(m)m.style.display='none';var s=$id('menuSimples');if(s)s.style.display='none';var o=$id('overlaySimples');if(o)o.style.display='none'}
 function abrirLoginAdmin(){esconderTudo();$id('loginBox').style.display='block'}
 function login(){
   var email=($id('email').value||'').trim().toLowerCase(), pass=$id('pass').value||'';
@@ -201,9 +240,10 @@ function login(){
   } else if(email==='dasilva12cabindes@gmail.com') mostrarAdmin(email);
   else $id('loginMsg').innerText='Só o dono entra';
 }
-function mostrarAdmin(email){esconderTudo();$id('adminPanel').style.display='block';$id('adminEmailTxt').innerText=email;renderProdutosAdmin();carregarPedidosAdmin()}
+function mostrarAdmin(email){esconderTudo();$id('adminPanel').style.display='block';$id('adminEmailTxt').innerText=email;renderProdutosAdmin();carregarPedidosAdmin();renderClientesAdmin()}
 function logout(){try{if(temFirebase())firebase.auth().signOut()}catch(e){}localStorage.removeItem('lc_email');clienteEmail='';mostrarLoja()}
 function irParaAbaAdmin(aba){['prod','ped','cli'].forEach(function(a){var el=$id('aba'+a.charAt(0).toUpperCase()+a.slice(1));if(el)el.style.display=(a===aba)?'block':'none'});if(aba==='ped')carregarPedidosAdmin();if(aba==='prod')renderProdutosAdmin();if(aba==='cli')renderClientesAdmin()}
+function marcarAdmin(el){document.querySelectorAll('#adminPanel .menuItem').forEach(function(i){i.classList.remove('ativo')});if(el)el.classList.add('ativo')}
 function abrirLoginCliente(){if(clienteEmail){alert('Já estás ligado: '+clienteEmail);return}$id('clienteModal').style.display='flex';mostrarTelaLogin()}
 function fecharLoginCliente(){$id('clienteModal').style.display='none'}
 function mostrarTelaLogin(){$id('telaLogin').style.display='block';$id('telaCriar').style.display='none'}
@@ -316,7 +356,7 @@ function salvarProduto(){
 }
 function limparForm(){['nome','preco','desc','prodCores','prodTamanhos','estoque'].forEach(function(i){$id(i).value=''});$id('chkDestaque').checked=false;_fotosTemp=[];$id('previewFotos').innerHTML=''}
 function renderProdutosAdmin(){
-  $id('produtosAdmin').innerHTML=todosProdutos.map(function(o){return '<div style="background:#f5f5f5;padding:10px;margin:6px;border-radius:10px"><b>'+o.data.nome+'</b> - '+Number(o.data.preco||0)+' Kz <button onclick="apagarProduto(\''+o.id+'\')">🗑️</button></div>'}).join('')||'<p>Sem produtos</p>';
+  $id('produtosAdmin').innerHTML=todosProdutos.map(function(o){return '<div style="background:#0b1220;padding:10px;margin:6px;border-radius:10px;border:1px solid rgba(255,255,255,.1);color:#fff"><b>'+o.data.nome+'</b> - '+Number(o.data.preco||0)+' Kz <button onclick="apagarProduto(\''+o.id+'\')">🗑️</button></div>'}).join('')||'<p>Sem produtos</p>';
 }
 function apagarProduto(id){
   if(!confirm('Apagar?'))return;
@@ -326,7 +366,7 @@ function apagarProduto(id){
 function carregarPedidosAdmin(){
   var ped=JSON.parse(localStorage.getItem('lc_pedidos')||'[]');
   $id('pedCount').innerText=ped.length;
-  $id('listaPedidos').innerHTML=ped.length?ped.map(function(p,i){return '<div style="background:#f5f5f5;padding:10px;margin:6px;border-radius:10px"><b>#'+p.id+'</b> '+p.nome+' - '+p.total+' Kz<br>'+p.itens+'<br>'+p.status+' <button onclick="confirmarPedidoAdmin('+i+')">✅ CONFIRMAR</button></div>'}).join(''):'<p>Sem pedidos</p>';
+  $id('listaPedidos').innerHTML=ped.length?ped.map(function(p,i){return '<div style="background:#0b1220;padding:10px;margin:6px;border-radius:10px;color:#fff"><b>#'+p.id+'</b> '+p.nome+' - '+p.total+' Kz<br>'+p.itens+'<br>'+p.status+' <button onclick="confirmarPedidoAdmin('+i+')">✅ CONFIRMAR</button></div>'}).join(''):'<p>Sem pedidos</p>';
 }
 function confirmarPedidoAdmin(i){var t=JSON.parse(localStorage.getItem('lc_pedidos')||'[]');t[i].status='confirmado';localStorage.setItem('lc_pedidos',JSON.stringify(t));carregarPedidosAdmin();alert('✅ Confirmado!')}
 function renderClientesAdmin(){
@@ -334,11 +374,62 @@ function renderClientesAdmin(){
   ped.forEach(function(p){em[p.email]=(em[p.email]||0)+1});
   if(clienteEmail)em[clienteEmail]=em[clienteEmail]||0;
   var lista=Object.keys(em);$id('cliCount').innerText=lista.length;
-  $id('listaClientes').innerHTML=lista.length?lista.map(function(e){return '<div style="background:#f5f5f5;padding:10px;margin:6px;border-radius:10px">'+e+' - '+em[e]+' pedido(s)</div>'}).join(''):'<p>Sem clientes</p>';
+  $id('listaClientes').innerHTML=lista.length?lista.map(function(e){return '<div style="background:#0b1220;padding:10px;margin:6px;border-radius:10px;color:#fff">'+e+' - '+em[e]+' pedido(s)</div>'}).join(''):'<p>Sem clientes</p>';
 }
 function escolherEntrega(t){$id('btnRecolha').style.background=t==='recolha'?'#d4af37':'';$id('btnEntrega').style.background=t==='entrega'?'#d4af37':''}
 function lerComprovativo(e){$id('compMsg').innerText='✅ Comprovativo carregado';$id('compMsg').style.color='green'}
 function abrirWhatsAppLoja(){window.open('https://wa.me/244900000000?text='+encodeURIComponent('Olá LISSANTE! Quero saber mais.'),'_blank')}
+function abrirSobreLoja(){alert('LISSANTE FASHION\n\nLoja oficial em Luanda.\nPerfumes, Ténis, Roupas, Relógios e Acessórios.\nEntrega rápida em todo Luanda.')}
+function abrirAssistenteIA(){
+  var p=prompt('🤖 Assistente LISSANTE\nO que procuras hoje?\nEx: perfume barato, ténis branco');
+  if(!p)return;var q=p.toLowerCase();
+  if(q.indexOf('perfume')>-1)setFiltro('perfume');
+  else if(q.indexOf('tenis')>-1||q.indexOf('ténis')>-1)setFiltro('tenis');
+  else if(q.indexOf('roupa')>-1)setFiltro('roupa');
+  else if(q.indexOf('relogio')>-1||q.indexOf('relógio')>-1)setFiltro('relogio');
+  else setFiltro('todos');
+  mostrarLoja();alert('🤖 Mostrei os melhores para: '+p);
+}
+function abrirAssistenteIAAdmin(){
+  var p=prompt('🤖 Assistente Admin\n1 - Ideia de preço\n2 - Ideia de descrição\n3 - Qual produto vende mais?');
+  if(p==='1')alert('💡 Perfume 12.000-18.000 Kz vende mais. Ténis 30.000-40.000 Kz.');
+  else if(p==='2')alert('✍️ Descrição boa: nome + benefício + material + para quem é.');
+  else if(p==='3'){var t=todosProdutos[0];alert(t?'🏆 Destaque: '+t.data.nome:'Ainda não tens produtos.');}
+}
+function abrirRelatorioAdmin(){
+  var ped=JSON.parse(localStorage.getItem('lc_pedidos')||'[]');
+  var total=ped.reduce(function(a,x){return a+Number(x.total||0)},0);
+  alert('📊 RELATÓRIO LISSANTE\n\nPedidos: '+ped.length+'\nTotal vendido: '+total.toLocaleString('pt-AO')+' Kz');
+  irParaAbaAdmin('ped');
+}
+function abrirLookEstilista(){
+  var c=prompt('👕 MODO LOOK & ESTILISTA\n1 - Casual\n2 - Festa\n3 - Trabalho');
+  if(c==='1'){setFiltro('tenis');alert('👕 Look Casual: Ténis + Roupa leve')}
+  else if(c==='2'){setFiltro('perfume');alert('✨ Look Festa: Perfume + Relógio')}
+  else if(c==='3'){setFiltro('roupa');alert('💼 Look Trabalho: Roupa + Relógio')}
+  else return;
+  mostrarLoja();
+}
+function partilharLojaMenu(){
+  var l=location.origin+location.pathname;
+  if(navigator.share){navigator.share({title:'LISSANTE',text:'Visita a loja LISSANTE',url:l})}
+  else if(navigator.clipboard){navigator.clipboard.writeText(l);alert('Link copiado: '+l)}
+  else window.open('https://wa.me/?text='+encodeURIComponent('Visita a LISSANTE: '+l),'_blank');
+}
+function ativarAlertas(){
+  if('Notification' in window){
+    Notification.requestPermission().then(function(p){if(p==='granted'){alert('✅ Alertas ativados!');try{new Notification('LISSANTE',{body:'Alertas ativados!'})}catch(e){}}else alert('Alertas não ativados.')});
+  }else alert('Ativa no WhatsApp da loja.');
+}
+function adicionarEcrãPrincipal(){alert('📱 Android: Menu Chrome > Adicionar ao ecrã principal\n\niPhone: Partilhar > Adicionar ao Ecrã Principal')}
+var _temaClaro=false;
+function trocarTema(){
+  _temaClaro=!_temaClaro;
+  document.body.style.background=_temaClaro?'#f5f5f5':'#0a2a33';
+  document.body.style.color=_temaClaro?'#111':'#fff';
+  document.querySelectorAll('.secao').forEach(function(s){s.style.background=_temaClaro?'#fff':'#14383d';s.style.color=_temaClaro?'#111':'#fff'});
+  alert(_temaClaro?'☀️ Tema Claro ativado':'🌙 Tema Escuro ativado');
+}
 function corParaHex(c){var m={preto:'#111',branco:'#fff',azul:'#0a7cff',vermelho:'#ff4444',verde:'#00d26a',amarelo:'#ffcc00',rosa:'#ff8fab',cinza:'#888',bege:'#f5e6c8',laranja:'#ff7a00',roxo:'#8b5cf6'};return m[(c||'').toLowerCase()]||'#ddd'}
 var _det=null,_detCor='',_detTam='',_detQtd=1;
 function abrirDetalheProduto(id){
