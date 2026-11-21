@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=18">
+<link rel="stylesheet" href="style.css?v=19">
 <style>
 #novoLogin{position:fixed;inset:0;background:#0f0f0f;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;font-family:sans-serif}
 #novoLogin.mostrar{display:flex}
@@ -167,7 +167,7 @@
   <div id="abaCli" style="display:none"><h3>👥 Clientes</h3><div id="listaClientes"></div></div>
   <button class="btn" style="background:#333;color:#fff" onclick="mostrarLoja()">← Voltar para Loja</button>
 </div>
-<div id="clienteModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>👤 Conta EMPIRE</h3><button onclick="fecharLoginCliente()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px;cursor:pointer">X</button></div><div style="display:flex;gap:8px;margin:12px 0"><button id="btnTabEntrar" class="btn" style="flex:1" onclick="mostrarTelaLogin()">Entrar</button><button id="btnTabCriar" class="btn" style="flex:1;background:rgba(0,0,0,.3);color:#fff;border:1px solid rgba(255,255,255,.14)" onclick="mostrarTelaCriar()">Criar Conta</button></div><div id="telaLogin"><input id="cliEmail" placeholder="E-mail"><div style="position:relative"><input id="cliSenha" type="password" placeholder="Senha"><button onclick="verSenha('cliSenha',this)" style="position:absolute;right:10px;top:14px;background:none;border:0">👁️</button></div><button class="btn" onclick="entrarCliente()">ENTRAR</button><p style="text-align:center;color:#d4af37;cursor:pointer;margin-top:8px" onclick="esqueceuSenha()">Esqueceu a senha?</p></div><div id="telaCriar" style="display:none"><input id="cliNomeConta" placeholder="Teu nome"><input id="cliEmailCriar" placeholder="E-mail"><input id="cliWhatsConta" placeholder="WhatsApp - 9xx xxx xxx"><input id="cliSenhaCriar" type="password" placeholder="Cria senha (mín 6)"><input id="cliSenhaConfirmar" type="password" placeholder="Repete a senha"><button class="btn" onclick="criarContaCliente()">CRIAR CONTA</button></div><div id="telaEsqueceu" style="display:none"><input id="cliEmailEsqueceu" placeholder="Teu e-mail"><button class="btn" onclick="enviarRecuperacao()">ENVIAR LINK</button><p style="text-align:center;color:#d4af37;cursor:pointer;margin-top:8px" onclick="mostrarTelaLogin()">← Voltar</p></div><p id="msgCliente" style="color:#ffb3b3;font-size:13px;margin-top:8px"></p></div></div>
+<div id="clienteModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>👤 Conta <span class="nomeLojaTxt">EMPIRE</span></h3><button onclick="fecharLoginCliente()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px;cursor:pointer">X</button></div><div style="display:flex;gap:8px;margin:12px 0"><button id="btnTabEntrar" class="btn" style="flex:1" onclick="mostrarTelaLogin()">Entrar</button><button id="btnTabCriar" class="btn" style="flex:1;background:rgba(0,0,0,.3);color:#fff;border:1px solid rgba(255,255,255,.14)" onclick="mostrarTelaCriar()">Criar Conta</button></div><div id="telaLogin"><input id="cliEmail" placeholder="E-mail"><div style="position:relative"><input id="cliSenha" type="password" placeholder="Senha"><button onclick="verSenha('cliSenha',this)" style="position:absolute;right:10px;top:14px;background:none;border:0">👁️</button></div><button class="btn" onclick="entrarCliente()">ENTRAR</button><p style="text-align:center;color:#d4af37;cursor:pointer;margin-top:8px" onclick="esqueceuSenha()">Esqueceu a senha?</p></div><div id="telaCriar" style="display:none"><input id="cliNomeConta" placeholder="Teu nome"><input id="cliEmailCriar" placeholder="E-mail"><input id="cliWhatsConta" placeholder="WhatsApp - 9xx xxx xxx"><input id="cliSenhaCriar" type="password" placeholder="Cria senha (mín 6)"><input id="cliSenhaConfirmar" type="password" placeholder="Repete a senha"><button class="btn" onclick="criarContaCliente()">CRIAR CONTA</button></div><div id="telaEsqueceu" style="display:none"><input id="cliEmailEsqueceu" placeholder="Teu e-mail"><button class="btn" onclick="enviarRecuperacao()">ENVIAR LINK</button><p style="text-align:center;color:#d4af37;cursor:pointer;margin-top:8px" onclick="mostrarTelaLogin()">← Voltar</p></div><p id="msgCliente" style="color:#ffb3b3;font-size:13px;margin-top:8px"></p></div></div>
 <div id="meusPedidosModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>📦 Meus Pedidos</h3><button onclick="fecharMeusPedidos()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p class="small">🟡 Pendente = à espera do Admin.</p><div id="listaMeusPedidos"></div></div></div>
 <div id="cartModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>🛒 Carrinho</h3><button onclick="fecharCarrinho()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><div id="cartItems"></div><h3 id="cartTotal">Total: 0 Kz</h3><button class="btn" onclick="abrirPagamento()">💳 PAGAR</button></div></div>
 <div id="pagModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>💳 Pagamento</h3><button onclick="fecharPagamento()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p id="pagCliente" class="small"></p><pre id="pagResumo" style="white-space:pre-wrap;background:rgba(0,0,0,.25);padding:10px;border-radius:12px;font-size:12px"></pre><input id="cliNome" placeholder="Teu nome"><input id="cliWhats" placeholder="WhatsApp"><input id="cliEmailPag" placeholder="E-mail para recibo (opcional)"><select id="metodoPag" onchange="mostrarDadosPagExpress()"><option value="">Escolhe método...</option><option>Unitel Money</option><option>Multicaixa Express</option><option>PayPay</option><option>Transferência via IBAN</option></select>
@@ -180,16 +180,45 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="script.js?v=18"></script>
-<script src="menu.js?v=18"></script>
+<script src="script.js?v=19"></script>
+<script src="menu.js?v=19"></script>
 <div id="novoLogin"><div class="card"><h2>Bem-vindo de Volta</h2><p class="sub">Entra para continuar</p><label>E-mail</label><div class="campo"><span>📧</span><input id="loginEmail" type="email" placeholder="Teu e-mail"></div><label>Palavra-passe</label><div class="campo"><span>🔒</span><input id="loginSenha" type="password" placeholder="Tua palavra-passe"><span onclick="var i=document.getElementById('loginSenha'); if(i.type==='password'){i.type='text'; this.innerText='🙈';} else {i.type='password'; this.innerText='👁️';}" style="cursor:pointer;margin-left:8px">👁️</span></div><button class="btnLogin" onclick="entrarNovoLogin()">ENTRAR</button><p class="esqueci" onclick="esqueciSenhaNovoLogin()">Esqueci a senha?</p><div class="criar">Não tens conta? <b onclick="criarContaAdminNovo()">Criar conta</b></div><p id="loginErro" style="color:#ff6b6b;font-size:13px;margin-top:10px"></p></div></div>
 <script>
 try{ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL); }catch(e){}
+// ===== V19 - NOME DA LOJA DINÂMICO =====
+// Onde mudares o nome no Admin > Loja, muda em TODO lado sozinho: WhatsApp, partilhar, conta, etc.
+function nomeLojaAtual(){
+  // 1 - Se o Admin já carregou o nome no campo cfgNomeLoja
+  var c = document.getElementById('cfgNomeLoja');
+  if(c && c.value && c.value.trim() && c.value.trim().toLowerCase()!=='processando') return c.value.trim();
+  // 2 - Se já está no logo da loja
+  var logo = document.getElementById('logoTexto');
+  if(logo && logo.innerText){
+    var t = logo.innerText.replace('....🤳','').replace('🤳','').trim();
+    if(t && t.toLowerCase()!=='processando' && t.length>1) return t;
+  }
+  // 3 - Se ficou guardado no telefone
+  var salvo = localStorage.getItem('empire_nome_loja');
+  if(salvo && salvo.trim()) return salvo.trim();
+  // 4 - Se o script.js já tem config
+  if(window._configLoja && window._configLoja.nome) return window._configLoja.nome;
+  if(window.configLoja && window.configLoja.nome) return window.configLoja.nome;
+  return 'EMPIRE';
+}
+function aplicarNomeLojaEmTodoSitio(){
+  var nome = nomeLojaAtual();
+  if(!nome || nome==='Processando') return;
+  localStorage.setItem('empire_nome_loja', nome);
+  document.title = nome + ' - Loja Oficial';
+  // Atualiza todos os textos com class nomeLojaTxt
+  document.querySelectorAll('.nomeLojaTxt').forEach(function(el){ el.innerText = nome; });
+}
+setInterval(aplicarNomeLojaEmTodoSitio, 1500);
 function linkLimpo(){ return window.location.origin + window.location.pathname; }
 function getLinkAdmin(){ return linkLimpo() + "?admin=1"; }
-function copiarLinkLoja(){ var l=linkLimpo(); if(navigator.clipboard) navigator.clipboard.writeText(l); alert('Link da Loja copiado! ✅ Universal\nCada cliente entra com a sua conta.\n'+l); }
-function copiarLinkAdmin(){ var l=getLinkAdmin(); if(navigator.clipboard) navigator.clipboard.writeText(l); alert('Link ADMIN copiado! 🔐\nAbre direto na tela Admin com e-mail fixo.\nSó falta a palavra-passe.\n'+l); }
-function partilharWhatsAppLoja(){ var l=linkLimpo(); window.open('https://wa.me/?text='+encodeURIComponent('Visita a minha loja EMPIRE: '+l),'_blank'); }
+function copiarLinkLoja(){ var l=linkLimpo(); if(navigator.clipboard) navigator.clipboard.writeText(l); alert('Link da Loja copiado! ✅\n'+nomeLojaAtual()+'\n'+l); }
+function copiarLinkAdmin(){ var l=getLinkAdmin(); if(navigator.clipboard) navigator.clipboard.writeText(l); alert('Link ADMIN copiado! 🔐\n'+l); }
+function partilharWhatsAppLoja(){ var l=linkLimpo(); window.open('https://wa.me/?text='+encodeURIComponent('Visita a minha loja '+nomeLojaAtual()+': '+l),'_blank'); }
 function abrirMenuAdmin(){ document.getElementById('menuAdminLateral').classList.add('aberto'); document.getElementById('overlayMenuAdmin').classList.add('mostrar'); }
 function fecharMenuAdmin(){ document.getElementById('menuAdminLateral').classList.remove('aberto'); document.getElementById('overlayMenuAdmin').classList.remove('mostrar'); }
 function marcarAbaPedidosAlerta(qtd){
@@ -238,7 +267,6 @@ function irParaAbaAdmin(aba){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 window.mostrarAba=function(aba){ irParaAbaAdmin(aba); };
-// ===== V18 - CORRIGE [object Object] =====
 function textoItens(p){
   var it = p.itens;
   if(it===undefined || it===null || it==='') return p.resumo || '';
@@ -277,8 +305,6 @@ function carregarNotificacoesAdmin(){
     box.innerHTML=html;
   }).catch(function(e){ box.innerHTML='<div class="notif-card">Erro: '+e.message+'</div>'; console.log(e); });
 }
-
-// ===== MULTICAIXA EXPRESS - V18 =====
 var _timerExpress=null;
 var _segundosExpress=120;
 function mostrarDadosPagExpress(){
@@ -476,7 +502,8 @@ function atualizarSinoCliente(user){
 }
 function avisarWhatsApp(id){
   var num = (document.getElementById('cfgWhats') && document.getElementById('cfgWhats').value) || '244900000000';
-  var msg='Olá Empire Business, fiz o pedido nº '+id.slice(-6).toUpperCase()+' e estou à espera de aprovação. Podes confirmar?';
+  var nomeLoja = nomeLojaAtual();
+  var msg='Olá '+nomeLoja+', fiz o pedido nº '+id.slice(-6).toUpperCase()+' e estou à espera de aprovação. Podes confirmar?';
   window.open('https://wa.me/'+num.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
 }
 function marcarNotifsLidas(uid){
