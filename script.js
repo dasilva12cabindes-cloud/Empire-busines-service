@@ -67,7 +67,7 @@ auth.onAuthStateChanged(function(u){
   modoAdmin=isAdmin;
   atualizarHeaderCliente();
   if(isAdmin){ var b=document.getElementById('btnAdminEscondido'); if(b) b.style.display='block'; }
-  db.collection('clientes').doc(u.uid).get().then(function(s){
+  db.collection('clientes').doc(u.uid).get()db.collection('clientes').doc(u.uid).set({ultimoAcesso: firebase.firestore.FieldValue.serverTimestamp()}, {merge:true});. then(function(s){
     if(s.exists){ var d=s.data(); if(d.nome) clienteNome=d.nome; if(d.whats) clienteWhats=d.whats; atualizarHeaderCliente(); }
   }).catch(function(){});
 });
