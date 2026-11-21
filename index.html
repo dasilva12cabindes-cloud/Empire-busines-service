@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=10">
+<link rel="stylesheet" href="style.css?v=11">
 <style>
 #novoLogin{position:fixed;inset:0;background:#0f0f0f;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;font-family:sans-serif}
 #novoLogin.mostrar{display:flex}
@@ -36,7 +36,6 @@
 #menuLateral button{width:100%;text-align:left;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0;cursor:pointer;font-size:14px}
 #overlayMenu{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99999;display:none}
 #overlayMenu.mostrar{display:block}
-/* MENU 3 BARRAS DO ADMIN */
 #menuAdminLateral{position:fixed;top:0;left:-280px;width:260px;height:100%;background:#0a2a33;z-index:100001;transition:.3s;padding:20px;box-shadow:5px 0 20px rgba(0,0,0,.5);overflow-y:auto}
 #menuAdminLateral.aberto{left:0}
 #menuAdminLateral button{width:100%;text-align:left;background:rgba(255,255,255,.08);border:0;color:#fff;padding:13px;border-radius:10px;margin:6px 0;cursor:pointer;font-size:14px;font-weight:600}
@@ -44,13 +43,16 @@
 #overlayMenuAdmin{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100000;display:none}
 #overlayMenuAdmin.mostrar{display:block}
 .btnMenuAdmin{background:#176a7d!important;border:1px solid rgba(255,255,255,.14)!important;color:#fff!important;min-width:40px;height:40px;border-radius:14px;font-size:20px;cursor:pointer}
+.notif-card{background:#fff;color:#000;border-radius:12px;padding:12px;margin:8px 0}
+/* ABA PEDIDOS VERMELHA QUANDO TEM PEDIDO NOVO */
+.tab-alerta{ background:#ff4444!important; color:#fff!important; animation: pisca 1s infinite; }
+@keyframes pisca{ 50%{ opacity:.7; } }
+.btnMeusPedidos{ background:#d4af37!important; color:#000!important; font-weight:800; border:0; padding:10px 14px; border-radius:10px; cursor:pointer; margin-top:8px; }
 </style>
 </head>
 <body>
 <div id="telaCarregamento"><div class="barras-loader"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><p>A carregar...</p></div>
 <div id="debugBox" style="display:none;background:#ff4444;color:#fff;padding:10px;margin:10px;border-radius:10px"></div>
-
-<!-- MENU 3 BARRAS DA LOJA -->
 <div id="overlayMenu" onclick="fecharMenuLateral()"></div>
 <div id="menuLateral">
   <h3 style="color:#fff">☰ Menu</h3>
@@ -58,22 +60,20 @@
   <button onclick="fecharMenuLateral();verCarrinho()">🛒 Carrinho</button>
   <button onclick="fecharMenuLateral();abrirLoginCliente()">👤 Minha Conta</button>
   <button onclick="fecharMenuLateral();abrirMeusPedidos()">📦 Meus Pedidos <span id="badgePedidosMenu" class="badge-notif" style="display:none">0</span></button>
-  <button onclick="fecharMenuLateral();abrirLoginCliente()">🔔 Notificações <span id="badgeNotifMenu" class="badge-notif" style="display:none">0</span></button>
+  <button onclick="fecharMenuLateral();abrirMeusPedidos()">🔔 Notificações <span id="badgeNotifMenu" class="badge-notif" style="display:none">0</span></button>
   <button onclick="fecharMenuLateral();mostrarLoja()" style="background:#333">← Fechar</button>
 </div>
-
-<!-- MENU 3 BARRAS DO ADMIN -->
 <div id="overlayMenuAdmin" onclick="fecharMenuAdmin()"></div>
 <div id="menuAdminLateral">
   <h3 style="color:#fff">☰ Menu Admin</h3>
   <button id="mAdminProd" onclick="irParaAbaAdmin('prod')">📦 Produtos</button>
   <button id="mAdminPed" onclick="irParaAbaAdmin('ped')">🧾 Pedidos <span id="badgePedidosAdminMenu" class="badge-notif" style="display:none">0</span></button>
-  <button id="mAdminNotif" onclick="irParaAbaAdmin('ped');verNotificacoesAdmin()">🔔 Notificação do Pedido</button>
+  <button id="mAdminNotif" onclick="irParaAbaAdmin('notif')">🔔 Notificação do Pedido <span id="badgeNotifAdminMenu" class="badge-notif" style="display:none">0</span></button>
   <button id="mAdminStock" onclick="irParaAbaAdmin('stock')">📦 Stock</button>
   <button id="mAdminRel" onclick="irParaAbaAdmin('rel')">📊 Relatório</button>
   <button id="mAdminLoja" onclick="irParaAbaAdmin('loja')">🏪 Loja</button>
   <button id="mAdminPag" onclick="irParaAbaAdmin('pag')">💳 Pagamentos</button>
-  <button id="mAdminCli" onclick="irParaAbaAdmin('cli')">👥 Clientes <span id="badgeClientesAdminMenu" class="badge-notif" style="display:none">0</span></button>
+  <button id="mAdminCli" onclick="irParaAbaAdmin('cli')">👥 Clientes</button>
   <button onclick="fecharMenuAdmin();mostrarLoja()" style="background:#25D366;color:#000">🏠 Ver Loja</button>
   <button onclick="fecharMenuAdmin();logout()" style="background:#ff4444">🚪 Sair</button>
   <button onclick="fecharMenuAdmin()" style="background:#333">← Fechar</button>
@@ -96,13 +96,11 @@
     <p id="avisoCliente" class="small" style="display:none;color:#00ff88"> Estás ligado! Podes comprar.</p>
     <div id="areaLogado" style="display:none;align-items:center;gap:8px;color:#00ff7f;font-weight:700;margin-top:6px"><span class="luz-verde"></span> ✅ Estás ligado! Podes comprar.</div>
     <div id="areaClienteHeader" style="margin-top:10px"></div>
+    <!-- BOTÃO MEUS PEDIDOS DO CLIENTE - SEMPRE VISÍVEL -->
+    <button class="btnMeusPedidos" onclick="abrirMeusPedidos()">📦 MEUS PEDIDOS <span id="badgeMeusPedidosTop" class="badge-notif" style="display:none">0</span></button>
     <div id="alertaStockAdmin" style="display:none;background:#ff4444;color:#fff;padding:10px;border-radius:10px;margin-top:10px;font-size:13px;font-weight:700"></div>
   </div>
-  <div class="pesquisaBox">
-    <span>🔍</span>
-    <input id="pesquisa" placeholder="Pesquisa produto... ex: Perfume, Ténis" oninput="filtrar()">
-    <span onclick="filtrar()" style="cursor:pointer">➤</span>
-  </div>
+  <div class="pesquisaBox"><span>🔍</span><input id="pesquisa" placeholder="Pesquisa produto... ex: Perfume, Ténis" oninput="filtrar()"><span onclick="filtrar()" style="cursor:pointer">➤</span></div>
   <div class="acoes filtros">
     <button class="ativo" onclick="setFiltro('todos',this)">🏠 Todos</button>
     <button onclick="setFiltro('perfume',this)">🌸 Perfumes</button>
@@ -111,34 +109,13 @@
     <button onclick="setFiltro('relogio',this)">⌚ Relógios</button>
     <button onclick="setFiltro('acessorio',this)">💍 Acessórios</button>
   </div>
-  <div class="secao" id="areaDestaque">
-    <div class="secaoTop"><b>⭐ Produtos em Destaque</b><a href="#" onclick="setFiltro('todos',document.querySelector('.filtros button'));return false">Ver tudo</a></div>
-    <div id="produtosDestaque"></div>
-  </div>
-  <div class="secao">
-    <div class="secaoTop"><b>🛍️ Todos os Produtos</b><span id="qtdMostra" style="color:#b9d6dd;font-size:12px"></span></div>
-    <div id="produtos"></div>
-    <p id="status" style="color:#b9d6dd;font-size:12px;margin-top:10px;text-align:center"><span class="barras-loader"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span><br>A carregar...</p>
-    <p style="display:none"><span id="statProd">0</span></p>
-  </div>
-  <div class="secao">
-    <div class="secaoTop"><b> Sobre nós </b></div>
-    <h3 id="sobreTitulo" style="font-size:14px"></h3>
-    <p id="bannerTitulo" style="display:none"></p><p id="bannerSub" style="display:none"></p>
-    <p id="sobreTexto" style="color:#d6e8ec;font-size:13px;line-height:1.5;margin-top:6px"></p>
-    <p style="margin-top:10px"><b>Visão:</b> <span id="visaoTexto"></span></p>
-    <p><b>Missão:</b> <span id="missaoTexto"></span></p>
-    <p id="sobreExtra" style="color:#d4af37;font-size:12px;margin-top:8px"></p>
-    <p id="footerTexto" style="color:#b9d6dd;font-size:11px;margin-top:10px"></p>
-    <p style="margin-top:10px"><b>Link da loja:</b> <span id="linkLojaTexto" style="color:#d4af37;font-size:11px;word-break:break-all"></span></p>
-    <button class="btn" onclick="copiarLinkLoja()">🔗 COPIAR LINK DA LOJA</button>
-    <button class="btn" style="background:#25D366;color:#000" onclick="partilharWhatsAppLoja()">💬 PARTILHAR NO WHATSAPP</button>
-  </div>
+  <div class="secao" id="areaDestaque"><div class="secaoTop"><b>⭐ Produtos em Destaque</b><a href="#" onclick="setFiltro('todos',document.querySelector('.filtros button'));return false">Ver tudo</a></div><div id="produtosDestaque"></div></div>
+  <div class="secao"><div class="secaoTop"><b>🛍️ Todos os Produtos</b><span id="qtdMostra" style="color:#b9d6dd;font-size:12px"></span></div><div id="produtos"></div><p id="status" style="color:#b9d6dd;font-size:12px;margin-top:10px;text-align:center"><span class="barras-loader"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span><br>A carregar...</p><p style="display:none"><span id="statProd">0</span></p></div>
+  <div class="secao"><div class="secaoTop"><b> Sobre nós </b></div><h3 id="sobreTitulo" style="font-size:14px"></h3><p id="bannerTitulo" style="display:none"></p><p id="bannerSub" style="display:none"></p><p id="sobreTexto" style="color:#d6e8ec;font-size:13px;line-height:1.5;margin-top:6px"></p><p style="margin-top:10px"><b>Visão:</b> <span id="visaoTexto"></span></p><p><b>Missão:</b> <span id="missaoTexto"></span></p><p id="sobreExtra" style="color:#d4af37;font-size:12px;margin-top:8px"></p><p id="footerTexto" style="color:#b9d6dd;font-size:11px;margin-top:10px"></p><p style="margin-top:10px"><b>Link da loja:</b> <span id="linkLojaTexto" style="color:#d4af37;font-size:11px;word-break:break-all"></span></p><button class="btn" onclick="copiarLinkLoja()">🔗 COPIAR LINK DA LOJA</button><button class="btn" style="background:#25D366;color:#000" onclick="partilharWhatsAppLoja()">💬 PARTILHAR NO WHATSAPP</button></div>
 </div>
 
 <div id="loginBox" style="display:none;padding:20px">
-  <h2>🔐 Entrar - Admin</h2>
-  <p class="small">Só o dono da loja entra aqui.</p>
+  <h2>🔐 Entrar - Admin</h2><p class="small">Só o dono da loja entra aqui.</p>
   <input id="email" placeholder="E-mail admin">
   <div style="position:relative"><input id="pass" type="password" placeholder="Senha"><button onclick="verSenha('pass',this)" style="position:absolute;right:10px;top:14px;background:none;border:0;font-size:18px">👁️</button></div>
   <p id="loginMsg" style="color:#ffb3b3;font-size:13px"></p>
@@ -157,18 +134,16 @@
   <p class="small">Link da loja: <span id="linkLojaAdmin"></span></p>
   <div id="alertaStockPainel" style="display:none;background:#ff4444;color:#fff;padding:12px;border-radius:10px;margin:10px 0;font-weight:700"></div>
   <div id="alertaNovoPedido" style="display:none;background:#00d26a;color:#fff;padding:12px;border-radius:10px;margin:10px 0;font-weight:700"></div>
-  <div id="alertaNotifAdmin" style="display:none;background:#ffaa00;color:#000;padding:12px;border-radius:10px;margin:10px 0;font-weight:700"></div>
-
   <div class="filtros">
     <button id="tabProd" class="ativo" onclick="irParaAbaAdmin('prod')">📦 Produtos</button>
     <button id="tabPed" onclick="irParaAbaAdmin('ped')">🧾 Pedidos (<span id="pedCount">0</span>)</button>
+    <button id="tabNotif" onclick="irParaAbaAdmin('notif')">🔔 Notificação</button>
     <button id="tabStock" onclick="irParaAbaAdmin('stock')">📦 Stock</button>
     <button id="tabRel" onclick="irParaAbaAdmin('rel')">📊 Relatório</button>
     <button id="tabLoja" onclick="irParaAbaAdmin('loja')">🏪 Loja</button>
     <button id="tabPag" onclick="irParaAbaAdmin('pag')">💳 Pagamentos</button>
     <button id="tabCli" onclick="irParaAbaAdmin('cli')">👥 Clientes (<span id="cliCount">0</span>)</button>
   </div>
-
   <div id="abaProd">
     <h3 id="adminTitle">Adicionar Produto</h3>
     <input id="nome" placeholder="Nome do produto - ex: Relógio Casio">
@@ -187,104 +162,30 @@
     <button class="btn" id="btnCancelar" style="display:none;background:#333;color:#fff" onclick="cancelarEdicao()">Cancelar Edição</button>
     <div id="produtosAdmin"></div>
   </div>
-
-  <div id="abaStock" style="display:none">
-    <h3>📦 Controlo de Stock</h3>
-    <p class="small">🟢 Bom &nbsp; 🟡 Perto do mínimo &nbsp; 🔴 Stock Baixo &nbsp; ⚫ Esgotado</p>
-    <div id="listaStockAdmin"></div>
-  </div>
-
-  <div id="abaPed" style="display:none"><h3>🧾 Pedidos / 🔔 Notificação do Pedido</h3><p class="small">Aceite = cliente recebe sino + som. Recusado = cliente também recebe. Pedido aceite sem pagamento some para o cliente após 24h, mas fica aqui para ti até apagares.</p><div id="listaPedidos"></div></div>
-
-  <div id="abaRel" style="display:none">
-    <h3>📊 Relatório</h3>
-    <button class="btn" onclick="gerarRelatorioMensal()">🖨️ GERAR RELATÓRIO DO MÊS EM PAPEL</button>
-    <input type="date" id="dataRel">
-    <div style="display:flex;gap:8px"><button class="btn" id="btnHoje" onclick="verHoje()">📅 HOJE</button><button class="btn" id="btnOntem" onclick="verOntem()">📅 ONTEM</button></div>
-    <p id="dataSelecionadaMsg" class="small"></p>
-    <div class="secao"><p>Total do dia: <b id="relTotal">0 Kz</b> | Vendas: <b id="relQtd">0</b> | Pendentes: <b id="relPend">0</b> | Recusados: <b id="relRec">0</b></p><p>Total geral: <b id="relTotalGeral">0 Kz</b> | Total vendas: <b id="relQtdGeral">0</b></p></div>
-    <h4>Vendas do dia</h4><div id="listaRel"></div>
-    <h4>Mais vendidos</h4><div id="listaTop"></div>
-  </div>
-
-  <div id="abaLoja" style="display:none">
-    <h3>🏪 Personalizar Loja</h3>
-    <input id="cfgNomeLoja" placeholder="Nome da loja"><input id="cfgSloganLoja" placeholder="Slogan"><input id="cfgBannerTitulo" placeholder="Título do banner"><input id="cfgBannerSub" placeholder="Subtítulo"><input id="cfgSobreTitulo" placeholder="Título Sobre"><textarea id="cfgSobreTexto" placeholder="Texto Sobre"></textarea><input id="cfgVisao" placeholder="Visão"><input id="cfgMissao" placeholder="Missão"><input id="cfgSobreExtra" placeholder="Info extra"><input id="cfgFooter" placeholder="Rodapé">
-    <label>Logo</label><input type="file" id="inputLogo" accept="image/*" onchange="lerLogo(event)"><img id="prevLogo" style="display:none;width:100px;border-radius:10px"><button class="btn" style="background:#333;color:#fff" onclick="removerLogo()">Remover Logo</button>
-    <label>Banner</label><input type="file" id="inputBanner" accept="image/*" onchange="lerBanner(event)"><img id="prevBanner" style="display:none;width:100%;border-radius:10px"><button class="btn" style="background:#333;color:#fff" onclick="removerBanner()">Remover Banner</button>
-    <button class="btn" onclick="salvarLoja()">💾 SALVAR LOJA</button>
-  </div>
-
-  <div id="abaPag" style="display:none">
-    <h3>💳 Pagamentos</h3>
-    <input id="cfgExpress" placeholder="Número Express"><input id="cfgNomeExpress" placeholder="Nome Express"><input id="cfgUnitel" placeholder="Número Unitel Money"><input id="cfgNomeUnitel" placeholder="Nome Unitel"><input id="cfgPaypay" placeholder="Número PayPay"><input id="cfgNomePaypay" placeholder="Nome PayPay"><input id="cfgIban" placeholder="IBAN"><input id="cfgBanco" placeholder="Banco"><input id="cfgNomeBanco" placeholder="Nome Banco"><input id="cfgWhats" placeholder="WhatsApp da loja - 244...">
-    <button class="btn" onclick="salvarConfigPag()">💾 SALVAR PAGAMENTOS</button>
-  </div>
-
+  <div id="abaStock" style="display:none"><h3>📦 Controlo de Stock</h3><p class="small">🟢 Bom &nbsp; 🟡 Perto do mínimo &nbsp; 🔴 Stock Baixo &nbsp; ⚫ Esgotado</p><div id="listaStockAdmin"></div></div>
+  <div id="abaPed" style="display:none"><h3>🧾 Pedidos</h3><p class="small">Quando cai pedido, esta aba fica vermelha e toca som. Só some quando carregas aqui. Aceita / Recusa / Cancela.</p><div id="listaPedidos"></div></div>
+  <div id="abaNotif" style="display:none"><h3>🔔 Notificação do Pedido</h3><p class="small">Só pedidos pendentes / novos.</p><button class="btn" style="background:#00d26a;color:#fff" onclick="carregarNotificacoesAdmin()">🔄 ATUALIZAR</button><div id="listaNotificacoesAdmin"><p>A carregar...</p></div></div>
+  <div id="abaRel" style="display:none"><h3>📊 Relatório</h3><button class="btn" onclick="gerarRelatorioMensal()">🖨️ GERAR RELATÓRIO DO MÊS EM PAPEL</button><input type="date" id="dataRel"><div style="display:flex;gap:8px"><button class="btn" id="btnHoje" onclick="verHoje()">📅 HOJE</button><button class="btn" id="btnOntem" onclick="verOntem()">📅 ONTEM</button></div><p id="dataSelecionadaMsg" class="small"></p><div class="secao"><p>Total do dia: <b id="relTotal">0 Kz</b> | Vendas: <b id="relQtd">0</b> | Pendentes: <b id="relPend">0</b> | Recusados: <b id="relRec">0</b></p><p>Total geral: <b id="relTotalGeral">0 Kz</b> | Total vendas: <b id="relQtdGeral">0</b></p></div><h4>Vendas do dia</h4><div id="listaRel"></div><h4>Mais vendidos</h4><div id="listaTop"></div></div>
+  <div id="abaLoja" style="display:none"><h3>🏪 Personalizar Loja</h3><input id="cfgNomeLoja" placeholder="Nome da loja"><input id="cfgSloganLoja" placeholder="Slogan"><input id="cfgBannerTitulo" placeholder="Título do banner"><input id="cfgBannerSub" placeholder="Subtítulo"><input id="cfgSobreTitulo" placeholder="Título Sobre"><textarea id="cfgSobreTexto" placeholder="Texto Sobre"></textarea><input id="cfgVisao" placeholder="Visão"><input id="cfgMissao" placeholder="Missão"><input id="cfgSobreExtra" placeholder="Info extra"><input id="cfgFooter" placeholder="Rodapé"><label>Logo</label><input type="file" id="inputLogo" accept="image/*" onchange="lerLogo(event)"><img id="prevLogo" style="display:none;width:100px;border-radius:10px"><button class="btn" style="background:#333;color:#fff" onclick="removerLogo()">Remover Logo</button><label>Banner</label><input type="file" id="inputBanner" accept="image/*" onchange="lerBanner(event)"><img id="prevBanner" style="display:none;width:100%;border-radius:10px"><button class="btn" style="background:#333;color:#fff" onclick="removerBanner()">Remover Banner</button><button class="btn" onclick="salvarLoja()">💾 SALVAR LOJA</button></div>
+  <div id="abaPag" style="display:none"><h3>💳 Pagamentos</h3><input id="cfgExpress" placeholder="Número Express"><input id="cfgNomeExpress" placeholder="Nome Express"><input id="cfgUnitel" placeholder="Número Unitel Money"><input id="cfgNomeUnitel" placeholder="Nome Unitel"><input id="cfgPaypay" placeholder="Número PayPay"><input id="cfgNomePaypay" placeholder="Nome PayPay"><input id="cfgIban" placeholder="IBAN"><input id="cfgBanco" placeholder="Banco"><input id="cfgNomeBanco" placeholder="Nome Banco"><input id="cfgWhats" placeholder="WhatsApp da loja - 244..."><button class="btn" onclick="salvarConfigPag()">💾 SALVAR PAGAMENTOS</button></div>
   <div id="abaCli" style="display:none"><h3>👥 Clientes</h3><div id="listaClientes"></div></div>
   <button class="btn" style="background:#333;color:#fff" onclick="mostrarLoja()">← Voltar para Loja</button>
 </div>
 
-<div id="clienteModal" class="modal">
-  <div class="modalBox">
-    <div style="display:flex;justify-content:space-between"><h3>👤 Conta EMPIRE</h3><button onclick="fecharLoginCliente()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px;cursor:pointer">X</button></div>
-    <div style="display:flex;gap:8px;margin:12px 0"><button id="btnTabEntrar" class="btn" style="flex:1" onclick="mostrarTelaLogin()">Entrar</button><button id="btnTabCriar" class="btn" style="flex:1;background:rgba(0,0,0,.3);color:#fff;border:1px solid rgba(255,255,255,.14)" onclick="mostrarTelaCriar()">Criar Conta</button></div>
-    <div id="telaLogin">
-      <input id="cliEmail" placeholder="E-mail"><div style="position:relative"><input id="cliSenha" type="password" placeholder="Senha"><button onclick="verSenha('cliSenha',this)" style="position:absolute;right:10px;top:14px;background:none;border:0">👁️</button></div>
-      <button class="btn" onclick="entrarCliente()">ENTRAR</button>
-      <p style="text-align:center;color:#d4af37;cursor:pointer;margin-top:8px" onclick="esqueceuSenha()">Esqueceu a senha?</p>
-    </div>
-    <div id="telaCriar" style="display:none">
-      <input id="cliNomeConta" placeholder="Teu nome"><input id="cliEmailCriar" placeholder="E-mail"><input id="cliWhatsConta" placeholder="WhatsApp - 9xx xxx xxx"><input id="cliSenhaCriar" type="password" placeholder="Cria senha (mín 6)"><input id="cliSenhaConfirmar" type="password" placeholder="Repete a senha">
-      <button class="btn" onclick="criarContaCliente()">CRIAR CONTA</button>
-    </div>
-    <div id="telaEsqueceu" style="display:none">
-      <input id="cliEmailEsqueceu" placeholder="Teu e-mail"><button class="btn" onclick="enviarRecuperacao()">ENVIAR LINK</button><p style="text-align:center;color:#d4af37;cursor:pointer;margin-top:8px" onclick="mostrarTelaLogin()">← Voltar</p>
-    </div>
-    <p id="msgCliente" style="color:#ffb3b3;font-size:13px;margin-top:8px"></p>
-  </div>
-</div>
-
-<div id="meusPedidosModal" class="modal">
-  <div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>📦 Meus Pedidos</h3><button onclick="fecharMeusPedidos()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p class="small">Aqui vês se o teu pedido foi aceite ou recusado.</p><div id="listaMeusPedidos"></div></div>
-</div>
-
-<div id="cartModal" class="modal">
-  <div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>🛒 Carrinho</h3><button onclick="fecharCarrinho()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><div id="cartItems"></div><h3 id="cartTotal">Total: 0 Kz</h3><button class="btn" onclick="abrirPagamento()">💳 PAGAR</button></div>
-</div>
-
-<div id="pagModal" class="modal">
-  <div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>💳 Pagamento</h3><button onclick="fecharPagamento()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p id="pagCliente" class="small"></p><pre id="pagResumo" style="white-space:pre-wrap;background:rgba(0,0,0,.25);padding:10px;border-radius:12px;font-size:12px"></pre><input id="cliNome" placeholder="Teu nome"><input id="cliWhats" placeholder="WhatsApp"><input id="cliEmailPag" placeholder="E-mail para recibo (opcional)"><select id="metodoPag" onchange="mostrarDadosPag()"><option value="">Escolhe método...</option><option>Unitel Money</option><option>Multicaixa Express</option><option>PayPay</option><option>Transferência via IBAN</option></select><div id="infoPag" style="display:none;background:rgba(0,0,0,.25);padding:12px;border-radius:12px;white-space:pre-wrap;font-size:13px"></div><label style="font-size:13px">📎 Comprovativo (foto ou PDF)</label><input type="file" id="inputComp" accept="image/*,.pdf" onchange="lerComprovativo(event)"><div id="prevCompBox"></div><p id="compMsg" style="color:#ff8888;font-size:12px">⚠️ Ainda não subiste o comprovativo</p><button class="btn" onclick="confirmarPedido()">✅ CONFIRMAR PEDIDO</button><button class="btn" style="background:#333;color:#fff" onclick="recuarParaCarrinho()">← Voltar ao Carrinho</button></div>
-</div>
-
+<div id="clienteModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>👤 Conta EMPIRE</h3><button onclick="fecharLoginCliente()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px;cursor:pointer">X</button></div><div style="display:flex;gap:8px;margin:12px 0"><button id="btnTabEntrar" class="btn" style="flex:1" onclick="mostrarTelaLogin()">Entrar</button><button id="btnTabCriar" class="btn" style="flex:1;background:rgba(0,0,0,.3);color:#fff;border:1px solid rgba(255,255,255,.14)" onclick="mostrarTelaCriar()">Criar Conta</button></div><div id="telaLogin"><input id="cliEmail" placeholder="E-mail"><div style="position:relative"><input id="cliSenha" type="password" placeholder="Senha"><button onclick="verSenha('cliSenha',this)" style="position:absolute;right:10px;top:14px;background:none;border:0">👁️</button></div><button class="btn" onclick="entrarCliente()">ENTRAR</button><p style="text-align:center;color:#d4af37;cursor:pointer;margin-top:8px" onclick="esqueceuSenha()">Esqueceu a senha?</p></div><div id="telaCriar" style="display:none"><input id="cliNomeConta" placeholder="Teu nome"><input id="cliEmailCriar" placeholder="E-mail"><input id="cliWhatsConta" placeholder="WhatsApp - 9xx xxx xxx"><input id="cliSenhaCriar" type="password" placeholder="Cria senha (mín 6)"><input id="cliSenhaConfirmar" type="password" placeholder="Repete a senha"><button class="btn" onclick="criarContaCliente()">CRIAR CONTA</button></div><div id="telaEsqueceu" style="display:none"><input id="cliEmailEsqueceu" placeholder="Teu e-mail"><button class="btn" onclick="enviarRecuperacao()">ENVIAR LINK</button><p style="text-align:center;color:#d4af37;cursor:pointer;margin-top:8px" onclick="mostrarTelaLogin()">← Voltar</p></div><p id="msgCliente" style="color:#ffb3b3;font-size:13px;margin-top:8px"></p></div></div>
+<div id="meusPedidosModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>📦 Meus Pedidos</h3><button onclick="fecharMeusPedidos()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p class="small">🟡 Pendente = à espera do Admin. ✅ Aceite / ❌ Recusado / 🚫 Cancelado = some após 24h. Pendente nunca some até o Admin decidir.</p><div id="listaMeusPedidos"></div></div></div>
+<div id="cartModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>🛒 Carrinho</h3><button onclick="fecharCarrinho()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><div id="cartItems"></div><h3 id="cartTotal">Total: 0 Kz</h3><button class="btn" onclick="abrirPagamento()">💳 PAGAR</button></div></div>
+<div id="pagModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>💳 Pagamento</h3><button onclick="fecharPagamento()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p id="pagCliente" class="small"></p><pre id="pagResumo" style="white-space:pre-wrap;background:rgba(0,0,0,.25);padding:10px;border-radius:12px;font-size:12px"></pre><input id="cliNome" placeholder="Teu nome"><input id="cliWhats" placeholder="WhatsApp"><input id="cliEmailPag" placeholder="E-mail para recibo (opcional)"><select id="metodoPag" onchange="mostrarDadosPag()"><option value="">Escolhe método...</option><option>Unitel Money</option><option>Multicaixa Express</option><option>PayPay</option><option>Transferência via IBAN</option></select><div id="infoPag" style="display:none;background:rgba(0,0,0,.25);padding:12px;border-radius:12px;white-space:pre-wrap;font-size:13px"></div><label style="font-size:13px">📎 Comprovativo (foto ou PDF)</label><input type="file" id="inputComp" accept="image/*,.pdf" onchange="lerComprovativo(event)"><div id="prevCompBox"></div><p id="compMsg" style="color:#ff8888;font-size:12px">⚠️ Ainda não subiste o comprovativo</p><button class="btn" onclick="confirmarPedido()">✅ CONFIRMAR PEDIDO</button><button class="btn" style="background:#333;color:#fff" onclick="recuarParaCarrinho()">← Voltar ao Carrinho</button></div></div>
 <div id="imgModal" class="modal" onclick="fecharImg()"><img id="imgGrande" style="max-width:95%;max-height:90vh;border-radius:12px"></div>
-
-<div class="barraBaixo">
-  <button class="ativo" onclick="mostrarLoja()"><span>🏠</span>Loja</button>
-  <button onclick="verCarrinho()"><span>🛒</span>Carrinho</button>
-  <button onclick="abrirLoginCliente()"><span>👤</span>Conta</button>
-</div>
+<div class="barraBaixo"><button class="ativo" onclick="mostrarLoja()"><span>🏠</span>Loja</button><button onclick="verCarrinho()"><span>🛒</span>Carrinho</button><button onclick="abrirMeusPedidos()"><span>📦</span>Meus Pedidos</button><button onclick="abrirLoginCliente()"><span>👤</span>Conta</button></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="script.js?v=10"></script>
-<script src="menu.js?v=10"></script>
+<script src="script.js?v=11"></script>
+<script src="menu.js?v=11"></script>
 
-<div id="novoLogin">
-  <div class="card">
-    <h2>Bem-vindo de Volta</h2>
-    <p class="sub">Entra para continuar</p>
-    <label>E-mail</label>
-    <div class="campo"><span>📧</span><input id="loginEmail" type="email" placeholder="Teu e-mail"></div>
-    <label>Palavra-passe</label>
-    <div class="campo"><span>🔒</span><input id="loginSenha" type="password" placeholder="Tua palavra-passe"><span onclick="var i=document.getElementById('loginSenha'); if(i.type==='password'){i.type='text'; this.innerText='🙈';} else {i.type='password'; this.innerText='👁️';}" style="cursor:pointer;margin-left:8px">👁️</span></div>
-    <button class="btnLogin" onclick="entrarNovoLogin()">ENTRAR</button>
-    <p class="esqueci" onclick="esqueciSenhaNovoLogin()">Esqueci a senha?</p>
-    <div class="criar">Não tens conta? <b onclick="criarContaAdminNovo()">Criar conta</b></div>
-    <p id="loginErro" style="color:#ff6b6b;font-size:13px;margin-top:10px"></p>
-  </div>
-</div>
+<div id="novoLogin"><div class="card"><h2>Bem-vindo de Volta</h2><p class="sub">Entra para continuar</p><label>E-mail</label><div class="campo"><span>📧</span><input id="loginEmail" type="email" placeholder="Teu e-mail"></div><label>Palavra-passe</label><div class="campo"><span>🔒</span><input id="loginSenha" type="password" placeholder="Tua palavra-passe"><span onclick="var i=document.getElementById('loginSenha'); if(i.type==='password'){i.type='text'; this.innerText='🙈';} else {i.type='password'; this.innerText='👁️';}" style="cursor:pointer;margin-left:8px">👁️</span></div><button class="btnLogin" onclick="entrarNovoLogin()">ENTRAR</button><p class="esqueci" onclick="esqueciSenhaNovoLogin()">Esqueci a senha?</p><div class="criar">Não tens conta? <b onclick="criarContaAdminNovo()">Criar conta</b></div><p id="loginErro" style="color:#ff6b6b;font-size:13px;margin-top:10px"></p></div></div>
 
 <script>
 try{ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL); }catch(e){}
@@ -294,47 +195,204 @@ function copiarLinkLoja(){ var l=linkLimpo(); if(navigator.clipboard) navigator.
 function copiarLinkAdmin(){ var l=getLinkAdmin(); if(navigator.clipboard) navigator.clipboard.writeText(l); alert('Link ADMIN copiado! 🔐\nAbre direto na tela Admin com e-mail fixo.\nSó falta a palavra-passe.\n'+l); }
 function partilharWhatsAppLoja(){ var l=linkLimpo(); window.open('https://wa.me/?text='+encodeURIComponent('Visita a minha loja EMPIRE: '+l),'_blank'); }
 
-// ===== MENU 3 BARRAS DO ADMIN - NOVO =====
 function abrirMenuAdmin(){ document.getElementById('menuAdminLateral').classList.add('aberto'); document.getElementById('overlayMenuAdmin').classList.add('mostrar'); }
 function fecharMenuAdmin(){ document.getElementById('menuAdminLateral').classList.remove('aberto'); document.getElementById('overlayMenuAdmin').classList.remove('mostrar'); }
+
+// ===== ADMIN: ABA VERMELHA SÓ SUME QUANDO CARREGAS NELA =====
+function marcarAbaPedidosAlerta(qtd){
+  var tab=document.getElementById('tabPed');
+  var menuBtn=document.getElementById('mAdminPed');
+  var badge=document.getElementById('badgePedidosAdminMenu');
+  var badgeNotif=document.getElementById('badgeNotifAdminMenu');
+  var pedCount=document.getElementById('pedCount');
+  if(pedCount) pedCount.innerText=qtd;
+  if(qtd>0){
+    if(tab){ tab.classList.add('tab-alerta'); tab.innerHTML='🧾 Pedidos (<span id="pedCount">'+qtd+'</span>) 🔴'; }
+    if(menuBtn){ menuBtn.style.background='#ff4444'; menuBtn.style.color='#fff'; }
+    if(badge){ badge.style.display='inline-block'; badge.innerText=qtd; }
+    if(badgeNotif){ badgeNotif.style.display='inline-block'; badgeNotif.innerText=qtd; }
+  } else {
+    if(tab){ tab.classList.remove('tab-alerta'); tab.innerHTML='🧾 Pedidos (<span id="pedCount">0</span>)'; }
+    if(menuBtn){ menuBtn.style.background=''; menuBtn.style.color=''; }
+  }
+}
+function limparAlertaPedidosAdmin(){
+  // Só é chamada quando o Admin CARREGA na aba Pedidos / Notificação
+  localStorage.setItem('empire_pedidos_vistos_em', Date.now());
+  var tab=document.getElementById('tabPed');
+  if(tab){ tab.classList.remove('tab-alerta'); }
+  var menuBtn=document.getElementById('mAdminPed'); if(menuBtn){ menuBtn.style.background=''; menuBtn.style.color=''; }
+  var badge=document.getElementById('badgePedidosAdminMenu'); if(badge) badge.style.display='none';
+  var badgeNotif=document.getElementById('badgeNotifAdminMenu'); if(badgeNotif) badgeNotif.style.display='none';
+  var alerta=document.getElementById('alertaNovoPedido'); if(alerta) alerta.style.display='none';
+}
+
 function irParaAbaAdmin(aba){
   fecharMenuAdmin();
-  // Esconde TODAS as abas, só mostra a escolhida
-  ['prod','ped','stock','rel','loja','pag','cli'].forEach(function(a){
-    var el=document.getElementById('aba'+a.charAt(0).toUpperCase()+a.slice(1));
-    if(el) el.style.display = (a===aba) ? 'block' : 'none';
+  if(aba==='ped' || aba==='notif'){ limparAlertaPedidosAdmin(); }
+  var todas=['prod','ped','notif','stock','rel','loja','pag','cli'];
+  todas.forEach(function(a){
+    var id='aba'+a.charAt(0).toUpperCase()+a.slice(1); if(a==='notif') id='abaNotif';
+    var el=document.getElementById(id); if(el) el.style.display=(a===aba)?'block':'none';
   });
-  // Marca botão ativo nos filtros
-  ['tabProd','tabPed','tabStock','tabRel','tabLoja','tabPag','tabCli'].forEach(function(id){ var b=document.getElementById(id); if(b) b.classList.remove('ativo'); });
-  var mapa={prod:'tabProd',ped:'tabPed',stock:'tabStock',rel:'tabRel',loja:'tabLoja',pag:'tabPag',cli:'tabCli'};
+  ['tabProd','tabPed','tabNotif','tabStock','tabRel','tabLoja','tabPag','tabCli'].forEach(function(id){ var b=document.getElementById(id); if(b && id!=='tabPed') b.classList.remove('ativo'); });
+  var mapa={prod:'tabProd',ped:'tabPed',notif:'tabNotif',stock:'tabStock',rel:'tabRel',loja:'tabLoja',pag:'tabPag',cli:'tabCli'};
   var bt=document.getElementById(mapa[aba]); if(bt) bt.classList.add('ativo');
-  // Marca botão ativo no menu lateral
   ['mAdminProd','mAdminPed','mAdminNotif','mAdminStock','mAdminRel','mAdminLoja','mAdminPag','mAdminCli'].forEach(function(id){ var b=document.getElementById(id); if(b) b.classList.remove('ativoMenu'); });
-  var mapaMenu={prod:'mAdminProd',ped:'mAdminPed',stock:'mAdminStock',rel:'mAdminRel',loja:'mAdminLoja',pag:'mAdminPag',cli:'mAdminCli'};
+  var mapaMenu={prod:'mAdminProd',ped:'mAdminPed',notif:'mAdminNotif',stock:'mAdminStock',rel:'mAdminRel',loja:'mAdminLoja',pag:'mAdminPag',cli:'mAdminCli'};
   var bm=document.getElementById(mapaMenu[aba]); if(bm) bm.classList.add('ativoMenu');
-  // Se for Stock, atualiza lista
   if(aba==='stock' && typeof atualizarListaStock==='function') atualizarListaStock();
-  // Chama a função antiga se existir (para carregar dados)
-  if(typeof mostrarAba==='function' && mostrarAba!==irParaAbaAdmin){
-    try{ mostrarAba(aba); }catch(e){}
-    // Garante de novo que só a aba certa fica visível (a função antiga pode ter falhado)
-    ['prod','ped','stock','rel','loja','pag','cli'].forEach(function(a){
-      var el=document.getElementById('aba'+a.charAt(0).toUpperCase()+a.slice(1));
-      if(el) el.style.display = (a===aba) ? 'block' : 'none';
-    });
-  }
+  if(aba==='notif') carregarNotificacoesAdmin();
+  if(aba!=='notif' && typeof mostrarAba==='function' && mostrarAba!==irParaAbaAdmin){ try{ mostrarAba(aba); }catch(e){} todas.forEach(function(a){ var id='aba'+a.charAt(0).toUpperCase()+a.slice(1); if(a==='notif') id='abaNotif'; var el=document.getElementById(id); if(el) el.style.display=(a===aba)?'block':'none'; }); }
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function verNotificacoesAdmin(){
-  var box=document.getElementById('alertaNotifAdmin');
-  var ped=document.getElementById('pedCount');
-  var qtd=ped ? ped.innerText : '0';
-  if(box){ box.style.display='block'; box.innerText='🔔 Notificação: Tens '+qtd+' pedido(s) na lista abaixo. Aceita ou recusa. O cliente recebe o sino na hora.'; setTimeout(function(){ box.style.display='none'; },6000); }
-  if(typeof iniciarListenerAdmin==='function') iniciarListenerAdmin();
+window.mostrarAba=function(aba){ irParaAbaAdmin(aba); };
+
+function carregarNotificacoesAdmin(){
+  var box=document.getElementById('listaNotificacoesAdmin'); if(!box) return;
+  box.innerHTML='A carregar notificações...';
+  firebase.firestore().collection('pedidos').where('status','==','pendente').orderBy('criadoEm','desc').get().then(function(snap){
+    if(snap.empty){ box.innerHTML='<div class="notif-card">✅ Nenhuma notificação nova.<br>Quando um cliente fizer pedido, aparece aqui.</div>'; return; }
+    var html='';
+    snap.forEach(function(doc){
+      var p=doc.data(); var id=doc.id;
+      html += '<div class="notif-card"><b>🔔 NOVO PEDIDO #'+id.slice(-6).toUpperCase()+'</b><br>Cliente: '+(p.nome||p.email||'Cliente')+'<br>Total: '+(p.total||0)+' Kz<br><span style="font-size:12px">'+(p.itens||p.resumo||'')+'</span><br><br><button class="btn" style="background:#00d26a;color:#fff" onclick="irParaAbaAdmin(\'ped\')">👉 VER E ACEITAR NO PEDIDOS</button></div>';
+    });
+    box.innerHTML=html;
+  }).catch(function(){ box.innerHTML='<div class="notif-card">Não foi possível carregar. Carrega em ATUALIZAR.</div>'; });
 }
-// Garante que mostrarAba do script.js também usa a nossa lógica
-var _mostrarAbaAntiga = window.mostrarAba;
-window.mostrarAba = function(aba){ irParaAbaAdmin(aba); };
+
+// ===== SOM + ALERTA ADMIN =====
+var _primeiroLoadPedidos=true;
+var _adminListenerOn=false;
+function iniciarListenerAdmin(){
+  if(_adminListenerOn) return; _adminListenerOn=true;
+  try{
+    firebase.firestore().collection('pedidos').where('status','==','pendente').onSnapshot(function(snap){
+      var qtd=snap.size;
+      // Não toca som no primeiro carregamento, só nos novos
+      if(!_primeiroLoadPedidos){
+        snap.docChanges().forEach(function(ch){
+          if(ch.type==='added'){
+            tocarSomNotif();
+            var box=document.getElementById('alertaNovoPedido');
+            if(box){ box.style.display='block'; box.innerText='🔔 NOVO PEDIDO! '+(ch.doc.data().nome||ch.doc.data().email||'Cliente')+' - Vai a Pedidos para aceitar/recusar/cancelar.'; }
+          }
+        });
+      }
+      _primeiroLoadPedidos=false;
+      if(qtd>0){ marcarAbaPedidosAlerta(qtd); }
+      else {
+        // Se não há pendentes, tira o vermelho - mas só se já viste
+        var vistos=localStorage.getItem('empire_pedidos_vistos_em');
+        if(vistos) marcarAbaPedidosAlerta(0);
+      }
+    });
+  }catch(e){}
+}
+
+// ===== ADMIN: APROVAR / RECUSAR / CANCELAR - CLIENTE RECEBE NOTIFICAÇÃO =====
+function enviarNotifCliente(uidCliente, emailCliente, pedidoId, tipo, titulo){
+  return firebase.firestore().collection('notificacoes').add({paraUid:uidCliente||'', paraEmail:emailCliente||'', pedidoId:pedidoId, tipo:tipo, titulo:titulo, lida:false, criadoEm:firebase.firestore.FieldValue.serverTimestamp()});
+}
+function aceitarPedidoAdmin(id, emailCliente, uidCliente){
+  firebase.firestore().collection('pedidos').doc(id).update({status:'aceito', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
+    return enviarNotifCliente(uidCliente, emailCliente, id, 'aceito', 'Pedido Aceite ✅');
+  }).then(function(){ alert('Pedido aceite! Cliente já recebeu notificação ✅'); });
+}
+function recusarPedidoAdmin(id, emailCliente, uidCliente){
+  firebase.firestore().collection('pedidos').doc(id).update({status:'recusado', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
+    return enviarNotifCliente(uidCliente, emailCliente, id, 'recusado', 'Pedido Recusado ❌');
+  }).then(function(){ alert('Pedido recusado! Cliente já recebeu notificação ❌'); });
+}
+function cancelarPedidoAdmin(id, emailCliente, uidCliente){
+  if(!confirm('Cancelar este pedido? O cliente vai receber notificação de cancelado.')) return;
+  firebase.firestore().collection('pedidos').doc(id).update({status:'cancelado', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
+    return enviarNotifCliente(uidCliente, emailCliente, id, 'cancelado', 'Pedido Cancelado 🚫');
+  }).then(function(){ alert('Pedido cancelado! Cliente já recebeu notificação 🚫'); });
+}
+
+// ===== CLIENTE: MEUS PEDIDOS + REGRA 24H =====
+function abrirMeusPedidos(){
+  var user=firebase.auth().currentUser;
+  if(!user){ if(typeof abrirLoginCliente==='function') abrirLoginCliente(); else alert('Cria conta / entra para veres os teus pedidos.'); return; }
+  var m=document.getElementById('meusPedidosModal'); if(m) m.style.display='flex';
+  carregarMeusPedidos(user);
+  // Quando abre, zera o sino
+  localStorage.setItem('empire_cliente_viu_notif_em_'+user.uid, Date.now());
+  atualizarSinoCliente(user);
+}
+function fecharMeusPedidos(){ var m=document.getElementById('meusPedidosModal'); if(m) m.style.display='none'; }
+function dataPedido(p){
+  var d=p.atualizadoEm||p.criadoEm;
+  if(d && d.toMillis) return d.toMillis();
+  if(typeof d==='number') return d;
+  return Date.now();
+}
+function carregarMeusPedidos(user){
+  var box=document.getElementById('listaMeusPedidos'); if(!box) return; box.innerHTML='A carregar...';
+  firebase.firestore().collection('pedidos').where('email','==',user.email).orderBy('criadoEm','desc').get().then(function(snap){
+    if(snap.empty){ box.innerHTML='<p>Ainda não tens pedidos.</p>'; return; }
+    var agora=Date.now(); var html=''; var temVisivel=false;
+    snap.forEach(function(doc){
+      var p=doc.data(); var id=doc.id;
+      var status=(p.status||'pendente').toLowerCase();
+      var tempoDecisao=dataPedido(p);
+      var passou24h = (agora - tempoDecisao) > 24*60*60*1000;
+      // REGRA: Pendente NUNCA apaga até Admin decidir. Decidido (aceito/recusado/cancelado) some após 24h da decisão
+      if(status==='pendente'){
+        // sempre mostra
+      } else if(status==='aceito'||status==='aceite'||status==='recusado'||status==='cancelado'){
+        if(passou24h) return; // some após 24h
+      } else {
+        if(passou24h) return;
+      }
+      temVisivel=true;
+      var statusTxt = status==='aceito'||status==='aceite' ? '✅ PEDIDO ACEITE - Podes levantar / pagar' : (status==='recusado' ? '❌ PEDIDO RECUSADO' : (status==='cancelado' ? '🚫 PEDIDO CANCELADO' : '🟡 PENDENTE - À espera do Admin'));
+      var cor = status==='pendente' ? '#ffaa00' : (status==='recusado'||status==='cancelado' ? '#ff4444' : '#00d26a');
+      var falta='';
+      if(status!=='pendente'){
+        var restam=24*60*60*1000 - (agora-tempoDecisao);
+        var horas=Math.floor(restam/3600000);
+        falta='<br><span style="font-size:11px;color:#888">Esta notificação some em '+horas+'h</span>';
+      } else {
+        falta='<br><span style="font-size:11px;color:#ffaa00">Esta notificação NUNCA some até o Admin aprovar / recusar / cancelar</span>';
+      }
+      html += '<div class="pedido-card" style="border-left:5px solid '+cor+'"><b>Pedido #'+id.slice(-6).toUpperCase()+'</b> <span class="badge-notif" style="background:'+cor+'">'+statusTxt+'</span><br><span style="font-size:12px">'+(p.itens||p.resumo||'')+'</span><br><b>Total: '+(p.total||0)+' Kz</b>'+falta+'<br><button class="btn" style="background:#25D366;color:#000;margin-top:8px" onclick="avisarWhatsApp(\''+id+'\')">📱 Avisar no WhatsApp</button></div>';
+    });
+    box.innerHTML = html || '<p>Nenhum pedido visível. Pedidos decididos há mais de 24h já sumiram. Pendentes nunca somem até decisão.</p>';
+    if(!temVisivel) box.innerHTML='<p>Nenhum pedido visível.</p>';
+  }).catch(function(){ box.innerHTML='<p>Não foi possível carregar. Tenta de novo.</p>'; });
+}
+function atualizarSinoCliente(user){
+  if(!user) return;
+  var viu=Number(localStorage.getItem('empire_cliente_viu_notif_em_'+user.uid)||0);
+  firebase.firestore().collection('pedidos').where('email','==',user.email).get().then(function(snap){
+    var agora=Date.now(); var n=0;
+    snap.forEach(function(doc){
+      var p=doc.data(); var status=(p.status||'pendente').toLowerCase();
+      if(status==='pendente') return; // pendente não é notificação de decisão, já está em Meus Pedidos
+      var tempo=dataPedido(p);
+      if((agora-tempo) > 24*60*60*1000) return; // após 24h some
+      if(tempo <= viu) return; // já viu
+      n++;
+    });
+    var b=document.getElementById('sinoCount'); if(b){ b.innerText=n; b.style.display=n>0?'flex':'none'; }
+    var b2=document.getElementById('badgePedidosMenu'); if(b2){ b2.innerText=n; b2.style.display=n>0?'inline-block':'none'; }
+    var b3=document.getElementById('badgeNotifMenu'); if(b3){ b3.innerText=n; b3.style.display=n>0?'inline-block':'none'; }
+    var b4=document.getElementById('badgeMeusPedidosTop'); if(b4){ b4.innerText=n; b4.style.display=n>0?'inline-block':'none'; }
+    // Também toca som se chegou notificação nova de decisão
+    if(n>0 && window._ultimoSinoCliente!==n){ tocarSomNotif(); window._ultimoSinoCliente=n; }
+  });
+}
+function avisarWhatsApp(id){
+  var num = (document.getElementById('cfgWhats') && document.getElementById('cfgWhats').value) || '244900000000';
+  var msg='Olá Empire Business, fiz o pedido nº '+id.slice(-6).toUpperCase()+' e estou à espera de aprovação. Podes confirmar?';
+  window.open('https://wa.me/'+num.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+}
+function marcarNotifsLidas(uid){
+  firebase.firestore().collection('notificacoes').where('paraUid','==',uid).where('lida','==',false).get().then(function(s){ s.forEach(function(d){ d.ref.update({lida:true}); }); });
+}
 
 window.addEventListener('load', ()=>{
   var p = new URLSearchParams(window.location.search);
@@ -420,76 +478,17 @@ window.salvarProduto = function(){
   if(_salvarOriginal) return _salvarOriginal.apply(this, arguments);
 };
 var _ultimosPedidosCliente = {};
-function abrirMeusPedidos(){
-  var user=firebase.auth().currentUser;
-  if(!user){ if(typeof abrirLoginCliente==='function') abrirLoginCliente(); else alert('Cria conta / entra para veres os teus pedidos.'); return; }
-  var m=document.getElementById('meusPedidosModal'); if(m) m.style.display='flex';
-  carregarMeusPedidos(user);
-  marcarNotifsLidas(user.uid);
-}
-function fecharMeusPedidos(){ var m=document.getElementById('meusPedidosModal'); if(m) m.style.display='none'; }
-function carregarMeusPedidos(user){
-  var box=document.getElementById('listaMeusPedidos'); if(!box) return; box.innerHTML='A carregar...';
-  firebase.firestore().collection('pedidos').where('email','==',user.email).orderBy('criadoEm','desc').get().then(function(snap){
-    if(snap.empty){ box.innerHTML='<p>Ainda não tens pedidos.</p>'; return; }
-    var agora=Date.now(); var html='';
-    snap.forEach(function(doc){
-      var p=doc.data(); var id=doc.id;
-      var criado=p.criadoEm && p.criadoEm.toMillis ? p.criadoEm.toMillis() : (p.criadoEm||agora);
-      if((p.status==='aceito'||p.status==='aceite') && !p.pago && (agora-criado > 24*60*60*1000)){ return; }
-      var statusTxt = p.status==='aceito'||p.status==='aceite' ? '✅ PEDIDO ACEITE' : (p.status==='recusado' ? '❌ PEDIDO RECUSADO' : '🟡 À ESPERA DE APROVAÇÃO');
-      html += '<div class="pedido-card"><b>Pedido #'+id.slice(-6).toUpperCase()+'</b> <span class="badge-notif">'+statusTxt+'</span><br><span style="font-size:12px">'+(p.itens||p.resumo||'')+'</span><br><b>Total: '+(p.total||0)+' Kz</b><br><button class="btn" style="background:#25D366;color:#000;margin-top:8px" onclick="avisarWhatsApp(\''+id+'\')">📱 Avisar no WhatsApp que já fiz o pedido</button></div>';
-    });
-    box.innerHTML = html || '<p>Nenhum pedido visível. Pedidos aceites sem pagamento após 24h são removidos da tua vista.</p>';
-  }).catch(function(){ box.innerHTML='<p>Não foi possível carregar. Tenta de novo.</p>'; });
-}
-function avisarWhatsApp(id){
-  var num = (document.getElementById('cfgWhats') && document.getElementById('cfgWhats').value) || '244900000000';
-  var msg='Olá Empire Business, fiz o pedido nº '+id.slice(-6).toUpperCase()+' e estou à espera de aprovação. Podes confirmar?';
-  window.open('https://wa.me/'+num.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
-}
-function marcarNotifsLidas(uid){
-  firebase.firestore().collection('notificacoes').where('paraUid','==',uid).where('lida','==',false).get().then(function(s){ s.forEach(function(d){ d.ref.update({lida:true}); }); });
-  var b=document.getElementById('sinoCount'); if(b){ b.style.display='none'; b.innerText='0'; }
-  var b2=document.getElementById('badgePedidosMenu'); if(b2) b2.style.display='none';
-}
 firebase.auth().onAuthStateChanged(function(user){
   if(!user) return;
   try{
+    // Sino do cliente: só notificações de decisão (aceito/recusado/cancelado) dentro de 24h
+    firebase.firestore().collection('pedidos').where('email','==',user.email).onSnapshot(function(){ atualizarSinoCliente(user); });
     firebase.firestore().collection('notificacoes').where('paraUid','==',user.uid).where('lida','==',false).onSnapshot(function(snap){
-      var n=snap.size; var b=document.getElementById('sinoCount');
-      if(b){ b.innerText=n; b.style.display = n>0 ? 'flex':'none'; }
-      var b2=document.getElementById('badgePedidosMenu'); if(b2){ b2.innerText=n; b2.style.display = n>0 ? 'inline-block':'none'; }
       snap.docChanges().forEach(function(ch){ if(ch.type==='added' && !_ultimosPedidosCliente[ch.doc.id]){ tocarSomNotif(); _ultimosPedidosCliente[ch.doc.id]=1; } });
     });
     firebase.firestore().collection('users').doc(user.uid).set({lastSeen:firebase.firestore.FieldValue.serverTimestamp(), online:true, email:user.email},{merge:true});
   }catch(e){}
 });
-var _adminListenerOn=false;
-function iniciarListenerAdmin(){
-  if(_adminListenerOn) return; _adminListenerOn=true;
-  try{
-    firebase.firestore().collection('pedidos').where('status','==','pendente').onSnapshot(function(snap){
-      snap.docChanges().forEach(function(ch){
-        if(ch.type==='added'){
-          var box=document.getElementById('alertaNovoPedido');
-          if(box){ box.style.display='block'; box.innerText='🔔 NOVO PEDIDO! '+ (ch.doc.data().nome||ch.doc.data().email||'Cliente') +' - Vai a Pedidos para aceitar/recusar.'; tocarSomNotif(); }
-          var bm=document.getElementById('badgePedidosAdminMenu'); if(bm){ bm.style.display='inline-block'; bm.innerText = (parseInt(bm.innerText||'0')+1); }
-        }
-      });
-    });
-  }catch(e){}
-}
-function aceitarPedidoAdmin(id, emailCliente, uidCliente){
-  firebase.firestore().collection('pedidos').doc(id).update({status:'aceito', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
-    return firebase.firestore().collection('notificacoes').add({paraUid:uidCliente||'', paraEmail:emailCliente||'', pedidoId:id, tipo:'aceito', titulo:'Pedido Aceite ✅', lida:false, criadoEm:firebase.firestore.FieldValue.serverTimestamp()});
-  }).then(function(){ alert('Pedido aceite! Cliente já recebeu sino + som.'); });
-}
-function recusarPedidoAdmin(id, emailCliente, uidCliente){
-  firebase.firestore().collection('pedidos').doc(id).update({status:'recusado', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
-    return firebase.firestore().collection('notificacoes').add({paraUid:uidCliente||'', paraEmail:emailCliente||'', pedidoId:id, tipo:'recusado', titulo:'Pedido Recusado ❌', lida:false, criadoEm:firebase.firestore.FieldValue.serverTimestamp()});
-  }).then(function(){ alert('Pedido recusado! Cliente já recebeu sino + som.'); });
-}
 </script>
 </body>
 </html>
