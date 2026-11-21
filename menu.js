@@ -45,7 +45,7 @@
     document.getElementById('menuLogo').textContent=logo?logo.innerText:'EMPIRE';
     var logado=!!window.clienteEmail;
     document.getElementById('menuUser').textContent=logado?('👤 '+(window.clienteNome||'Minha conta')):'👤 Visitante · cria conta para comprar';
-    document.getElementById('menuConta').innerHTML=logado?'<span>🚪</span>Sair da conta':'<span>🔐</span>Entrar / Criar conta';
+    document.getElementById('menuConta').innerHTML=logado?'<span>👤</span>Minha conta':'<span>🔐</span>Entrar / Criar conta';
     m.classList.add('aberto');
   }
   function fechar(){ m.classList.remove('aberto'); }
@@ -77,11 +77,45 @@
       case 'sobre': irPara(secaoDe('sobreTitulo')); break;
       case 'conta':
         fechar();
-        if(window.clienteEmail) sairCliente(); else abrirLoginCliente();
+        abrirLoginCliente();
         break;
     }
   });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') fechar(); });
+
+  // ===== Conta: perfil quando ligado + título com o nome atual da loja =====
+  var pm=document.createElement('div');
+  pm.id='perfilModal'; pm.className='modal';
+  pm.innerHTML=
+    '<div class="modalBox" style="text-align:center">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center"><h3 id="perfilTitulo"></h3><button id="perfilX" style="background:#ff4444;border:0;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer">X</button></div>'+
+      '<div id="perfilAvatar" style="width:70px;height:70px;background:var(--destaque,#d4af37);color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;margin:18px auto 10px"></div>'+
+      '<h3 id="perfilNome" style="font-size:20px"></h3>'+
+      '<p style="display:flex;justify-content:center;align-items:center;gap:8px;color:#00ff88;font-weight:700;margin:8px 0 18px"><span class="luz-verde"></span>Conectado</p>'+
+      '<button class="btn" id="perfilSair" style="background:rgba(0,0,0,.3);color:#fff;border:1px solid rgba(255,255,255,.14)">🚪 Sair da conta</button>'+
+    '</div>';
+  document.body.appendChild(pm);
+
+  function nomeLoja(){ return (window.LOJA&&window.LOJA.nomeLoja)||'Loja'; }
+  function fecharPerfil(){ pm.style.display='none'; }
+  function abrirPerfil(){
+    var nome=window.clienteNome||'Cliente';
+    document.getElementById('perfilTitulo').textContent='👤 Conta '+nomeLoja();
+    document.getElementById('perfilNome').textContent=nome;
+    document.getElementById('perfilAvatar').textContent=nome.charAt(0).toUpperCase();
+    pm.style.display='flex';
+  }
+  document.getElementById('perfilX').onclick=fecharPerfil;
+  pm.addEventListener('click',function(e){ if(e.target===pm) fecharPerfil(); });
+  document.getElementById('perfilSair').onclick=function(){ fecharPerfil(); sairCliente(); };
+
+  var loginOriginal=window.abrirLoginCliente;
+  window.abrirLoginCliente=function(){
+    if(window.clienteEmail){ abrirPerfil(); return; }
+    loginOriginal();
+    var h=document.querySelector('#clienteModal h3');
+    if(h) h.textContent='👤 Conta '+nomeLoja();
+  };
 
   // ===== Liga ao botão ☰ do topo =====
   var hamb=document.querySelector('.topo .iconBtn');
