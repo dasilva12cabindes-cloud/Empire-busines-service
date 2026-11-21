@@ -36,11 +36,21 @@
 #menuLateral button{width:100%;text-align:left;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0;cursor:pointer;font-size:14px}
 #overlayMenu{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99999;display:none}
 #overlayMenu.mostrar{display:block}
+/* MENU 3 BARRAS DO ADMIN */
+#menuAdminLateral{position:fixed;top:0;left:-280px;width:260px;height:100%;background:#0a2a33;z-index:100001;transition:.3s;padding:20px;box-shadow:5px 0 20px rgba(0,0,0,.5);overflow-y:auto}
+#menuAdminLateral.aberto{left:0}
+#menuAdminLateral button{width:100%;text-align:left;background:rgba(255,255,255,.08);border:0;color:#fff;padding:13px;border-radius:10px;margin:6px 0;cursor:pointer;font-size:14px;font-weight:600}
+#menuAdminLateral button.ativoMenu{background:#d4af37!important;color:#000!important}
+#overlayMenuAdmin{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100000;display:none}
+#overlayMenuAdmin.mostrar{display:block}
+.btnMenuAdmin{background:#176a7d!important;border:1px solid rgba(255,255,255,.14)!important;color:#fff!important;min-width:40px;height:40px;border-radius:14px;font-size:20px;cursor:pointer}
 </style>
 </head>
 <body>
 <div id="telaCarregamento"><div class="barras-loader"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><p>A carregar...</p></div>
 <div id="debugBox" style="display:none;background:#ff4444;color:#fff;padding:10px;margin:10px;border-radius:10px"></div>
+
+<!-- MENU 3 BARRAS DA LOJA -->
 <div id="overlayMenu" onclick="fecharMenuLateral()"></div>
 <div id="menuLateral">
   <h3 style="color:#fff">☰ Menu</h3>
@@ -51,6 +61,24 @@
   <button onclick="fecharMenuLateral();abrirLoginCliente()">🔔 Notificações <span id="badgeNotifMenu" class="badge-notif" style="display:none">0</span></button>
   <button onclick="fecharMenuLateral();mostrarLoja()" style="background:#333">← Fechar</button>
 </div>
+
+<!-- MENU 3 BARRAS DO ADMIN -->
+<div id="overlayMenuAdmin" onclick="fecharMenuAdmin()"></div>
+<div id="menuAdminLateral">
+  <h3 style="color:#fff">☰ Menu Admin</h3>
+  <button id="mAdminProd" onclick="irParaAbaAdmin('prod')">📦 Produtos</button>
+  <button id="mAdminPed" onclick="irParaAbaAdmin('ped')">🧾 Pedidos <span id="badgePedidosAdminMenu" class="badge-notif" style="display:none">0</span></button>
+  <button id="mAdminNotif" onclick="irParaAbaAdmin('ped');verNotificacoesAdmin()">🔔 Notificação do Pedido</button>
+  <button id="mAdminStock" onclick="irParaAbaAdmin('stock')">📦 Stock</button>
+  <button id="mAdminRel" onclick="irParaAbaAdmin('rel')">📊 Relatório</button>
+  <button id="mAdminLoja" onclick="irParaAbaAdmin('loja')">🏪 Loja</button>
+  <button id="mAdminPag" onclick="irParaAbaAdmin('pag')">💳 Pagamentos</button>
+  <button id="mAdminCli" onclick="irParaAbaAdmin('cli')">👥 Clientes <span id="badgeClientesAdminMenu" class="badge-notif" style="display:none">0</span></button>
+  <button onclick="fecharMenuAdmin();mostrarLoja()" style="background:#25D366;color:#000">🏠 Ver Loja</button>
+  <button onclick="fecharMenuAdmin();logout()" style="background:#ff4444">🚪 Sair</button>
+  <button onclick="fecharMenuAdmin()" style="background:#333">← Fechar</button>
+</div>
+
 <div id="areaLoja">
   <div class="topo">
     <button class="iconBtn" onclick="abrirMenuLateral()">☰</button>
@@ -107,6 +135,7 @@
     <button class="btn" style="background:#25D366;color:#000" onclick="partilharWhatsAppLoja()">💬 PARTILHAR NO WHATSAPP</button>
   </div>
 </div>
+
 <div id="loginBox" style="display:none;padding:20px">
   <h2>🔐 Entrar - Admin</h2>
   <p class="small">Só o dono da loja entra aqui.</p>
@@ -117,20 +146,29 @@
   <button class="btn" style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.14);color:#fff" onclick="esqueciSenhaAdmin()">Esqueci a senha</button>
   <button class="btn" style="background:#333;color:#fff" onclick="mostrarLoja()">← Voltar para Loja</button>
 </div>
+
 <div id="adminPanel" style="display:none;padding:15px">
-  <div style="display:flex;justify-content:space-between;align-items:center"><h2>⚙️ Painel Admin</h2><button class="btnSair" onclick="logout()">Sair</button></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+    <button class="btnMenuAdmin" onclick="abrirMenuAdmin()">☰</button>
+    <h2 style="flex:1">⚙️ Painel Admin</h2>
+    <button class="btnSair" onclick="logout()">Sair</button>
+  </div>
+  <p class="small">Carrega no ☰ para ver: Pedidos, Produtos, Stock, Notificação, Relatório, Loja, Pagamentos, Clientes</p>
   <p class="small">Link da loja: <span id="linkLojaAdmin"></span></p>
   <div id="alertaStockPainel" style="display:none;background:#ff4444;color:#fff;padding:12px;border-radius:10px;margin:10px 0;font-weight:700"></div>
   <div id="alertaNovoPedido" style="display:none;background:#00d26a;color:#fff;padding:12px;border-radius:10px;margin:10px 0;font-weight:700"></div>
+  <div id="alertaNotifAdmin" style="display:none;background:#ffaa00;color:#000;padding:12px;border-radius:10px;margin:10px 0;font-weight:700"></div>
+
   <div class="filtros">
-    <button id="tabProd" class="ativo" onclick="mostrarAba('prod')">📦 Produtos</button>
-    <button id="tabPed" onclick="mostrarAba('ped')">🧾 Pedidos (<span id="pedCount">0</span>)</button>
-    <button id="tabStock" onclick="mostrarAba('stock')">📦 Stock</button>
-    <button id="tabRel" onclick="mostrarAba('rel')">📊 Relatório</button>
-    <button id="tabLoja" onclick="mostrarAba('loja')">🏪 Loja</button>
-    <button id="tabPag" onclick="mostrarAba('pag')">💳 Pagamentos</button>
-    <button id="tabCli" onclick="mostrarAba('cli')">👥 Clientes (<span id="cliCount">0</span>)</button>
+    <button id="tabProd" class="ativo" onclick="irParaAbaAdmin('prod')">📦 Produtos</button>
+    <button id="tabPed" onclick="irParaAbaAdmin('ped')">🧾 Pedidos (<span id="pedCount">0</span>)</button>
+    <button id="tabStock" onclick="irParaAbaAdmin('stock')">📦 Stock</button>
+    <button id="tabRel" onclick="irParaAbaAdmin('rel')">📊 Relatório</button>
+    <button id="tabLoja" onclick="irParaAbaAdmin('loja')">🏪 Loja</button>
+    <button id="tabPag" onclick="irParaAbaAdmin('pag')">💳 Pagamentos</button>
+    <button id="tabCli" onclick="irParaAbaAdmin('cli')">👥 Clientes (<span id="cliCount">0</span>)</button>
   </div>
+
   <div id="abaProd">
     <h3 id="adminTitle">Adicionar Produto</h3>
     <input id="nome" placeholder="Nome do produto - ex: Relógio Casio">
@@ -149,12 +187,15 @@
     <button class="btn" id="btnCancelar" style="display:none;background:#333;color:#fff" onclick="cancelarEdicao()">Cancelar Edição</button>
     <div id="produtosAdmin"></div>
   </div>
+
   <div id="abaStock" style="display:none">
     <h3>📦 Controlo de Stock</h3>
     <p class="small">🟢 Bom &nbsp; 🟡 Perto do mínimo &nbsp; 🔴 Stock Baixo &nbsp; ⚫ Esgotado</p>
     <div id="listaStockAdmin"></div>
   </div>
-  <div id="abaPed" style="display:none"><h3>Pedidos</h3><p class="small">Aceite = cliente recebe sino + som. Recusado = cliente também recebe. Pedido aceite sem pagamento some para o cliente após 24h, mas fica aqui para ti até apagares.</p><div id="listaPedidos"></div></div>
+
+  <div id="abaPed" style="display:none"><h3>🧾 Pedidos / 🔔 Notificação do Pedido</h3><p class="small">Aceite = cliente recebe sino + som. Recusado = cliente também recebe. Pedido aceite sem pagamento some para o cliente após 24h, mas fica aqui para ti até apagares.</p><div id="listaPedidos"></div></div>
+
   <div id="abaRel" style="display:none">
     <h3>📊 Relatório</h3>
     <button class="btn" onclick="gerarRelatorioMensal()">🖨️ GERAR RELATÓRIO DO MÊS EM PAPEL</button>
@@ -165,6 +206,7 @@
     <h4>Vendas do dia</h4><div id="listaRel"></div>
     <h4>Mais vendidos</h4><div id="listaTop"></div>
   </div>
+
   <div id="abaLoja" style="display:none">
     <h3>🏪 Personalizar Loja</h3>
     <input id="cfgNomeLoja" placeholder="Nome da loja"><input id="cfgSloganLoja" placeholder="Slogan"><input id="cfgBannerTitulo" placeholder="Título do banner"><input id="cfgBannerSub" placeholder="Subtítulo"><input id="cfgSobreTitulo" placeholder="Título Sobre"><textarea id="cfgSobreTexto" placeholder="Texto Sobre"></textarea><input id="cfgVisao" placeholder="Visão"><input id="cfgMissao" placeholder="Missão"><input id="cfgSobreExtra" placeholder="Info extra"><input id="cfgFooter" placeholder="Rodapé">
@@ -172,14 +214,17 @@
     <label>Banner</label><input type="file" id="inputBanner" accept="image/*" onchange="lerBanner(event)"><img id="prevBanner" style="display:none;width:100%;border-radius:10px"><button class="btn" style="background:#333;color:#fff" onclick="removerBanner()">Remover Banner</button>
     <button class="btn" onclick="salvarLoja()">💾 SALVAR LOJA</button>
   </div>
+
   <div id="abaPag" style="display:none">
     <h3>💳 Pagamentos</h3>
     <input id="cfgExpress" placeholder="Número Express"><input id="cfgNomeExpress" placeholder="Nome Express"><input id="cfgUnitel" placeholder="Número Unitel Money"><input id="cfgNomeUnitel" placeholder="Nome Unitel"><input id="cfgPaypay" placeholder="Número PayPay"><input id="cfgNomePaypay" placeholder="Nome PayPay"><input id="cfgIban" placeholder="IBAN"><input id="cfgBanco" placeholder="Banco"><input id="cfgNomeBanco" placeholder="Nome Banco"><input id="cfgWhats" placeholder="WhatsApp da loja - 244...">
     <button class="btn" onclick="salvarConfigPag()">💾 SALVAR PAGAMENTOS</button>
   </div>
+
   <div id="abaCli" style="display:none"><h3>👥 Clientes</h3><div id="listaClientes"></div></div>
   <button class="btn" style="background:#333;color:#fff" onclick="mostrarLoja()">← Voltar para Loja</button>
 </div>
+
 <div id="clienteModal" class="modal">
   <div class="modalBox">
     <div style="display:flex;justify-content:space-between"><h3>👤 Conta EMPIRE</h3><button onclick="fecharLoginCliente()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px;cursor:pointer">X</button></div>
@@ -199,26 +244,33 @@
     <p id="msgCliente" style="color:#ffb3b3;font-size:13px;margin-top:8px"></p>
   </div>
 </div>
+
 <div id="meusPedidosModal" class="modal">
   <div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>📦 Meus Pedidos</h3><button onclick="fecharMeusPedidos()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p class="small">Aqui vês se o teu pedido foi aceite ou recusado.</p><div id="listaMeusPedidos"></div></div>
 </div>
+
 <div id="cartModal" class="modal">
   <div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>🛒 Carrinho</h3><button onclick="fecharCarrinho()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><div id="cartItems"></div><h3 id="cartTotal">Total: 0 Kz</h3><button class="btn" onclick="abrirPagamento()">💳 PAGAR</button></div>
 </div>
+
 <div id="pagModal" class="modal">
   <div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>💳 Pagamento</h3><button onclick="fecharPagamento()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p id="pagCliente" class="small"></p><pre id="pagResumo" style="white-space:pre-wrap;background:rgba(0,0,0,.25);padding:10px;border-radius:12px;font-size:12px"></pre><input id="cliNome" placeholder="Teu nome"><input id="cliWhats" placeholder="WhatsApp"><input id="cliEmailPag" placeholder="E-mail para recibo (opcional)"><select id="metodoPag" onchange="mostrarDadosPag()"><option value="">Escolhe método...</option><option>Unitel Money</option><option>Multicaixa Express</option><option>PayPay</option><option>Transferência via IBAN</option></select><div id="infoPag" style="display:none;background:rgba(0,0,0,.25);padding:12px;border-radius:12px;white-space:pre-wrap;font-size:13px"></div><label style="font-size:13px">📎 Comprovativo (foto ou PDF)</label><input type="file" id="inputComp" accept="image/*,.pdf" onchange="lerComprovativo(event)"><div id="prevCompBox"></div><p id="compMsg" style="color:#ff8888;font-size:12px">⚠️ Ainda não subiste o comprovativo</p><button class="btn" onclick="confirmarPedido()">✅ CONFIRMAR PEDIDO</button><button class="btn" style="background:#333;color:#fff" onclick="recuarParaCarrinho()">← Voltar ao Carrinho</button></div>
 </div>
+
 <div id="imgModal" class="modal" onclick="fecharImg()"><img id="imgGrande" style="max-width:95%;max-height:90vh;border-radius:12px"></div>
+
 <div class="barraBaixo">
   <button class="ativo" onclick="mostrarLoja()"><span>🏠</span>Loja</button>
   <button onclick="verCarrinho()"><span>🛒</span>Carrinho</button>
   <button onclick="abrirLoginCliente()"><span>👤</span>Conta</button>
 </div>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="script.js?v=10"></script>
 <script src="menu.js?v=10"></script>
+
 <div id="novoLogin">
   <div class="card">
     <h2>Bem-vindo de Volta</h2>
@@ -233,21 +285,57 @@
     <p id="loginErro" style="color:#ff6b6b;font-size:13px;margin-top:10px"></p>
   </div>
 </div>
+
 <script>
 try{ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL); }catch(e){}
 function linkLimpo(){ return window.location.origin + window.location.pathname; }
 function getLinkAdmin(){ return linkLimpo() + "?admin=1"; }
-function copiarLinkLoja(){
-  var l=linkLimpo();
-  if(navigator.clipboard) navigator.clipboard.writeText(l);
-  alert('Link da Loja copiado! ✅ Universal\nCada cliente entra com a sua conta.\n'+l);
-}
-function copiarLinkAdmin(){
-  var l=getLinkAdmin();
-  if(navigator.clipboard) navigator.clipboard.writeText(l);
-  alert('Link ADMIN copiado! 🔐\nAbre direto na tela Admin com e-mail fixo.\nSó falta a palavra-passe.\n'+l);
-}
+function copiarLinkLoja(){ var l=linkLimpo(); if(navigator.clipboard) navigator.clipboard.writeText(l); alert('Link da Loja copiado! ✅ Universal\nCada cliente entra com a sua conta.\n'+l); }
+function copiarLinkAdmin(){ var l=getLinkAdmin(); if(navigator.clipboard) navigator.clipboard.writeText(l); alert('Link ADMIN copiado! 🔐\nAbre direto na tela Admin com e-mail fixo.\nSó falta a palavra-passe.\n'+l); }
 function partilharWhatsAppLoja(){ var l=linkLimpo(); window.open('https://wa.me/?text='+encodeURIComponent('Visita a minha loja EMPIRE: '+l),'_blank'); }
+
+// ===== MENU 3 BARRAS DO ADMIN - NOVO =====
+function abrirMenuAdmin(){ document.getElementById('menuAdminLateral').classList.add('aberto'); document.getElementById('overlayMenuAdmin').classList.add('mostrar'); }
+function fecharMenuAdmin(){ document.getElementById('menuAdminLateral').classList.remove('aberto'); document.getElementById('overlayMenuAdmin').classList.remove('mostrar'); }
+function irParaAbaAdmin(aba){
+  fecharMenuAdmin();
+  // Esconde TODAS as abas, só mostra a escolhida
+  ['prod','ped','stock','rel','loja','pag','cli'].forEach(function(a){
+    var el=document.getElementById('aba'+a.charAt(0).toUpperCase()+a.slice(1));
+    if(el) el.style.display = (a===aba) ? 'block' : 'none';
+  });
+  // Marca botão ativo nos filtros
+  ['tabProd','tabPed','tabStock','tabRel','tabLoja','tabPag','tabCli'].forEach(function(id){ var b=document.getElementById(id); if(b) b.classList.remove('ativo'); });
+  var mapa={prod:'tabProd',ped:'tabPed',stock:'tabStock',rel:'tabRel',loja:'tabLoja',pag:'tabPag',cli:'tabCli'};
+  var bt=document.getElementById(mapa[aba]); if(bt) bt.classList.add('ativo');
+  // Marca botão ativo no menu lateral
+  ['mAdminProd','mAdminPed','mAdminNotif','mAdminStock','mAdminRel','mAdminLoja','mAdminPag','mAdminCli'].forEach(function(id){ var b=document.getElementById(id); if(b) b.classList.remove('ativoMenu'); });
+  var mapaMenu={prod:'mAdminProd',ped:'mAdminPed',stock:'mAdminStock',rel:'mAdminRel',loja:'mAdminLoja',pag:'mAdminPag',cli:'mAdminCli'};
+  var bm=document.getElementById(mapaMenu[aba]); if(bm) bm.classList.add('ativoMenu');
+  // Se for Stock, atualiza lista
+  if(aba==='stock' && typeof atualizarListaStock==='function') atualizarListaStock();
+  // Chama a função antiga se existir (para carregar dados)
+  if(typeof mostrarAba==='function' && mostrarAba!==irParaAbaAdmin){
+    try{ mostrarAba(aba); }catch(e){}
+    // Garante de novo que só a aba certa fica visível (a função antiga pode ter falhado)
+    ['prod','ped','stock','rel','loja','pag','cli'].forEach(function(a){
+      var el=document.getElementById('aba'+a.charAt(0).toUpperCase()+a.slice(1));
+      if(el) el.style.display = (a===aba) ? 'block' : 'none';
+    });
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function verNotificacoesAdmin(){
+  var box=document.getElementById('alertaNotifAdmin');
+  var ped=document.getElementById('pedCount');
+  var qtd=ped ? ped.innerText : '0';
+  if(box){ box.style.display='block'; box.innerText='🔔 Notificação: Tens '+qtd+' pedido(s) na lista abaixo. Aceita ou recusa. O cliente recebe o sino na hora.'; setTimeout(function(){ box.style.display='none'; },6000); }
+  if(typeof iniciarListenerAdmin==='function') iniciarListenerAdmin();
+}
+// Garante que mostrarAba do script.js também usa a nossa lógica
+var _mostrarAbaAntiga = window.mostrarAba;
+window.mostrarAba = function(aba){ irParaAbaAdmin(aba); };
+
 window.addEventListener('load', ()=>{
   var p = new URLSearchParams(window.location.search);
   if(p.get('admin')==='1'){
@@ -264,24 +352,14 @@ window.addEventListener('load', ()=>{
 function esqueciSenhaNovoLogin(){
   var email = document.getElementById('loginEmail').value.trim();
   if(!email){ alert('Primeiro mete o teu e-mail'); return; }
-  firebase.auth().sendPasswordResetEmail(email).then(function(){
-    alert('Link enviado para ' + email + ' ✅ Vai ao teu Gmail e cria uma passe nova.');
-  }).catch(function(e){
-    alert('Não foi possível enviar. Essa conta ainda não existe no Firebase. Cria primeiro em Firebase > Authentication > Add user.');
-  });
+  firebase.auth().sendPasswordResetEmail(email).then(function(){ alert('Link enviado para ' + email + ' ✅ Vai ao teu Gmail e cria uma passe nova.'); }).catch(function(e){ alert('Não foi possível enviar. Essa conta ainda não existe no Firebase. Cria primeiro em Firebase > Authentication > Add user.'); });
 }
 function criarContaAdminNovo(){
   document.getElementById('novoLogin').classList.remove('mostrar');
   if(typeof abrirLoginCliente === 'function'){
     abrirLoginCliente();
-    setTimeout(function(){
-      if(typeof mostrarTelaCriar === 'function') mostrarTelaCriar();
-      var e = document.getElementById('cliEmailCriar');
-      if(e) e.value = 'dasilva12cabindes@gmail.com';
-    }, 300);
-  } else {
-    alert('Para criar a conta Admin, usa o Firebase Console > Authentication > Add user com o e-mail dasilva12cabindes@gmail.com');
-  }
+    setTimeout(function(){ if(typeof mostrarTelaCriar === 'function') mostrarTelaCriar(); var e = document.getElementById('cliEmailCriar'); if(e) e.value = 'dasilva12cabindes@gmail.com'; }, 300);
+  } else { alert('Para criar a conta Admin, usa o Firebase Console > Authentication > Add user com o e-mail dasilva12cabindes@gmail.com'); }
 }
 { document.getElementById('menuLateral').classList.remove('aberto'); document.getElementById('overlayMenu').classList.remove('mostrar'); }
 function tocarSomNotif(){ try{ var a=new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg'); a.play(); }catch(e){} }
@@ -304,9 +382,7 @@ mostrarLoginAdmin=function(){
       if(typeof mostrarAdmin==='function') mostrarAdmin();
       else if(document.getElementById('adminPanel')) document.getElementById('adminPanel').style.display='block';
       iniciarListenerAdmin();
-    } else {
-      document.getElementById('novoLogin').classList.add('mostrar');
-    }
+    } else { document.getElementById('novoLogin').classList.add('mostrar'); }
   });
 };
 if(location.search.includes('admin=1')){ setTimeout(function(){ if(typeof mostrarLoginAdmin==='function') mostrarLoginAdmin(); }, 800); }
@@ -384,9 +460,7 @@ firebase.auth().onAuthStateChanged(function(user){
       var n=snap.size; var b=document.getElementById('sinoCount');
       if(b){ b.innerText=n; b.style.display = n>0 ? 'flex':'none'; }
       var b2=document.getElementById('badgePedidosMenu'); if(b2){ b2.innerText=n; b2.style.display = n>0 ? 'inline-block':'none'; }
-      snap.docChanges().forEach(function(ch){
-        if(ch.type==='added' && !_ultimosPedidosCliente[ch.doc.id]){ tocarSomNotif(); _ultimosPedidosCliente[ch.doc.id]=1; }
-      });
+      snap.docChanges().forEach(function(ch){ if(ch.type==='added' && !_ultimosPedidosCliente[ch.doc.id]){ tocarSomNotif(); _ultimosPedidosCliente[ch.doc.id]=1; } });
     });
     firebase.firestore().collection('users').doc(user.uid).set({lastSeen:firebase.firestore.FieldValue.serverTimestamp(), online:true, email:user.email},{merge:true});
   }catch(e){}
@@ -400,6 +474,7 @@ function iniciarListenerAdmin(){
         if(ch.type==='added'){
           var box=document.getElementById('alertaNovoPedido');
           if(box){ box.style.display='block'; box.innerText='🔔 NOVO PEDIDO! '+ (ch.doc.data().nome||ch.doc.data().email||'Cliente') +' - Vai a Pedidos para aceitar/recusar.'; tocarSomNotif(); }
+          var bm=document.getElementById('badgePedidosAdminMenu'); if(bm){ bm.style.display='inline-block'; bm.innerText = (parseInt(bm.innerText||'0')+1); }
         }
       });
     });
