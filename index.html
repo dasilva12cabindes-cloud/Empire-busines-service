@@ -267,8 +267,30 @@
 // ===== CORREÇÕES + STOCK + NOTIFICAÇÕES =====
 try{ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL); }catch(e){}
 function linkLimpo(){ return window.location.origin + window.location.pathname; }
-function copiarLinkLoja(){ var l=linkLimpo(); if(navigator.clipboard) navigator.clipboard.writeText(l); var el=document.getElementById('linkLojaTexto'); if(el) el.innerText=l; alert('Link copiado: '+l); }
+const ADMIN_KEY = "empire2026";
+function getLinkAdmin(){ return linkLimpo() + "?admin=" + ADMIN_KEY; }
+
+function copiarLinkLoja(){
+  var l=linkLimpo();
+  if(navigator.clipboard) navigator.clipboard.writeText(l);
+  var el=document.getElementById('linkLojaTexto'); if(el) el.innerText=l;
+  alert('Link da Loja copiado! ✅ Universal\n'+l);
+}
+function copiarLinkAdmin(){
+  var l=getLinkAdmin();
+  if(navigator.clipboard) navigator.clipboard.writeText(l);
+  var el=document.getElementById('linkLojaAdmin'); if(el) el.innerText=l;
+  alert('Link SECRETO do Admin copiado! 🤫\nNão partilhes!\n'+l);
+}
 function partilharWhatsAppLoja(){ var l=linkLimpo(); window.open('https://wa.me/?text='+encodeURIComponent('Visita a minha loja EMPIRE: '+l),'_blank'); }
+
+// Se abrir com ?admin=... abre logo Admin
+(function(){
+  var p=new URLSearchParams(window.location.search);
+  if(p.get('admin')===ADMIN_KEY){
+    setTimeout(()=>{ var b=document.getElementById('btnAdmin'); if(b) b.click(); }, 500);
+  }
+})();
 function abrirMenuLateral(){ document.getElementById('menuLateral').classList.add('aberto'); document.getElementById('overlayMenu').classList.add('mostrar'); }
 function fecharMenuLateral(){ document.getElementById('menuLateral').classList.remove('aberto'); document.getElementById('overlayMenu').classList.remove('mostrar'); }
 function tocarSomNotif(){ try{ var a=new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg'); a.play(); }catch(e){} }
