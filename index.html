@@ -233,10 +233,19 @@ function entrarNovoLogin(){
   document.getElementById('loginErro').innerText='A entrar...';
   firebase.auth().signInWithEmailAndPassword(email,senha).then(function(){
     document.getElementById('novoLogin').classList.remove('mostrar');
-    location.reload();
+    window.location.href = window.location.pathname;
   }).catch(function(e){document.getElementById('loginErro').innerText='E-mail ou senha errada';});
 }
-mostrarLoginAdmin=function(){ document.getElementById('novoLogin').classList.add('mostrar'); };
+mostrarLoginAdmin=function(){
+  var user = firebase.auth().currentUser;
+  if(user){
+    document.getElementById('novoLogin').classList.remove('mostrar');
+    if(typeof mostrarAdmin==='function') mostrarAdmin();
+    else if(document.getElementById('adminPanel')) document.getElementById('adminPanel').style.display='block';
+    return;
+  }
+  document.getElementById('novoLogin').classList.add('mostrar');
+};
 </script>
 </body>
 </html>
