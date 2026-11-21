@@ -189,5 +189,12 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="script.js?v=6"></script>
 <script src="menu.js?v=6"></script>
+<script>
+if(location.search.includes('admin=1')){
+  setTimeout(function(){
+    if(typeof mostrarLoginAdmin==='function') mostrarLoginAdmin();
+  }, 1200);
+}
+</script>
 </body>
 </html>
