@@ -195,6 +195,52 @@ if(location.search.includes('admin=1')){
     if(typeof mostrarLoginAdmin==='function') mostrarLoginAdmin();
   }, 1200);
 }
+<style>
+#novoLogin{position:fixed;inset:0;background:#0f0f0f;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;font-family:sans-serif}
+#novoLogin.mostrar{display:flex}
+#novoLogin .card{background:#232323;width:100%;max-width:380px;padding:35px 28px 28px;border-radius:14px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+#novoLogin h2{color:#fff;font-size:30px;margin:0}
+#novoLogin p.sub{color:#888;font-size:13px;margin:8px 0 28px}
+#novoLogin label{display:block;text-align:left;color:#fff;font-size:13px;font-weight:700;margin:0 0 8px 8px}
+#novoLogin .campo{background:#3a3f47;border-radius:30px;display:flex;align-items:center;padding:11px 15px;margin-bottom:20px}
+#novoLogin .campo span{margin-right:8px}
+#novoLogin input{background:transparent;border:0;outline:0;color:#fff;width:100%;font-size:15px}
+#novoLogin input::placeholder{color:#999}
+#novoLogin .btnLogin{background:#00d26a;color:#fff;border:0;width:180px;padding:11px;border-radius:5px;font-size:16px;font-weight:700;margin:5px auto 18px;display:block}
+#novoLogin .criar{color:#777;font-size:13px}
+#novoLogin .criar b{color:#2b6cb0}
+#novoLogin .faixa{position:fixed;left:0;right:0;bottom:0;height:70px;background:#e65a4a}
+</style>
+
+<div id="novoLogin">
+  <div class="card">
+    <h2>Welcome Back</h2>
+    <p class="sub">Login to continue</p>
+    <label>Username</label>
+    <div class="campo"><span>📧</span><input id="loginEmail" type="email" placeholder="Username"></div>
+    <label>Password</label>
+    <div class="campo"><span>🔒</span><input id="loginSenha" type="password" placeholder="Password"></div>
+    <button class="btnLogin" onclick="entrarNovoLogin()">Login</button>
+    <div class="criar">Don't have an account ? <b onclick="document.getElementById('novoLogin').classList.remove('mostrar')">Create an account</b></div>
+    <p id="loginErro" style="color:#ff6b6b;font-size:13px;margin-top:10px"></p>
+  </div>
+  <div class="faixa"></div>
+</div>
+
+<script>
+function entrarNovoLogin(){
+  var email=document.getElementById('loginEmail').value.trim();
+  var senha=document.getElementById('loginSenha').value;
+  if(!email||!senha){document.getElementById('loginErro').innerText='Preenche e-mail e senha';return;}
+  document.getElementById('loginErro').innerText='A entrar...';
+  firebase.auth().signInWithEmailAndPassword(email,senha).then(function(){
+    document.getElementById('novoLogin').classList.remove('mostrar');
+    location.reload();
+  }).catch(function(e){document.getElementById('loginErro').innerText='E-mail ou senha errada';});
+}
+var _oldMostrar = typeof mostrarLoginAdmin==='function' ? mostrarLoginAdmin : null;
+mostrarLoginAdmin=function(){ document.getElementById('novoLogin').classList.add('mostrar'); };
+</script>
 </script>
 </body>
 </html>
