@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=9">
+<link rel="stylesheet" href="style.css?v=10">
 <style>
 #novoLogin{position:fixed;inset:0;background:#0f0f0f;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;font-family:sans-serif}
 #novoLogin.mostrar{display:flex}
@@ -23,7 +23,7 @@
 #novoLogin .btnLogin{background:#00d26a;color:#fff;border:0;width:180px;padding:11px;border-radius:5px;font-size:16px;font-weight:700;margin:5px auto 18px;display:block;cursor:pointer}
 #novoLogin .criar{color:#777;font-size:13px}
 #novoLogin .criar b{color:#2b6cb0;cursor:pointer}
-#novoLogin .faixa{position:fixed;left:0;right:0;bottom:0;height:70px;background:#e65a4a}
+#novoLogin .esqueci{color:#2b6cb0;cursor:pointer;font-size:13px;margin:5px 0}
 /* SINO + STOCK + PEDIDOS */
 #sinoBtn{position:relative}
 #sinoCount{position:absolute;top:-6px;right:-6px;background:#ff4444;color:#fff;font-size:11px;min-width:18px;height:18px;border-radius:50%;display:none;align-items:center;justify-content:center;padding:0 4px}
@@ -243,10 +243,10 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="script.js?v=9"></script>
-<script src="menu.js?v=9"></script>
+<script src="script.js?v=10"></script>
+<script src="menu.js?v=10"></script>
 
-<!-- LOGIN ADMIN NOVO -->
+<!-- LOGIN ADMIN NOVO - SEM BARRA VERMELHA + COM ESQUECI SENHA -->
 <div id="novoLogin">
   <div class="card">
     <h2>Bem-vindo de Volta</h2>
@@ -256,10 +256,10 @@
     <label>Palavra-passe</label>
     <div class="campo"><span>🔒</span><input id="loginSenha" type="password" placeholder="Tua palavra-passe"><span onclick="var i=document.getElementById('loginSenha'); if(i.type==='password'){i.type='text'; this.innerText='🙈';} else {i.type='password'; this.innerText='👁️';}" style="cursor:pointer;margin-left:8px">👁️</span></div>
     <button class="btnLogin" onclick="entrarNovoLogin()">ENTRAR</button>
+    <p class="esqueci" onclick="esqueciSenhaNovoLogin()">Esqueci a senha?</p>
     <div class="criar">Não tens conta? <b onclick="criarContaAdminNovo()">Criar conta</b></div>
     <p id="loginErro" style="color:#ff6b6b;font-size:13px;margin-top:10px"></p>
   </div>
-  <div class="faixa"></div>
 </div>
 
 <script>
@@ -296,10 +296,20 @@ window.addEventListener('load', ()=>{
   }
 });
 
+// ===== NOVO: ESQUECI A SENHA - ADMIN =====
+function esqueciSenhaNovoLogin(){
+  var email = document.getElementById('loginEmail').value.trim();
+  if(!email){ alert('Primeiro mete o teu e-mail'); return; }
+  firebase.auth().sendPasswordResetEmail(email).then(function(){
+    alert('Link enviado para ' + email + ' ✅ Vai ao teu Gmail e cria uma passe nova.');
+  }).catch(function(e){
+    alert('Não foi possível enviar. Essa conta ainda não existe no Firebase. Cria primeiro em Firebase > Authentication > Add user.');
+  });
+}
+
 // ===== CORRIGIDO: Criar conta Admin agora abre mesmo a tela de criar =====
 function criarContaAdminNovo(){
   document.getElementById('novoLogin').classList.remove('mostrar');
-  // Abre o modal de cliente na aba Criar Conta
   if(typeof abrirLoginCliente === 'function'){
     abrirLoginCliente();
     setTimeout(function(){
