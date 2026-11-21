@@ -213,12 +213,20 @@ if(location.search.includes('admin=1')){
 </style>
 <div id="novoLogin">
   <div class="card">
-    <h2>Welcome Back</h2>
-    <p class="sub">Login to continue</p>
-    <label>Username</label>
-    <div class="campo"><span>📧</span><input id="loginEmail" type="email" placeholder="Username"></div>
+    <h2>Bem-vindo de Volta</h2>
+    <p class="sub">Entra para continuar</p>
+    <label>E-mail</label>
+    <div class="campo"><span>📧</span><input id="loginEmail" type="email" placeholder="Teu e-mail"></div>
+    <label>Palavra-passe</label>
+    <div class="campo"><span>🔒</span><input id="loginSenha" type="password" placeholder="Tua palavra-passe"><span id="olhoSenha" onclick="var i=document.getElementById('loginSenha'); if(i.type==='password'){i.type='text'; this.innerText='🙈';} else {i.type='password'; this.innerText='👁️';}" style="cursor:pointer;margin-left:8px">👁️</span></div>
+    <button class="btnLogin" onclick="entrarNovoLogin()">ENTRAR</button>
+    <div class="criar">Não tens conta? <b onclick="document.getElementById('novoLogin').classList.remove('mostrar')">Criar conta</b></div>
+    <p id="loginErro" style="color:#ff6b6b;font-size:13px;margin-top:10px"></p>
+  </div>
+  <div class="faixa"></div>
+</div>
     <label>Password</label>
-    <div class="campo"><span>🔒</span><input id="loginSenha" type="password" placeholder="Password"></div>
+    <div class="campo"><span></span><input id="loginSenha" type="password" placeholder="Password"></div>
     <button class="btnLogin" onclick="entrarNovoLogin()">Login</button>
     <div class="criar">Don't have an account ? <b onclick="document.getElementById('novoLogin').classList.remove('mostrar')">Create an account</b></div>
     <p id="loginErro" style="color:#ff6b6b;font-size:13px;margin-top:10px"></p>
