@@ -353,6 +353,7 @@ function logout(){localStorage.removeItem('lc_email');clienteEmail='';mostrarLoj
 function irParaAbaAdmin(aba){
   var mapa={prod:'abaProd',ped:'abaPed',cli:'abaCli'};
   var tit={prod:'📦 Produtos - Adicionar',ped:'🧾 Pedidos - Confirmar',cli:'👥 Clientes - Quem comprou'};
+  ['abaProd','abaPed','abaCli'].forEach(function(id){var a=$id(id);if(a)a.style.display='none';});
   var el=$id(mapa[aba]); if(!el) return;
   if(aba==='ped') carregarPedidosAdmin();
   if(aba==='prod') renderProdutosAdmin();
