@@ -113,3 +113,12 @@ p:has(#linkLojaAdmin){display:none!important}
   padding: 15px;
   color: #fff;
 }
+.corneta-loader{
+  font-size: 48px;
+  display: inline-block;
+  animation: girarCorneta 1s linear infinite;
+}
+@keyframes girarCorneta{
+  from{ transform: rotate(0deg); }
+  to{ transform: rotate(360deg); }
+}
