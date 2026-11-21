@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0a2a33">
 <title>LISSANTE - Loja Oficial</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=21">
+<link rel="stylesheet" href="style.css?v=22">
 <style>
 *{font-family:'Inter',sans-serif!important}
 body{background:#0a2a33!important}
@@ -37,7 +37,7 @@ body{background:#0a2a33!important}
 .secaoTop b{color:#fff!important;font-size:16px!important;font-weight:800!important}
 .secao p,.secao h3{color:#fff!important}
 #produtos,#produtosDestaque{display:flex!important;gap:12px!important;overflow-x:auto!important;padding:4px 2px 10px!important}
-#produtos>div,#produtosDestaque>div{flex:0 0 170px!important;background:#0a2a33!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:14px!important;overflow:hidden!important;padding:0!important;color:#fff!important}
+#produtos>div,#produtosDestaque>div{flex:0 0 170px!important;background:#0a2a33!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:14px!important;overflow:hidden!important;padding:0!important;color:#fff!important;cursor:pointer!important}
 #produtos img,#produtosDestaque img{width:100%!important;height:150px!important;object-fit:cover!important}
 .barraBaixo{position:fixed!important;bottom:0;left:0;right:0;background:#0a2a33!important;border-top:1px solid rgba(255,255,255,.12)!important;display:flex!important;justify-content:space-around!important;padding:6px 0 8px!important;z-index:9999!important}
 .barraBaixo button{background:none!important;border:0!important;color:#bcd0d2!important;font-size:10px!important;display:flex!important;flex-direction:column!important;align-items:center!important;flex:1;white-space:nowrap!important;min-width:0!important}
@@ -229,11 +229,41 @@ body{background:#0a2a33!important}
     <p style="font-size:12px;color:#999;margin-top:10px">LISSANTE • Pagamento seguro</p>
   </div>
 </div>
+<!-- TELA DE DETALHES DO PRODUTO - IGUAL WHATSAPP -->
+<div id="telaDetalhe" style="display:none;position:fixed;inset:0;background:#0a2a33;z-index:999999;overflow-y:auto">
+  <div style="position:sticky;top:0;background:#0a2a33;padding:12px;display:flex;align-items:center;gap:12px;z-index:10;border-bottom:1px solid rgba(255,255,255,.12)">
+    <button onclick="fecharDetalheProduto()" style="background:none;border:0;color:#fff;font-size:24px">←</button>
+    <b id="detTopoNome" style="color:#fff;font-size:16px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Produto</b>
+    <button onclick="verCarrinho()" style="background:none;border:0;color:#fff;font-size:20px">🛒 <span id="detCartCount">0</span></button>
+  </div>
+  <img id="detImg" src="" style="width:100%;height:320px;object-fit:cover;display:block">
+  <div style="display:flex;gap:6px;padding:10px;overflow-x:auto" id="detMiniFotos"></div>
+  <div style="padding:16px">
+    <h2 id="detNome" style="color:#fff;font-size:22px"></h2>
+    <p id="detDesc" style="color:#bcd0d2;margin:8px 0;font-size:14px;line-height:1.5"></p>
+    <div style="display:flex;align-items:center;gap:10px;margin:10px 0">
+      <b id="detPreco" style="color:#d4af37;font-size:26px"></b>
+      <span id="detDesconto" style="background:#ff4444;color:#fff;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:800;display:none"></span>
+    </div>
+    <p id="detStock" style="color:#00ff88;font-size:13px;font-weight:700"></p>
+    <div id="detCoresBox" style="margin:16px 0"><h4 style="color:#fff;margin-bottom:8px">Cor</h4><div id="detCores"></div></div>
+    <div id="detTamBox" style="margin:16px 0"><h4 style="color:#fff;margin-bottom:8px">Tamanho</h4><div id="detTamanhos"></div></div>
+    <div style="display:flex;align-items:center;gap:12px;margin:18px 0;background:#14383d;padding:12px;border-radius:12px">
+      <button onclick="detMenos()" style="width:40px;height:40px;border-radius:50%;border:0;background:#fff;font-size:22px;font-weight:800">−</button>
+      <b id="detQtd" style="color:#fff;font-size:20px;flex:1;text-align:center">1</b>
+      <button onclick="detMais()" style="width:40px;height:40px;border-radius:50%;border:0;background:#d4af37;font-size:22px;font-weight:800">+</button>
+    </div>
+    <p id="detMsg" style="color:#ff8888;font-size:13px"></p>
+    <button onclick="detAdicionar()" style="width:100%;background:#d4af37;color:#000;border:0;padding:16px;border-radius:14px;font-weight:800;font-size:16px">🛒 ADICIONAR AO CARRINHO</button>
+    <button onclick="detComprarAgora()" style="width:100%;background:#25D366;color:#fff;border:0;padding:16px;border-radius:14px;font-weight:800;font-size:16px;margin-top:10px">💳 COMPRAR AGORA</button>
+  </div>
+  <div style="height:30px"></div>
+</div>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="script.js?v=21"></script>
-<script src="menu.js?v=21"></script>
+<script src="script.js?v=22"></script>
+<script src="menu.js?v=22"></script>
 <div id="novoLogin"><div class="card"><h2>Entrar</h2><label>E-mail *</label><div class="campo"><input id="loginEmail" type="email" placeholder="E-mail"></div><label>Senha *</label><div class="campo"><input id="loginSenha" type="password" placeholder="Senha"></div><button class="btnLogin" onclick="entrarNovoLogin()">Conecte-se</button><div class="divisor">Or continue with</div><button class="btnGoogle" onclick="entrarComGoogle()"><img src="https://www.google.com/favicon.ico" style="width:20px"> Continue with Google</button><p id="loginErro" style="color:red"></p></div></div>
 <script>
 function entrarComGoogle(){
@@ -304,7 +334,7 @@ function textoItens(p){ var it=p.itens; if(!it) return p.resumo||''; if(typeof i
 function ordenarDocs(docs){ return docs.slice().sort(function(a,b){ var ta=a.data().criadoEm && a.data().criadoEm.toMillis ? a.data().criadoEm.toMillis() : 0; var tb=b.data().criadoEm && b.data().criadoEm.toMillis ? b.data().criadoEm.toMillis() : 0; return tb-ta; }); }
 function carregarNotificacoesAdmin(){ var box=document.getElementById('listaNotificacoesAdmin'); if(!box) return; box.innerHTML='A carregar...'; firebase.firestore().collection('pedidos').where('status','==','pendente').get().then(function(snap){ if(snap.empty){ box.innerHTML='✅ Nenhuma notificação.'; return; } var html=''; ordenarDocs(snap.docs).forEach(function(doc){ var p=doc.data(); html+='<div class="pedido-card"><b>Pedido #'+doc.id.slice(-6).toUpperCase()+'</b><br>'+(p.nome||'Cliente')+' - '+(p.total||0)+' Kz<br>'+textoItens(p)+'<br><button class="btn" onclick="irParaAbaAdmin(\'ped\')">👉 VER NOS PEDIDOS</button></div>'; }); box.innerHTML=html; }); }
 function mostrarDadosPagExpress(){ var metodo=document.getElementById('metodoPag').value; var box=document.getElementById('boxNumeroExpress'); var info=document.getElementById('infoPag'); if(metodo==='Multicaixa Express'){ if(box) box.style.display='block'; if(info){ info.style.display='block'; info.innerText='Vais pagar para Express: '+(document.getElementById('cfgExpress').value||'942788931'); } } else { if(box) box.style.display='none'; if(typeof mostrarDadosPag==='function') try{ mostrarDadosPag(); }catch(e){} } }
-function confirmarPedidoExpress(){ var metodo=document.getElementById('metodoPag').value; if(typeof confirmarPedido==='function') return confirmarPedido(); }
+function confirmarPedidoExpress(){ if(typeof confirmarPedido==='function') return confirmarPedido(); }
 function mostrarProcessamento(){
   var m=document.getElementById('procModal');
   if(!m){ confirmarPedidoExpress(); return; }
@@ -324,6 +354,64 @@ function entrarNovoLogin(){ var email=document.getElementById('loginEmail').valu
 // FORÇA A TELA A SUMIR - não depende do Firebase
 setTimeout(function(){ var t=document.getElementById('telaCarregamento'); if(t) t.style.display='none'; }, 1500);
 setInterval(function(){ var t=document.getElementById('telaCarregamento'); if(t) t.style.display='none'; }, 3000);
+// ===== TELA DE DETALHES - IGUAL WHATSAPP =====
+var _detProduto=null, _detCor='', _detTam='', _detQtd=1;
+function abrirDetalheProduto(id){
+  var o=todosProdutos.find(function(x){ return x.id===id; });
+  if(!o) return;
+  _detProduto=o; _detCor=''; _detTam=''; _detQtd=1;
+  var d=o.data;
+  var fotos=d.fotos||(d.foto?[d.foto]:[]);
+  document.getElementById('detTopoNome').innerText=d.nome||'';
+  document.getElementById('detNome').innerText=d.nome||'';
+  document.getElementById('detDesc').innerText=d.desc||'Sem descrição';
+  document.getElementById('detPreco').innerText=Number(d.preco||0).toLocaleString('pt-AO')+' Kz';
+  document.getElementById('detImg').src=fotos[0]||'';
+  document.getElementById('detMiniFotos').innerHTML=fotos.map(function(f){ return '<img src="'+f+'" onclick="document.getElementById(\'detImg\').src=\''+f+'\'" style="width:70px;height:70px;object-fit:cover;border-radius:10px;cursor:pointer;border:2px solid rgba(255,255,255,.2)">'; }).join('');
+  var qtd=Number(d.estoque!=null?d.estoque:(d.stock||0));
+  document.getElementById('detStock').innerText=qtd>0?('✅ Em stock: '+qtd+' unidades'):'⚫ Esgotado';
+  document.getElementById('detQtd').innerText='1';
+  document.getElementById('detMsg').innerText='';
+  var descEl=document.getElementById('detDesconto');
+  if(d.desconto){ descEl.style.display='inline-block'; descEl.innerText='-'+d.desconto+'%'; } else descEl.style.display='none';
+  var cores=(d.cores||d.coresStr||'').split(',').map(function(s){return s.trim()}).filter(Boolean);
+  document.getElementById('detCoresBox').style.display=cores.length?'block':'none';
+  document.getElementById('detCores').innerHTML=cores.map(function(c){ return '<span onclick="detEscolherCor(this,\''+c+'\')" style="display:inline-block;width:40px;height:40px;border-radius:50%;background:'+corParaHex(c)+';border:2px solid #ddd;margin:4px;cursor:pointer" title="'+c+'"></span>'; }).join('');
+  var tams=(d.tamanhos||d.tamanhosStr||'').split(',').map(function(s){return s.trim()}).filter(Boolean);
+  document.getElementById('detTamBox').style.display=tams.length?'block':'none';
+  document.getElementById('detTamanhos').innerHTML=tams.map(function(t){ return '<button onclick="detEscolherTam(this,\''+t+'\')" style="padding:10px 18px;border-radius:20px;border:1px solid #ddd;background:#fff;font-weight:700;margin:4px;cursor:pointer">'+t+'</button>'; }).join('');
+  document.getElementById('detCartCount').innerText=document.getElementById('cartCount')?document.getElementById('cartCount').innerText:'0';
+  var tela=document.getElementById('telaDetalhe');
+  tela.style.display='block'; tela.scrollTop=0; document.body.style.overflow='hidden';
+}
+function fecharDetalheProduto(){ document.getElementById('telaDetalhe').style.display='none'; document.body.style.overflow=''; }
+function detEscolherCor(el, cor){ document.querySelectorAll('#detCores span').forEach(function(x){ x.style.border='2px solid #ddd'; }); el.style.border='3px solid #d4af37'; _detCor=cor; }
+function detEscolherTam(el, tam){ document.querySelectorAll('#detTamanhos button').forEach(function(x){ x.style.background='#fff'; x.style.color='#000'; }); el.style.background='#111'; el.style.color='#fff'; _detTam=tam; }
+function detMais(){ _detQtd++; document.getElementById('detQtd').innerText=_detQtd; }
+function detMenos(){ if(_detQtd>1){ _detQtd--; document.getElementById('detQtd').innerText=_detQtd; } }
+function detAdicionar(){
+  if(!clienteEmail){ fecharDetalheProduto(); abrirLoginCliente(); return; }
+  if(document.getElementById('detCoresBox').style.display!=='none' && !_detCor){ document.getElementById('detMsg').innerText='Escolhe a cor primeiro'; return; }
+  if(document.getElementById('detTamBox').style.display!=='none' && !_detTam){ document.getElementById('detMsg').innerText='Escolhe o tamanho primeiro'; return; }
+  var nomeFinal=_detProduto.data.nome + (_detCor?' - Cor: '+_detCor:'') + (_detTam?' - Tam: '+_detTam:'');
+  for(var i=0;i<_detQtd;i++){ adicionarAoCarrinho(nomeFinal); }
+  var achado=carrinho.find(function(c){ return c.nome===nomeFinal; });
+  if(achado) achado.qtd=_detQtd;
+  atualizarCarrinho();
+  fecharDetalheProduto();
+  alert('✅ Adicionado: '+nomeFinal+' x'+_detQtd);
+}
+function detComprarAgora(){ detAdicionar(); setTimeout(function(){ verCarrinho(); }, 300); }
+document.addEventListener('click', function(e){
+  var card=e.target.closest('.card');
+  if(!card) return;
+  if(e.target.closest('button')) return;
+  var img=card.querySelector('img.main');
+  if(!img) return;
+  var src=img.getAttribute('src');
+  var o=todosProdutos.find(function(x){ var f=x.data.fotos||[x.data.foto]; return f && f[0]===src; });
+  if(o) abrirDetalheProduto(o.id);
+});
 </script>
 </body>
 </html>
