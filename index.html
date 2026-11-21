@@ -100,6 +100,17 @@ body.claro #emailClienteTop{color:#7A746B!important}
 .divisor{display:flex;align-items:center;gap:10px;color:#999;font-size:13px;margin:16px 0}
 .divisor:before,.divisor:after{content:"";flex:1;height:1px;background:#ddd}
 .btnSocial{background:#fff!important;color:#111!important;border:1.5px solid #ddd!important;border-radius:10px!important;display:flex!important;align-items:center;justify-content:center;gap:8px;font-weight:700}
+#pagModal .box{padding:20px!important}
+.checkTitulo{font-size:22px;margin:0 0 14px}
+.entregaTabs{display:flex;gap:10px;margin:8px 0 14px}
+.entregaTabs button{flex:1;padding:12px;border:2px solid #eee;background:#fff;border-radius:12px;font-weight:700;cursor:pointer;font-size:14px;color:#111}
+.entregaTabs button.ativo{background:#FFF8E1!important;border-color:#d4af37!important;color:#111}
+.checkLabel{font-size:13px;font-weight:700;color:#555;margin:10px 0 4px;display:block}
+.checkCard{background:#FFF8E1;border:1px solid #F0DFAF;border-radius:14px;padding:14px;margin:10px 0}
+.checkCard b{font-size:15px}
+.checkCard p{font-size:13px;color:#666;margin:6px 0 0;line-height:1.6}
+.resumoBox{background:#F8F8F8;border-radius:12px;padding:12px;font-size:13px;line-height:1.7;margin:10px 0;white-space:pre-wrap;color:#111}
+.btnWhats{background:#fff!important;border:1.5px solid #ddd!important;color:#111!important}
 </style>
 </head>
 <body>
@@ -220,16 +231,40 @@ body.claro #emailClienteTop{color:#7A746B!important}
 <div id="meusPedidosModal" class="modal"><div class="box"><h3>📦 Meus Pedidos <button onclick="fecharMeusPedidos()" style="float:right">X</button></h3><div id="listaMeusPedidos"></div></div></div>
 <div id="cartModal" class="modal"><div class="box"><h3>🛒 Carrinho <button onclick="fecharCarrinho()" style="float:right">X</button></h3><div id="cartItems"></div><h3 id="cartTotal">Total: 0 Kz</h3><button class="btn" onclick="abrirPagamento()">💳 PAGAR</button></div></div>
 <div id="pagModal" class="modal"><div class="box">
-<h3>Checkout <button onclick="fecharPagamento()" style="float:right;border:0;background:none">✕</button></h3>
-<p><b>Entrega:</b> <button onclick="escolherEntrega('recolha')" id="btnRecolha">📍 Recolha</button> <button onclick="escolherEntrega('entrega')" id="btnEntrega">🏠 Entrega</button></p>
-<input id="cliEndereco" placeholder="Bairro, rua, casa">
+<h3 class="checkTitulo" style="display:flex;justify-content:space-between">🛍️ Checkout <button onclick="fecharPagamento()" style="border:0;background:none;font-size:20px">✕</button></h3>
+<p><b>Entrega:</b></p>
+<div class="entregaTabs">
+<button onclick="escolherEntrega('recolha')" id="btnRecolha">📍 Recolha na Loja</button>
+<button onclick="escolherEntrega('entrega')" id="btnEntrega">🏠 Entrega em Casa</button>
+</div>
+<div id="areaEntrega" style="display:none">
+<label class="checkLabel">🌍 País de entrega</label>
+<select id="cliPais" class="loginInput"><option>Angola</option><option>Moçambique</option><option>Portugal</option><option>Brasil</option><option>Namíbia</option><option>Zâmbia</option><option>África do Sul</option><option>Outro</option></select>
+<label class="checkLabel">🏙️ Cidade</label>
+<select id="cliCidade" class="loginInput"><option>Luanda</option><option>Benguela</option><option>Huíla - Lubango</option><option>Huambo</option><option>Cabinda</option><option>Lobito</option><option>Malanje</option><option>Uíge</option><option>Outra cidade</option></select>
+<label class="checkLabel">📍 Bairro, rua, casa</label>
+<input id="cliEndereco" class="loginInput" placeholder="Ex: Viana, Rua 11, Casa 23">
+<label class="checkLabel">📌 Referência mais próxima</label>
+<input id="cliReferencia" class="loginInput" placeholder="Ex: Ao lado da farmácia, frente à escola...">
+</div>
+<div id="areaRecolha" style="display:none">
+<div class="checkCard">
+<b>📍 Loja LISSANTE - Vem buscar aqui</b>
+<p>🏬 <b>LISSANTE FASHION - Luanda</b><br>📍 Rua Principal de Luanda, Bairro Cazenga<br>🕐 Aberto: Seg - Sáb, 08h00 - 19h00<br>📞 WhatsApp: +244 900 000 000<br>✅ Sem taxa de entrega - Levanta quando quiseres</p>
+<button class="btn btnWhats" onclick="abrirWhatsAppLoja()" style="margin-top:10px">💬 Falar no WhatsApp da Loja</button>
+</div>
+</div>
 <p><b>Pagamento:</b></p>
-<select id="metodoPag"><option>Multicaixa Express</option><option>TPA</option><option>Transferência</option><option>Unitel Money</option></select>
-<pre id="pagResumo" style="background:#f5f5f5;padding:10px;white-space:pre-wrap"></pre>
-<input id="cliNome" placeholder="Teu nome">
-<input id="cliWhats" placeholder="WhatsApp">
-<input id="cliEmailPag" placeholder="E-mail">
-<input type="file" id="inputComp" accept="image/*" onchange="lerComprovativo(event)"><p id="compMsg" style="color:red;font-size:12px">⚠️ Suba o comprovativo</p>
+<select id="metodoPag" class="loginInput"><option>Multicaixa Express</option><option>TPA</option><option>Transferência</option><option>Unitel Money</option></select>
+<div class="resumoBox" id="pagResumo"></div>
+<label class="checkLabel">Teu nome</label>
+<input id="cliNome" class="loginInput" placeholder="Teu nome">
+<label class="checkLabel">WhatsApp</label>
+<input id="cliWhats" class="loginInput" placeholder="Ex: 923 000 000">
+<label class="checkLabel">E-mail</label>
+<input id="cliEmailPag" class="loginInput" placeholder="E-mail">
+<label class="checkLabel">🧾 Comprovativo de pagamento</label>
+<input type="file" id="inputComp" accept="image/*" onchange="lerComprovativo(event)"><p id="compMsg" style="color:#E67E00;font-size:12px">⚠️ Suba o comprovativo</p>
 <button class="btn" onclick="mostrarProcessamento()">🔒 FAZER PEDIDO</button>
 <button class="btn" onclick="recuarParaCarrinho()" style="background:#eee">← Voltar</button>
 </div></div>
@@ -401,7 +436,7 @@ function abrirMeusPedidos(){
   $id('meusPedidosModal').style.display='flex';
   var ped=[];
   try{ped=JSON.parse(localStorage.getItem('lc_pedidos')||'[]').filter(function(p){return p.email===clienteEmail})}catch(e){ped=[]}
-  $id('listaMeusPedidos').innerHTML=ped.length?ped.map(function(p){return '<div style="background:#f5f5f5;padding:10px;margin:6px;border-radius:10px"><b>#'+p.id+'</b><br>'+p.itens+'<br>Total: '+p.total+' Kz - '+p.status+'</div>'}).join(''):'<p>Nenhum pedido ainda.</p>';
+  $id('listaMeusPedidos').innerHTML=ped.length?ped.map(function(p){return '<div style="background:#f5f5f5;padding:10px;margin:6px;border-radius:10px"><b>#'+p.id+'</b><br>'+p.itens+'<br>Total: '+p.total+' Kz - '+p.status+'<br>📍 '+(p.entrega||'')+'</div>'}).join(''):'<p>Nenhum pedido ainda.</p>';
 }
 function fecharMeusPedidos(){$id('meusPedidosModal').style.display='none'}
 function abrirPagamento(){
@@ -411,17 +446,20 @@ function abrirPagamento(){
   var tot=carrinho.reduce(function(a,c){return a+c.preco*c.qtd},0);
   $id('pagResumo').innerText=carrinho.map(function(c){return c.nome+' x'+c.qtd+' = '+(c.preco*c.qtd)+' Kz'}).join('\n')+'\nTotal: '+tot+' Kz';
   $id('cliNome').value=clienteNome||'';$id('cliEmailPag').value=clienteEmail;
+  escolherEntrega('recolha');
 }
 function fecharPagamento(){$id('pagModal').style.display='none'}
 function recuarParaCarrinho(){fecharPagamento();verCarrinho()}
 function confirmarPedido(){
   if(!carrinho.length)return;
+  if(_tipoEntrega==='entrega' && !($id('cliEndereco').value||'').trim()){alert('Preenche o Bairro, rua, casa para entrega');return}
   var tot=carrinho.reduce(function(a,c){return a+c.preco*c.qtd},0);
-  var ped={id:Date.now().toString().slice(-6),email:clienteEmail,nome:$id('cliNome').value||clienteNome||clienteEmail,itens:carrinho.map(function(c){return c.nome+' x'+c.qtd}).join(', '),total:tot,status:'pendente'};
+  var morada=_tipoEntrega==='entrega' ? 'ENTREGA: '+($id('cliPais').value||'')+' - '+($id('cliCidade').value||'')+' - '+($id('cliEndereco').value||'')+' - Ref: '+($id('cliReferencia').value||'') : 'RECOLHA NA LOJA LISSANTE - Luanda, Cazenga';
+  var ped={id:Date.now().toString().slice(-6),email:clienteEmail,nome:$id('cliNome').value||clienteNome||clienteEmail,itens:carrinho.map(function(c){return c.nome+' x'+c.qtd}).join(', '),total:tot,status:'pendente',entrega:morada,metodo:$id('metodoPag').value};
   var todos=[];
   try{todos=JSON.parse(localStorage.getItem('lc_pedidos')||'[]')}catch(e){todos=[]}
   todos.push(ped);localStorage.setItem('lc_pedidos',JSON.stringify(todos));
-  carrinho=[];localStorage.setItem('lc_carrinho','[]');atualizarCarrinho();fecharPagamento();alert('✅ Pedido criado!');
+  carrinho=[];localStorage.setItem('lc_carrinho','[]');atualizarCarrinho();fecharPagamento();alert('✅ Pedido criado!\n'+morada);
 }
 function mostrarProcessamento(){
   var m=$id('procModal');m.style.display='flex';
@@ -452,7 +490,7 @@ function carregarPedidosAdmin(){
   var ped=[];
   try{ped=JSON.parse(localStorage.getItem('lc_pedidos')||'[]')}catch(e){ped=[]}
   $id('pedCount').innerText=ped.length;
-  $id('listaPedidos').innerHTML=ped.length?ped.map(function(p,i){return '<div style="background:#0b1220;padding:10px;margin:6px;border-radius:10px;color:#fff"><b>#'+p.id+'</b> '+p.nome+' - '+p.total+' Kz<br>'+p.itens+'<br>'+p.status+' <button onclick="confirmarPedidoAdmin('+i+')">✅ CONFIRMAR</button></div>'}).join(''):'<p>Sem pedidos</p>';
+  $id('listaPedidos').innerHTML=ped.length?ped.map(function(p,i){return '<div style="background:#0b1220;padding:10px;margin:6px;border-radius:10px;color:#fff"><b>#'+p.id+'</b> '+p.nome+' - '+p.total+' Kz<br>'+p.itens+'<br>'+p.status+'<br>📍 '+(p.entrega||'')+'<br>💳 '+(p.metodo||'')+' <button onclick="confirmarPedidoAdmin('+i+')">✅ CONFIRMAR</button></div>'}).join(''):'<p>Sem pedidos</p>';
 }
 function confirmarPedidoAdmin(i){var t=[];try{t=JSON.parse(localStorage.getItem('lc_pedidos')||'[]')}catch(e){t=[]}t[i].status='confirmado';localStorage.setItem('lc_pedidos',JSON.stringify(t));carregarPedidosAdmin();alert('✅ Confirmado!')}
 function renderClientesAdmin(){
@@ -464,7 +502,14 @@ function renderClientesAdmin(){
   var lista=Object.keys(em);$id('cliCount').innerText=lista.length;
   $id('listaClientes').innerHTML=lista.length?lista.map(function(e){return '<div style="background:#0b1220;padding:10px;margin:6px;border-radius:10px;color:#fff">'+e+' - '+em[e]+' pedido(s)</div>'}).join(''):'<p>Sem clientes</p>';
 }
-function escolherEntrega(t){$id('btnRecolha').style.background=t==='recolha'?'#d4af37':'';$id('btnEntrega').style.background=t==='entrega'?'#d4af37':''}
+var _tipoEntrega='recolha';
+function escolherEntrega(t){
+  _tipoEntrega=t;
+  $id('btnRecolha').className=t==='recolha'?'ativo':'';
+  $id('btnEntrega').className=t==='entrega'?'ativo':'';
+  $id('areaEntrega').style.display=t==='entrega'?'block':'none';
+  $id('areaRecolha').style.display=t==='recolha'?'block':'none';
+}
 function lerComprovativo(e){$id('compMsg').innerText='✅ Comprovativo carregado';$id('compMsg').style.color='green'}
 function abrirWhatsAppLoja(){window.open('https://wa.me/244900000000?text='+encodeURIComponent('Olá LISSANTE! Quero saber mais.'),'_blank')}
 function abrirSobreLoja(){alert('LISSANTE FASHION\n\nLoja oficial em Luanda.\nPerfumes, Ténis, Roupas, Relógios e Acessórios.\nEntrega rápida em todo Luanda.')}
