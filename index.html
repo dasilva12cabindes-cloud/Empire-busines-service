@@ -2,622 +2,189 @@
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>LISSANTE</title>
-<style>
-*{box-sizing:border-box;font-family:Arial,sans-serif}
-html{-webkit-text-size-adjust:100%;touch-action:manipulation}
-body{background:#0a2a33;color:#fff;margin:0;padding-bottom:80px;touch-action:manipulation}
-button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-.topo{position:sticky;top:0;background:#0a2a33;padding:10px;display:flex;gap:10px;align-items:center;z-index:10}
-.topo button{background:none;border:0;color:#fff;font-size:22px}
-.logo{font-weight:800;font-size:22px;cursor:pointer}
-.pesquisa{margin:10px;background:#14383d;padding:10px;border-radius:30px;display:flex}
-.pesquisa input{flex:1;background:none;border:0;outline:0;color:#fff}
-.pesquisa input::placeholder{color:#bcd0d2}
-.cats{display:flex;gap:10px;overflow-x:auto;padding:10px}
-.cat{flex:0 0 70px;text-align:center;font-size:11px;cursor:pointer}
-.cat div{width:60px;height:60px;background:#14383d;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;margin:auto}
-.banner{margin:10px;background:#14383d;border-radius:14px;padding:20px;text-align:center}
-.secao{background:#14383d;margin:10px;border-radius:14px;padding:12px}
-#produtos,#produtosDestaque{display:flex;gap:12px;overflow-x:auto}
-.card{flex:0 0 170px;background:#0a2a33;border:1px solid rgba(255,255,255,.2);border-radius:14px;overflow:hidden;cursor:pointer}
-.card img{width:100%;height:150px;object-fit:cover}
-.card div{padding:10px}
-.card button{width:100%;background:#d4af37;border:0;padding:8px;border-radius:8px;font-weight:800}
-.barra{position:fixed;bottom:0;left:0;right:0;background:#0a2a33;display:flex;justify-content:space-around;padding:8px;border-top:1px solid #333;z-index:99}
-.barra button{background:none;border:0;color:#fff;font-size:11px}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;align-items:flex-end;justify-content:center}
-.modal .box{background:#fff;color:#111;width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:16px;max-height:90vh;overflow-y:auto}
-input,select,textarea{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd;border-radius:10px;font-size:16px!important}
-input:focus,select:focus,textarea:focus{font-size:16px!important;zoom:1}
-.btn{width:100%;background:#d4af37;border:0;padding:14px;border-radius:12px;font-weight:800;margin:6px 0;cursor:pointer}
-#telaDetalhe{display:none;position:fixed;inset:0;background:#0a2a33;z-index:9999;overflow-y:auto}
-#telaCarregamento{position:fixed;inset:0;background:#0a2a33;z-index:99999;display:flex;align-items:center;justify-content:center}
-#menuNovo,#adminPanel{background:#0b1220!important;color:#fff!important}
-#menuNovo{position:fixed;top:0;left:0;width:300px;max-width:85%;height:100%;z-index:100001;padding:16px;overflow-y:auto;display:none}
-#adminPanel{padding:16px!important;min-height:100vh;display:none}
-.menuTop{display:flex;align-items:center;gap:10px;padding:6px 6px 14px}
-.menuLogo{width:44px;height:44px;border-radius:50%;background:#d4af37;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#000;flex-shrink:0}
-.menuFecha{margin-left:auto;background:rgba(255,255,255,.1);border:0;color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer}
-.menuSec{font-size:11px;letter-spacing:1px;color:#8a94a6;font-weight:800;margin:18px 6px 8px}
-.menuItem{display:flex;align-items:center;gap:12px;background:#1a2233;padding:12px;border-radius:14px;margin-bottom:10px;cursor:pointer;border:1px solid rgba(255,255,255,.05)}
-.menuItem.ativo{border:1px solid rgba(212,175,55,.5)}
-.menuIco{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.menuItem b{font-size:14px;color:#fff;display:block}
-.menuItem span{font-size:12px;color:#9aa5b8}
-.menuBadge{margin-left:auto;font-size:10px;font-weight:800;padding:4px 8px;border-radius:20px;white-space:nowrap}
-.menuSeta{margin-left:auto;color:#6b7688}
-.menuFoot{text-align:center;font-size:11px;color:#6b7688;margin-top:18px}
-.boxAdmin{background:#1a2233;border-radius:14px;padding:14px;margin-top:10px}
-.boxAdmin h3{color:#fff!important}
-.boxAdmin input,.boxAdmin select{background:#0b1220!important;color:#fff!important;border:1px solid rgba(255,255,255,.15)!important;font-size:16px!important}
-body.claro{background:#F7F4EF!important;color:#1A1A1A!important}
-body.claro .topo{background:#FFFBF5!important;border-bottom:1px solid #EDE6DA!important}
-body.claro .topo button,body.claro .topo .logo{color:#1A1A1A!important}
-body.claro .pesquisa{background:#fff!important;border:1px solid #EDE6DA!important;box-shadow:0 2px 10px rgba(0,0,0,.04)}
-body.claro .pesquisa input{color:#1A1A1A!important}
-body.claro .pesquisa input::placeholder{color:#A39E96!important}
-body.claro .cats .cat{color:#5A554D!important}
-body.claro .cats .cat div{background:#fff!important;border:1px solid #EDE6DA!important;box-shadow:0 2px 8px rgba(0,0,0,.04)}
-body.claro .banner{background:#FFF3D6!important;color:#1A1A1A!important;border:1px solid #F0DFAF!important}
-body.claro .banner b{color:#1A1A1A!important}
-body.claro .banner span{background:#C9A227!important;color:#fff!important}
-body.claro .secao{background:#fff!important;color:#1A1A1A!important;border:1px solid #EDE6DA!important;box-shadow:0 2px 10px rgba(0,0,0,.03)}
-body.claro .card{background:#fff!important;border:1px solid #EDE6DA!important;color:#1A1A1A!important;box-shadow:0 2px 10px rgba(0,0,0,.04)}
-body.claro .card b{color:#1A1A1A!important}
-body.claro .card p{color:#B08D1A!important}
-body.claro .card button{background:#C9A227!important;color:#fff!important}
-body.claro .btn{background:#C9A227!important;color:#fff!important}
-body.claro .barra{background:#FFFBF5!important;border-top:1px solid #EDE6DA!important}
-body.claro .barra button{color:#5A554D!important}
-body.claro #telaDetalhe{background:#F7F4EF!important;color:#1A1A1A!important}
-body.claro #telaDetalhe p{color:#5A554D!important}
-body.claro #telaDetalhe #detTopoNome,body.claro #telaDetalhe h2{color:#1A1A1A!important}
-body.claro #telaDetalhe>div:first-child{background:#FFFBF5!important;border-bottom:1px solid #EDE6DA!important}
-body.claro #telaDetalhe>div:first-child button{color:#1A1A1A!important}
-body.claro #telaDetalhe #detPreco{color:#B08D1A!important}
-body.claro #telaCarregamento{background:#F7F4EF!important;color:#1A1A1A!important}
-body.claro h1,body.claro h2,body.claro h3{color:#1A1A1A!important}
-body.claro #emailClienteTop{color:#7A746B!important}
-#loginBox{background:#0a2a33!important;min-height:100vh;padding:22px!important;display:none}
-#loginBox h2{color:#fff!important;font-size:26px}
-#loginBox input{background:#FFFACD!important;border:2px solid transparent!important;border-radius:12px!important;padding:14px!important;font-size:16px!important;color:#111!important}
-#loginBox input:focus{border-color:#4A90E2!important;outline:0;background:#FFF9B0!important}
-#loginBox .btn{border-radius:12px!important;padding:14px!important}
-#loginBox .btn:first-of-type{background:#d4af37!important;color:#1A6AE1!important}
-#loginBox #loginMsg{color:#FF9AA0}
-#clienteModal .box{border-radius:20px 20px 0 0!important;padding:20px!important}
-.loginLabel{font-size:15px;font-weight:700;margin:14px 0 6px;display:block;color:#111}
-.loginLabel b{color:red}
-.loginInput{border:1.5px solid #ddd!important;border-radius:10px!important;padding:13px!important;font-size:16px!important;background:#fff!important}
-.loginInput:focus{border-color:#4A90E2!important;outline:0}
-.senhaWrap{position:relative}
-.senhaWrap input{padding-right:44px}
-.olho{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:0;font-size:18px;cursor:pointer;width:auto!important}
-.esqueceu{display:block;text-align:right;color:#1A6AE1;font-size:13px;font-weight:600;margin:8px 0 14px;cursor:pointer}
-.btnConecte{background:#8AB4F8!important;color:#fff!important;border-radius:10px!important}
-.divisor{display:flex;align-items:center;gap:10px;color:#999;font-size:13px;margin:16px 0}
-.divisor:before,.divisor:after{content:"";flex:1;height:1px;background:#ddd}
-.btnSocial{background:#fff!important;color:#111!important;border:1.5px solid #ddd!important;border-radius:10px!important;display:flex!important;align-items:center;justify-content:center;gap:8px;font-weight:700}
-#pagModal .box{padding:20px!important}
-.checkTitulo{font-size:22px;margin:0 0 14px}
-.entregaTabs{display:flex;gap:10px;margin:8px 0 14px}
-.entregaTabs button{flex:1;padding:12px;border:2px solid #eee;background:#fff;border-radius:12px;font-weight:700;cursor:pointer;font-size:14px;color:#111}
-.entregaTabs button.ativo{background:#FFF8E1!important;border-color:#d4af37!important;color:#111}
-.checkLabel{font-size:13px;font-weight:700;color:#555;margin:10px 0 4px;display:block}
-.checkCard{background:#FFF8E1;border:1px solid #F0DFAF;border-radius:14px;padding:14px;margin:10px 0}
-.checkCard b{font-size:15px}
-.checkCard p{font-size:13px;color:#666;margin:6px 0 0;line-height:1.6}
-.resumoBox{background:#F8F8F8;border-radius:12px;padding:12px;font-size:13px;line-height:1.7;margin:10px 0;white-space:pre-wrap;color:#111}
-.btnWhats{background:#fff!important;border:1.5px solid #ddd!important;color:#111!important}
-#telaAdminAba{display:none;position:fixed;inset:0;background:#0b1220;z-index:200000;overflow-y:auto}
-#telaAdminAba .topoAdmin{position:sticky;top:0;background:#0b1220;padding:12px;display:flex;gap:10px;align-items:center;border-bottom:1px solid rgba(255,255,255,.1)}
-#telaAdminAba .topoAdmin button{background:rgba(255,255,255,.1);border:0;color:#fff;width:40px;height:40px;border-radius:50%;font-size:20px;cursor:pointer}
-#telaAdminAba .boxAdmin{display:block!important;margin:12px}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#034556">
+<title>EMPIRE 👑 - Loja Oficial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="telaCarregamento">A carregar...</div>
-<script>setTimeout(function(){var t=document.getElementById('telaCarregamento');if(t)t.style.display='none'},2000);</script>
+
+<div id="debugBox" style="display:none;background:#ff4444;color:#fff;padding:10px;margin:10px;border-radius:10px"></div>
+
 <div id="areaLoja">
-<div class="topo">
-<button onclick="abrirMenu()">☰</button>
-<div class="logo" onclick="mostrarLoja()">LISSANTE</div>
-<div style="flex:1"></div>
-<button onclick="abrirMeusPedidos()">🔔 <span id="sinoCount">0</span></button>
-<button onclick="verCarrinho()">🛒 <span id="cartCount">0</span></button>
+  <div class="topo">
+    <button class="iconBtn" onclick="mostrarLoja()">☰</button>
+    <div class="logo" id="logoTexto" onclick="mostrarLoja()">EMPIRE<span>👑</span></div>
+    <div style="flex:1"></div>
+    <button class="iconBtn" onclick="document.getElementById('pesquisa').focus()">🔍</button>
+    <button class="iconBtn" id="cart" onclick="verCarrinho()">🛒 <span id="cartCount">0</span></button>
+  </div>
+  <div style="display:none"><span id="logoSlogan"></span><span id="logoImgBox"></span><img id="bannerImg" style="display:none"><span id="cartCountTop">0</span></div>
+
+  <div class="saudacao">
+    <h1><span id="textoSaudacao">Boa noite,</span><br><span id="nomeClienteTop">Visitante!</span></h1>
+    <p id="emailClienteTop">Cria conta antes de comprar 👑</p>
+    <p id="avisoVisitante" class="small">Podes visitar à vontade.</p>
+    <p id="avisoCliente" class="small" style="display:none;color:#00ff88"> Estás ligado! Podes comprar.</p>
+    <div id="areaLogado" style="display:none;align-items:center;gap:8px;color:#00ff7f;font-weight:700;margin-top:6px"><span class="luz-verde"></span> ✅ Estás ligado! Podes comprar.</div>
+    <div id="areaClienteHeader" style="margin-top:10px"></div>
+  </div>
+
+  <div class="pesquisaBox">
+    <span>🔍</span>
+    <input id="pesquisa" placeholder="Pesquisa produto... ex: Perfume, Ténis" oninput="filtrar()">
+    <span onclick="filtrar()" style="cursor:pointer">➤</span>
+  </div>
+
+  <div class="acoes filtros">
+    <button class="ativo" onclick="setFiltro('todos',this)">🏠 Todos</button>
+    <button onclick="setFiltro('perfume',this)">🌸 Perfumes</button>
+    <button onclick="setFiltro('tenis',this)">👟 Ténis</button>
+    <button onclick="setFiltro('roupa',this)">👕 Roupas</button>
+    <button onclick="setFiltro('relogio',this)">⌚ Relógios</button>
+    <button onclick="setFiltro('acessorio',this)">💍 Acessórios</button>
+  </div>
+
+  <div class="secao" id="areaDestaque">
+    <div class="secaoTop"><b>⭐ Produtos em Destaque</b><a href="#" onclick="setFiltro('todos',document.querySelector('.filtros button'));return false">Ver tudo</a></div>
+    <div id="produtosDestaque"></div>
+  </div>
+
+  <div class="secao">
+    <div class="secaoTop"><b>🛍️ Todos os Produtos</b><span id="qtdMostra" style="color:#b9d6dd;font-size:12px"></span></div>
+    <div id="produtos"></div>
+    <p id="status" style="color:#b9d6dd;font-size:12px;margin-top:10px;text-align:center">A carregar...</p>
+    <p style="display:none"><span id="statProd">0</span></p>
+  </div>
+
+  <div class="secao">
+    <div class="secaoTop"><b>👑 Sobre a EMPIRE</b></div>
+    <h3 id="sobreTitulo" style="font-size:14px"></h3>
+    <p id="bannerTitulo" style="display:none"></p><p id="bannerSub" style="display:none"></p>
+    <p id="sobreTexto" style="color:#d6e8ec;font-size:13px;line-height:1.5;margin-top:6px"></p>
+    <p style="margin-top:10px"><b>Visão:</b> <span id="visaoTexto"></span></p>
+    <p><b>Missão:</b> <span id="missaoTexto"></span></p>
+    <p id="sobreExtra" style="color:#d4af37;font-size:12px;margin-top:8px"></p>
+    <p id="footerTexto" style="color:#b9d6dd;font-size:11px;margin-top:10px"></p>
+    <p style="margin-top:10px"><b>Link da loja:</b> <span id="linkLojaTexto" style="color:#d4af37;font-size:11px;word-break:break-all"></span></p>
+    <button class="btn" onclick="copiarLinkLoja()">🔗 COPIAR LINK DA LOJA</button>
+    <button class="btn" style="background:#25D366;color:#000" onclick="partilharWhatsAppLoja()">💬 PARTILHAR NO WHATSAPP</button>
+    <button class="btn" style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.14);color:#fff" onclick="btnAdminClick()">⚙️ Admin</button>
+  </div>
 </div>
-<div class="pesquisa"><input id="pesquisa" placeholder="Pesquisar..." oninput="renderProdutos()"><span onclick="renderProdutos()">🔍</span></div>
-<div class="cats">
-<div class="cat" onclick="setFiltro('todos')"><div>⭐</div>Novidades</div>
-<div class="cat" onclick="setFiltro('perfume')"><div>🌸</div>Perfumes</div>
-<div class="cat" onclick="setFiltro('tenis')"><div>👟</div>Ténis</div>
-<div class="cat" onclick="setFiltro('roupa')"><div>👕</div>Roupas</div>
-<div class="cat" onclick="setFiltro('relogio')"><div>⌚</div>Relógios</div>
-<div class="cat" onclick="setFiltro('acessorio')"><div>💍</div>Acessórios</div>
+
+<div id="loginBox" style="display:none;padding:20px">
+  <h2>🔐 Entrar - Admin</h2>
+  <p class="small">Só o dono da loja entra aqui.</p>
+  <input id="email" placeholder="E-mail admin">
+  <div style="position:relative"><input id="pass" type="password" placeholder="Senha"><button onclick="verSenha('pass',this)" style="position:absolute;right:10px;top:14px;background:none;border:0;font-size:18px">👁️</button></div>
+  <p id="loginMsg" style="color:#ffb3b3;font-size:13px"></p>
+  <button class="btn" onclick="login()">ENTRAR</button>
+  <button class="btn" style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.14);color:#fff" onclick="esqueciSenhaAdmin()">Esqueci a senha</button>
+  <button class="btn" style="background:#333;color:#fff" onclick="mostrarLoja()">← Voltar para Loja</button>
 </div>
-<div class="banner"><b style="font-size:22px">NOVEMBRO É LISSANTE</b><br><span style="background:#ffcc00;color:#000;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:800">MÊS DE DESCONTOS</span></div>
-<div style="padding:14px">
-<h1>Boa noite,<br><span id="nomeClienteTop">Visitante!</span></h1>
-<p id="emailClienteTop">Cria conta antes de comprar</p>
-<button class="btn" onclick="abrirMeusPedidos()" style="width:auto;padding:10px 14px">📦 MEUS PEDIDOS</button>
-</div>
-<div class="secao"><b>⭐ Destaque</b><div id="produtosDestaque" style="margin-top:10px"></div></div>
-<div class="secao"><b>🛍️ Todos os Produtos <span id="qtdMostra"></span></b><div id="produtos" style="margin-top:10px"></div><p id="status" style="text-align:center">A carregar...</p></div>
-</div>
-<div id="loginBox">
-<h2>🔐 Admin</h2>
-<input id="email" placeholder="E-mail admin" value="dasilva12cabindes@gmail.com">
-<input id="pass" type="password" placeholder="Senha">
-<p id="loginMsg"></p>
-<button class="btn" onclick="login()">ENTRAR</button>
-<button class="btn" onclick="mostrarLoja()" style="background:#fff!important;color:#1A6AE1!important">← Voltar</button>
-</div>
-<div id="adminPanel">
-  <div class="menuTop"><div class="menuLogo">L</div><div><b style="font-size:16px">LISSANTE</b><br><span style="font-size:11px;letter-spacing:2px;color:#8a94a6">ADMIN • PAINEL</span></div><button class="menuFecha" onclick="mostrarLoja()">✕</button></div>
-  <p id="adminEmailTxt" style="font-size:12px;color:#9aa5b8;padding:0 6px"></p>
-  <div class="menuItem ativo" onclick="irParaAbaAdmin('prod');marcarAdmin(this)"><div class="menuIco" style="background:#ff5a5a">📦</div><div style="flex:1"><b>Produtos</b><span>Adicionar, ver e apagar</span></div><span class="menuBadge" style="background:#ff5a5a;color:#fff">Ativo</span></div>
-  <div class="menuItem" onclick="irParaAbaAdmin('ped');marcarAdmin(this)"><div class="menuIco" style="background:#2a3448">🧾</div><div style="flex:1"><b>Pedidos</b><span>Confirmar pedidos dos clientes</span></div><span class="menuBadge" style="background:#ff5a5a;color:#fff"><span id="pedCount">0</span> novos</span></div>
-  <div class="menuItem" onclick="irParaAbaAdmin('cli');marcarAdmin(this)"><div class="menuIco" style="background:#2a3448">👥</div><div style="flex:1"><b>Clientes</b><span>Quem comprou na tua loja</span></div><span class="menuBadge" style="background:#2a3448;color:#fff"><span id="cliCount">0</span> clientes</span></div>
-  <div class="menuSec">RECURSOS & ATENDIMENTO</div>
-  <div class="menuItem" onclick="abrirAssistenteIAAdmin()"><div class="menuIco" style="background:#ff5a5a">✨</div><div style="flex:1"><b>Assistente IA da Loja</b><span>Ideias de preços e descrições</span></div><span class="menuBadge" style="background:#3a2a00;color:#ffcc00;border:1px solid #ffcc00">SMART</span></div>
-  <div class="menuItem" onclick="abrirRelatorioAdmin()"><div class="menuIco" style="background:#3a2a00;border:1px solid #d4af37">📊</div><div style="flex:1"><b style="color:#ffcc00">Relatório de Vendas</b><span>Total vendido e mais vendidos</span></div><span class="menuBadge" style="background:#3a2a00;color:#ffcc00;border:1px solid #ffcc00">MODA</span></div>
-  <div class="menuItem" onclick="partilharLojaMenu()"><div class="menuIco" style="background:#3a2a00;border:1px solid #d4af37">🔗</div><div style="flex:1"><b>Partilhar Loja</b><span>WhatsApp, Facebook ou copiar link</span></div><span class="menuSeta">›</span></div>
-  <div class="menuItem" onclick="ativarAlertas()"><div class="menuIco" style="background:#3a2a00;border:1px solid #d4af37">🔔</div><div style="flex:1"><b>Alertas no Telemóvel</b><span>Aviso quando chegar pedido novo</span></div><span class="menuBadge" style="background:#3a2a00;color:#ff9aa0;border:1px solid #ff9aa0">PUSH</span></div>
-  <div class="menuSec">APARÊNCIA & ACESSO</div>
-  <div class="menuItem" onclick="adicionarEcrãPrincipal()"><div class="menuIco" style="background:#0f3d2e;border:1px solid #00d26a">📱</div><div style="flex:1"><b style="color:#00e676">Adicionar ao Ecrã Principal</b><span>Atalho com logótipo oficial</span></div><span class="menuBadge" style="background:#0f3d2e;color:#00e676;border:1px solid #00e676">APP</span></div>
-  <div class="menuItem" onclick="trocarTema()"><div class="menuIco" style="background:#3a2a00;border:1px solid #d4af37">☀️</div><div style="flex:1"><b>Tema Claro (Modo Branco)</b><span>Mudar para interface clara</span></div><span class="menuBadge" style="background:#3a2a00;color:#ffcc00;border:1px solid #ffcc00">☀️ Claro</span></div>
-  <div class="menuItem" onclick="mostrarLoja()" style="background:#d4af37"><div class="menuIco" style="background:#000">🏠</div><div style="flex:1"><b style="color:#000">Ver Loja</b><span style="color:#333">Voltar como cliente</span></div><span class="menuSeta" style="color:#000">›</span></div>
-  <div class="menuItem" onclick="logout()" style="background:#3a0d0d;border:1px solid #ff4444"><div class="menuIco" style="background:#ff4444">🚪</div><div style="flex:1"><b>Sair do Admin</b><span>Terminar sessão</span></div><span class="menuSeta">›</span></div>
-  <div class="menuFoot">LISSANTE • Plataforma SaaS Angola</div>
-</div>
-<div id="telaAdminAba">
-<div class="topoAdmin">
-<button onclick="voltarAdminAba()">←</button>
-<b id="telaAdminTitulo" style="color:#fff;font-size:18px">Produtos</b>
-</div>
-<div id="telaAdminCorpo"></div>
-</div>
-<div id="clienteModal" class="modal"><div class="box">
-<h3 style="display:flex;justify-content:space-between;align-items:center;margin:0 0 6px">Entrar <button onclick="fecharLoginCliente()" style="border:0;background:none;font-size:22px;color:#999">✕</button></h3>
-<div id="telaLogin">
-<label class="loginLabel">E-mail <b>*</b></label>
-<input id="cliEmail" class="loginInput" placeholder="">
-<label class="loginLabel">Senha <b>*</b></label>
-<div class="senhaWrap">
-<input id="cliSenha" type="password" class="loginInput" placeholder="">
-<button class="olho" onclick="verSenhaCliente()">👁️</button>
-</div>
-<span class="esqueceu" onclick="esqueceuSenha()">Esqueceu sua senha?</span>
-<button class="btn btnConecte" onclick="entrarCliente()">Conecte-se</button>
-<div class="divisor">Or continue with</div>
-<button class="btn btnSocial" onclick="entrarComGoogle()"><span style="font-size:20px;font-weight:800"><span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span></span> Continue with Google</button>
-<button class="btn btnSocial" onclick="entrarComMeta()"><span style="color:#0082FB;font-size:20px">∞</span> Continue with Meta</button>
-<p style="text-align:center;font-size:14px;color:#555;margin-top:16px">Não tem uma conta? <b onclick="mostrarTelaCriar()" style="color:#1A6AE1;cursor:pointer">Inscrever-se</b></p>
-</div>
-<div id="telaCriar" style="display:none">
-<label class="loginLabel">Teu nome <b>*</b></label>
-<input id="cliNomeConta" class="loginInput" placeholder="">
-<label class="loginLabel">E-mail <b>*</b></label>
-<input id="cliEmailCriar" class="loginInput" placeholder="">
-<label class="loginLabel">Cria senha <b>*</b></label>
-<input id="cliSenhaCriar" type="password" class="loginInput" placeholder="">
-<label class="loginLabel">Repete a senha <b>*</b></label>
-<input id="cliSenhaConfirmar" type="password" class="loginInput" placeholder="">
-<button class="btn btnConecte" onclick="criarContaCliente()" style="margin-top:14px">Criar conta</button>
-<p style="text-align:center;color:#1A6AE1;cursor:pointer" onclick="mostrarTelaLogin()">← Voltar</p>
-</div>
-<div id="telaSocial" style="display:none">
-<label class="loginLabel" id="socialTitulo">Continue with Google</label>
-<input id="socialEmail" class="loginInput" placeholder="Escreve o teu Gmail">
-<button class="btn btnConecte" onclick="confirmarSocial()" style="margin-top:14px">Entrar</button>
-<p style="text-align:center;color:#1A6AE1;cursor:pointer" onclick="voltarSocial()">← Voltar</p>
-</div>
-<div id="telaRecuperar" style="display:none">
-<label class="loginLabel">Recuperar senha</label>
-<input id="recEmail" class="loginInput" placeholder="Escreve o teu e-mail">
-<button class="btn btnConecte" onclick="confirmarRecuperar()" style="margin-top:14px">Enviar link</button>
-<p style="text-align:center;color:#1A6AE1;cursor:pointer" onclick="voltarSocial()">← Voltar</p>
-</div>
-<p id="msgCliente" style="color:red"></p>
-</div></div>
-<div id="meusPedidosModal" class="modal"><div class="box"><h3>📦 Meus Pedidos <button onclick="fecharMeusPedidos()" style="float:right">X</button></h3><div id="listaMeusPedidos"></div></div></div>
-<div id="cartModal" class="modal"><div class="box"><h3>🛒 Carrinho <button onclick="fecharCarrinho()" style="float:right">X</button></h3><div id="cartItems"></div><h3 id="cartTotal">Total: 0 Kz</h3><button class="btn" onclick="abrirPagamento()">💳 PAGAR</button></div></div>
-<div id="pagModal" class="modal"><div class="box">
-<h3 class="checkTitulo" style="display:flex;justify-content:space-between">🛍️ Checkout <button onclick="fecharPagamento()" style="border:0;background:none;font-size:20px">✕</button></h3>
-<p><b>Entrega:</b></p>
-<div class="entregaTabs">
-<button onclick="escolherEntrega('recolha')" id="btnRecolha">📍 Recolha na Loja</button>
-<button onclick="escolherEntrega('entrega')" id="btnEntrega">🏠 Entrega em Casa</button>
-</div>
-<div id="areaEntrega" style="display:none">
-<label class="checkLabel">🌍 País de entrega</label>
-<select id="cliPais" class="loginInput"><option>Angola</option><option>Moçambique</option><option>Portugal</option><option>Brasil</option><option>Namíbia</option><option>Zâmbia</option><option>África do Sul</option><option>Outro</option></select>
-<label class="checkLabel">🏙️ Cidade</label>
-<select id="cliCidade" class="loginInput"><option>Luanda</option><option>Benguela</option><option>Huíla - Lubango</option><option>Huambo</option><option>Cabinda</option><option>Lobito</option><option>Malanje</option><option>Uíge</option><option>Outra cidade</option></select>
-<label class="checkLabel">📍 Bairro, rua, casa</label>
-<input id="cliEndereco" class="loginInput" placeholder="Ex: Viana, Rua 11, Casa 23">
-<label class="checkLabel">📌 Referência mais próxima</label>
-<input id="cliReferencia" class="loginInput" placeholder="Ex: Ao lado da farmácia, frente à escola...">
-</div>
-<div id="areaRecolha" style="display:none">
-<div class="checkCard">
-<b>📍 Loja LISSANTE - Vem buscar aqui</b>
-<p>🏬 <b>LISSANTE FASHION - Luanda</b><br>📍 Rua Principal de Luanda, Bairro Cazenga<br>🕐 Aberto: Seg - Sáb, 08h00 - 19h00<br>📞 WhatsApp: +244 900 000 000<br>✅ Sem taxa de entrega - Levanta quando quiseres</p>
-<button class="btn btnWhats" onclick="abrirWhatsAppLoja()" style="margin-top:10px">💬 Falar no WhatsApp da Loja</button>
-</div>
-</div>
-<p><b>Pagamento:</b></p>
-<select id="metodoPag" class="loginInput"><option>Multicaixa Express</option><option>TPA</option><option>Transferência</option><option>Unitel Money</option></select>
-<div class="resumoBox" id="pagResumo"></div>
-<label class="checkLabel">Teu nome</label>
-<input id="cliNome" class="loginInput" placeholder="Teu nome">
-<label class="checkLabel">WhatsApp</label>
-<input id="cliWhats" class="loginInput" placeholder="Ex: 923 000 000">
-<label class="checkLabel">E-mail</label>
-<input id="cliEmailPag" class="loginInput" placeholder="E-mail">
-<label class="checkLabel">🧾 Comprovativo de pagamento</label>
-<input type="file" id="inputComp" accept="image/*" onchange="lerComprovativo(event)"><p id="compMsg" style="color:#E67E00;font-size:12px">⚠️ Suba o comprovativo</p>
-<button class="btn" onclick="mostrarProcessamento()">🔒 FAZER PEDIDO</button>
-<button class="btn" onclick="recuarParaCarrinho()" style="background:#eee">← Voltar</button>
-</div></div>
-<div id="telaDetalhe">
-<div style="position:sticky;top:0;background:#0a2a33;padding:12px;display:flex;gap:10px;align-items:center">
-<button onclick="fecharDetalheProduto()" style="background:none;border:0;color:#fff;font-size:24px">←</button>
-<b id="detTopoNome" style="flex:1">Produto</b>
-<button onclick="verCarrinho()" style="background:none;border:0;color:#fff;font-size:20px">🛒</button>
-</div>
-<img id="detImg" style="width:100%;height:320px;object-fit:cover">
-<div style="padding:16px">
-<h2 id="detNome"></h2>
-<p id="detDesc" style="color:#ccc"></p>
-<b id="detPreco" style="color:#d4af37;font-size:26px"></b>
-<p id="detStock"></p>
-<div id="detCoresBox"><h4>Cor</h4><div id="detCores"></div></div>
-<div id="detTamBox"><h4>Tamanho</h4><div id="detTamanhos"></div></div>
-<p><button onclick="detMenos()" style="width:40px;height:40px;border-radius:50%;border:0;font-size:20px">−</button> <b id="detQtd" style="font-size:20px">1</b> <button onclick="detMais()" style="width:40px;height:40px;border-radius:50%;border:0;background:#d4af37;font-size:20px">+</button></p>
-<p id="detMsg" style="color:#ff8888"></p>
-<button class="btn" onclick="detAdicionar()">🛒 ADICIONAR</button>
-<button class="btn" onclick="detComprarAgora()" style="background:#25D366;color:#fff">💳 COMPRAR AGORA</button>
-</div>
-</div>
-<div id="menuNovo">
-  <div class="menuTop"><div class="menuLogo">L</div><div><b style="font-size:16px">LISSANTE</b><br><span style="font-size:11px;letter-spacing:2px;color:#8a94a6">FASHION</span></div><button class="menuFecha" onclick="fecharMenu()">✕</button></div>
-  <div class="menuItem" onclick="fecharMenu();mostrarLoja()"><div class="menuIco" style="background:#ff5a5a">🏠</div><div style="flex:1"><b>Início</b><span>Página principal e destaques</span></div><span class="menuBadge" style="background:#ff5a5a;color:#fff">Ativo</span></div>
-  <div class="menuItem" onclick="fecharMenu();mostrarLoja();setFiltro('todos')"><div class="menuIco" style="background:#2a3448">⊞</div><div style="flex:1"><b>Catálogo Completo</b><span>Todos os artigos e filtros</span></div><span class="menuSeta">›</span></div>
-  <div class="menuItem" onclick="fecharMenu();abrirMeusPedidos()"><div class="menuIco" style="background:#2a3448">📦</div><div style="flex:1"><b>Meus Pedidos</b><span>Acompanhar os teus pedidos</span></div><span class="menuSeta">›</span></div>
-  <div class="menuItem" onclick="fecharMenu();abrirSobreLoja()"><div class="menuIco" style="background:#2a3448">ⓘ</div><div style="flex:1"><b>Sobre a Loja</b><span>História, endereço e contactos</span></div><span class="menuSeta">›</span></div>
-  <div class="menuSec">RECURSOS & ATENDIMENTO</div>
-  <div class="menuItem" onclick="fecharMenu();abrirAssistenteIA()"><div class="menuIco" style="background:#ff5a5a">✨</div><div style="flex:1"><b>Assistente IA da Loja</b><span>Dúvidas e recomendações</span></div><span class="menuBadge" style="background:#3a2a00;color:#ffcc00;border:1px solid #ffcc00">SMART</span></div>
-  <div class="menuItem" onclick="fecharMenu();abrirLookEstilista()"><div class="menuIco" style="background:#3a2a00;border:1px solid #d4af37">👕</div><div style="flex:1"><b style="color:#ffcc00">Modo Look & Estilista</b><span>Combine peças para o look perfeito</span></div><span class="menuBadge" style="background:#3a2a00;color:#ffcc00;border:1px solid #ffcc00">MODA</span></div>
-  <div class="menuItem" onclick="fecharMenu();partilharLojaMenu()"><div class="menuIco" style="background:#3a2a00;border:1px solid #d4af37">🔗</div><div style="flex:1"><b>Partilhar Loja</b><span>WhatsApp, Facebook ou copiar link</span></div><span class="menuSeta">›</span></div>
-  <div class="menuItem" onclick="fecharMenu();ativarAlertas()"><div class="menuIco" style="background:#3a2a00;border:1px solid #d4af37">🔔</div><div style="flex:1"><b>Alertas no Telemóvel</b><span>Avisos de lançamentos e pedidos</span></div><span class="menuBadge" style="background:#3a2a00;color:#ff9aa0;border:1px solid #ff9aa0">PUSH</span></div>
-  <div class="menuSec">APARÊNCIA & ACESSO</div>
-  <div class="menuItem" onclick="fecharMenu();adicionarEcrãPrincipal()"><div class="menuIco" style="background:#0f3d2e;border:1px solid #00d26a">📱</div><div style="flex:1"><b style="color:#00e676">Adicionar ao Ecrã Principal</b><span>Atalho com logótipo oficial</span></div><span class="menuBadge" style="background:#0f3d2e;color:#00e676;border:1px solid #00e676">APP</span></div>
-  <div class="menuItem" onclick="fecharMenu();trocarTema()"><div class="menuIco" style="background:#3a2a00;border:1px solid #d4af37">☀️</div><div style="flex:1"><b>Tema Claro (Modo Branco)</b><span>Interface clara e luminosa</span></div><span class="menuBadge" style="background:#3a2a00;color:#ffcc00;border:1px solid #ffcc00">☀️ Claro</span></div>
-  <div class="menuItem" onclick="fecharMenu();abrirLoginAdmin()" style="background:#d4af37"><div class="menuIco" style="background:#000">⚙️</div><div style="flex:1"><b style="color:#000">Área Admin</b><span style="color:#333">Só o dono da loja</span></div><span class="menuSeta" style="color:#000">›</span></div>
-  <div class="menuFoot">LISSANTE • Plataforma SaaS Angola</div>
-</div>
-<div id="overlaySimples" onclick="fecharMenu()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100000"></div>
-<div id="procModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999999;align-items:center;justify-content:center">
-<div style="background:#fff;color:#111;width:90%;max-width:340px;border-radius:16px;padding:24px;text-align:center">
-<h3 id="procTitulo">A processar...</h3>
-<p id="procTexto">Aguarda...</p>
-<div style="background:#eee;height:8px;border-radius:10px;overflow:hidden"><div id="procBarra" style="height:8px;width:5%;background:#d4af37"></div></div>
-</div>
-</div>
-<div class="barra">
-<button onclick="mostrarLoja()">🏠<br>Início</button>
-<button onclick="var c=document.getElementById('catsCirculares');if(c)c.scrollIntoView()">⊞<br>Categorias</button>
-<button onclick="abrirWhatsAppLoja()">💬<br>Whatsapp</button>
-<button onclick="abrirLoginCliente()">👤<br><span id="barraContaTxt">Conta</span></button>
-</div>
-<div id="abaProd" class="boxAdmin" style="display:none">
-    <h3>Adicionar Produto</h3>
-    <input id="nome" placeholder="Nome">
+
+<div id="adminPanel" style="display:none;padding:15px">
+  <div style="display:flex;justify-content:space-between;align-items:center"><h2>⚙️ Painel Admin</h2><button class="btnSair" onclick="logout()">Sair</button></div>
+  <p class="small">Link da loja: <span id="linkLojaAdmin"></span></p>
+  <div class="filtros">
+    <button id="tabProd" class="ativo" onclick="mostrarAba('prod')">📦 Produtos</button>
+    <button id="tabPed" onclick="mostrarAba('ped')">🧾 Pedidos (<span id="pedCount">0</span>)</button>
+    <button id="tabRel" onclick="mostrarAba('rel')">📊 Relatório</button>
+    <button id="tabLoja" onclick="mostrarAba('loja')">🏪 Loja</button>
+    <button id="tabPag" onclick="mostrarAba('pag')">💳 Pagamentos</button>
+    <button id="tabCli" onclick="mostrarAba('cli')">👥 Clientes (<span id="cliCount">0</span>)</button>
+  </div>
+
+  <div id="abaProd">
+    <h3 id="adminTitle">Adicionar Produto</h3>
+    <input id="nome" placeholder="Nome do produto - ex: Relógio Casio">
     <input id="preco" type="number" placeholder="Preço em Kz">
     <input id="desc" placeholder="Descrição">
-    <select id="categoria"><option value="perfume">Perfume</option><option value="tenis">Ténis</option><option value="roupa">Roupa</option><option value="relogio">Relógio</option><option value="acessorio">Acessório</option></select>
-    <input id="prodCores" placeholder="Cores - ex: Preto, Branco">
-    <input id="prodTamanhos" placeholder="Tamanhos - ex: S, M, L">
-    <input id="estoque" type="number" placeholder="Stock">
-    <label style="color:#fff"><input type="checkbox" id="chkDestaque" style="width:auto"> ⭐ Destaque</label>
-    <input type="file" accept="image/*" onchange="lerFotos(event)">
-    <div id="previewFotos"></div>
-    <button class="btn" onclick="salvarProduto()">+ ADICIONAR</button>
+    <select id="categoria"><option value="perfume">Perfume</option><option value="tenis">Ténis</option><option value="roupa">Roupa</option><option value="relogio">Relógio</option><option value="acessorio">Acessório</option><option value="outro">Outro</option></select>
+    <label style="display:flex;gap:8px;align-items:center;margin:8px 0"><input type="checkbox" id="chkDestaque"> ⭐ Colocar em Destaque</label>
+    <input type="file" accept="image/*" multiple onchange="lerFotos(event)">
+    <div id="previewFotos" style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0"></div>
+    <p id="fotoMsg" class="small">Nenhuma foto escolhida. Máximo 5 fotos pequenas!</p>
+    <button class="btn" id="btnSalvar" onclick="salvarProduto()">+ ADICIONAR PRODUTO À LOJA</button>
+    <button class="btn" id="btnCancelar" style="display:none;background:#333;color:#fff" onclick="cancelarEdicao()">Cancelar Edição</button>
     <div id="produtosAdmin"></div>
+  </div>
+
+  <div id="abaPed" style="display:none"><h3>Pedidos</h3><div id="listaPedidos"></div></div>
+
+  <div id="abaRel" style="display:none">
+    <h3>📊 Relatório</h3>
+    <button class="btn" onclick="gerarRelatorioMensal()">🖨️ GERAR RELATÓRIO DO MÊS EM PAPEL</button>
+    <input type="date" id="dataRel">
+    <div style="display:flex;gap:8px"><button class="btn" id="btnHoje" onclick="verHoje()">📅 HOJE</button><button class="btn" id="btnOntem" onclick="verOntem()">📅 ONTEM</button></div>
+    <p id="dataSelecionadaMsg" class="small"></p>
+    <div class="secao"><p>Total do dia: <b id="relTotal">0 Kz</b> | Vendas: <b id="relQtd">0</b> | Pendentes: <b id="relPend">0</b> | Recusados: <b id="relRec">0</b></p><p>Total geral: <b id="relTotalGeral">0 Kz</b> | Total vendas: <b id="relQtdGeral">0</b></p></div>
+    <h4>Vendas do dia</h4><div id="listaRel"></div>
+    <h4>Mais vendidos</h4><div id="listaTop"></div>
+  </div>
+
+  <div id="abaLoja" style="display:none">
+    <h3>🏪 Personalizar Loja</h3>
+    <input id="cfgNomeLoja" placeholder="Nome da loja"><input id="cfgSloganLoja" placeholder="Slogan"><input id="cfgBannerTitulo" placeholder="Título do banner"><input id="cfgBannerSub" placeholder="Subtítulo"><input id="cfgSobreTitulo" placeholder="Título Sobre"><textarea id="cfgSobreTexto" placeholder="Texto Sobre"></textarea><input id="cfgVisao" placeholder="Visão"><input id="cfgMissao" placeholder="Missão"><input id="cfgSobreExtra" placeholder="Info extra"><input id="cfgFooter" placeholder="Rodapé">
+    <label>Logo</label><input type="file" id="inputLogo" accept="image/*" onchange="lerLogo(event)"><img id="prevLogo" style="display:none;width:100px;border-radius:10px"><button class="btn" style="background:#333;color:#fff" onclick="removerLogo()">Remover Logo</button>
+    <label>Banner</label><input type="file" id="inputBanner" accept="image/*" onchange="lerBanner(event)"><img id="prevBanner" style="display:none;width:100%;border-radius:10px"><button class="btn" style="background:#333;color:#fff" onclick="removerBanner()">Remover Banner</button>
+    <button class="btn" onclick="salvarLoja()">💾 SALVAR LOJA</button>
+  </div>
+
+  <div id="abaPag" style="display:none">
+    <h3>💳 Pagamentos</h3>
+    <input id="cfgExpress" placeholder="Número Express"><input id="cfgNomeExpress" placeholder="Nome Express"><input id="cfgUnitel" placeholder="Número Unitel Money"><input id="cfgNomeUnitel" placeholder="Nome Unitel"><input id="cfgPaypay" placeholder="Número PayPay"><input id="cfgNomePaypay" placeholder="Nome PayPay"><input id="cfgIban" placeholder="IBAN"><input id="cfgBanco" placeholder="Banco"><input id="cfgNomeBanco" placeholder="Nome Banco"><input id="cfgWhats" placeholder="WhatsApp da loja - 244...">
+    <button class="btn" onclick="salvarConfigPag()">💾 SALVAR PAGAMENTOS</button>
+  </div>
+
+  <div id="abaCli" style="display:none"><h3>👥 Clientes</h3><div id="listaClientes"></div></div>
+  <button class="btn" style="background:#333;color:#fff" onclick="mostrarLoja()">← Voltar para Loja</button>
 </div>
-<div id="abaPed" class="boxAdmin" style="display:none"><h3>🧾 Pedidos</h3><div id="listaPedidos"></div></div>
-<div id="abaCli" class="boxAdmin" style="display:none"><h3>👥 Clientes</h3><div id="listaClientes"></div></div>
-<script>
-var _cats=document.querySelector('.cats'); if(_cats) _cats.id='catsCirculares';
-var todosProdutos=[], carrinho=[];
-try{carrinho=JSON.parse(localStorage.getItem('lc_carrinho')||'[]')}catch(e){carrinho=[]}
-var clienteEmail=localStorage.getItem('lc_email')||'', clienteNome=localStorage.getItem('lc_nome')||'', filtroAtual='todos', _fotosTemp=[];
-function $id(i){return document.getElementById(i)}
-function temFirebase(){ return false; }
-function esconderTudo(){['areaLoja','loginBox','adminPanel','telaAdminAba'].forEach(function(i){var e=$id(i);if(e)e.style.display='none'});['clienteModal','meusPedidosModal','cartModal','pagModal','telaDetalhe'].forEach(function(i){var e=$id(i);if(e)e.style.display='none'});fecharMenu();}
-function mostrarLoja(){esconderTudo();$id('areaLoja').style.display='block';document.body.style.overflow='';window.scrollTo(0,0)}
-function abrirMenu(){var m=$id('menuNovo');if(m)m.style.display='block';var o=$id('overlaySimples');if(o)o.style.display='block'}
-function fecharMenu(){var m=$id('menuNovo');if(m)m.style.display='none';var s=$id('menuSimples');if(s)s.style.display='none';var o=$id('overlaySimples');if(o)o.style.display='none'}
-function abrirLoginAdmin(){esconderTudo();$id('loginBox').style.display='block'}
-function login(){
-  var email=($id('email').value||'').trim().toLowerCase(), pass=$id('pass').value||'';
-  if(!email||!pass){$id('loginMsg').innerText='Preenche e-mail e senha';return}
-  if(email==='dasilva12cabindes@gmail.com') mostrarAdmin(email);
-  else $id('loginMsg').innerText='Só o dono entra';
-}
-function mostrarAdmin(email){esconderTudo();$id('adminPanel').style.display='block';$id('adminEmailTxt').innerText=email;renderProdutosAdmin();carregarPedidosAdmin();renderClientesAdmin()}
-function logout(){localStorage.removeItem('lc_email');clienteEmail='';mostrarLoja()}
-function irParaAbaAdmin(aba){
-  var mapa={prod:'abaProd',ped:'abaPed',cli:'abaCli'};
-  var tit={prod:'📦 Produtos - Adicionar',ped:'🧾 Pedidos - Confirmar',cli:'👥 Clientes - Quem comprou'};
-  ['abaProd','abaPed','abaCli'].forEach(function(id){var a=$id(id);if(a)a.style.display='none';});
-  var el=$id(mapa[aba]); if(!el) return;
-  if(aba==='ped') carregarPedidosAdmin();
-  if(aba==='prod') renderProdutosAdmin();
-  if(aba==='cli') renderClientesAdmin();
-  el.style.display='block';
-  $id('telaAdminCorpo').appendChild(el);
-  $id('telaAdminTitulo').innerText=tit[aba];
-  $id('telaAdminAba').style.display='block';
-  $id('telaAdminAba').scrollTop=0;
-}
-function voltarAdminAba(){ $id('telaAdminAba').style.display='none'; }
-function marcarAdmin(el){document.querySelectorAll('#adminPanel .menuItem').forEach(function(i){i.classList.remove('ativo')});if(el)el.classList.add('ativo')}
-function abrirLoginCliente(){if(clienteEmail){alert('Já estás ligado: '+clienteEmail);return}$id('clienteModal').style.display='flex';mostrarTelaLogin()}
-function fecharLoginCliente(){$id('clienteModal').style.display='none'}
-function mostrarTelaLogin(){$id('telaLogin').style.display='block';$id('telaCriar').style.display='none';if($id('telaSocial'))$id('telaSocial').style.display='none';if($id('telaRecuperar'))$id('telaRecuperar').style.display='none';}
-function mostrarTelaCriar(){$id('telaLogin').style.display='none';$id('telaCriar').style.display='block';if($id('telaSocial'))$id('telaSocial').style.display='none';if($id('telaRecuperar'))$id('telaRecuperar').style.display='none';}
-function verSenhaCliente(){var i=$id('cliSenha');if(i)i.type=(i.type==='password'?'text':'password');}
-function esqueceuSenha(){$id('telaLogin').style.display='none';$id('telaCriar').style.display='none';if($id('telaSocial'))$id('telaSocial').style.display='none';$id('telaRecuperar').style.display='block';}
-function confirmarRecuperar(){var e=($id('recEmail').value||'').trim();if(e.indexOf('@')<0){alert('Escreve um e-mail válido');return}alert('✅ Se '+e+' existir, enviámos o link de recuperação.');voltarSocial();}
-var _socialTipo='Google';
-function entrarComGoogle(){
-  _socialTipo='Google';
-  $id('socialTitulo').innerText='Continue with Google';
-  $id('socialEmail').placeholder='Escreve o teu Gmail';
-  $id('socialEmail').value='';
-  $id('telaLogin').style.display='none';$id('telaCriar').style.display='none';if($id('telaRecuperar'))$id('telaRecuperar').style.display='none';
-  $id('telaSocial').style.display='block';
-}
-function entrarComMeta(){
-  _socialTipo='Meta';
-  $id('socialTitulo').innerText='Continue with Meta';
-  $id('socialEmail').placeholder='E-mail do Facebook / Instagram';
-  $id('socialEmail').value='';
-  $id('telaLogin').style.display='none';$id('telaCriar').style.display='none';if($id('telaRecuperar'))$id('telaRecuperar').style.display='none';
-  $id('telaSocial').style.display='block';
-}
-function voltarSocial(){
-  if($id('telaSocial'))$id('telaSocial').style.display='none';
-  if($id('telaRecuperar'))$id('telaRecuperar').style.display='none';
-  $id('telaLogin').style.display='block';
-}
-function confirmarSocial(){
-  var e=($id('socialEmail').value||'').trim();
-  if(e.indexOf('@')<0){alert('Escreve um e-mail válido');return}
-  clienteEmail=e;clienteNome=e.split('@')[0];
-  localStorage.setItem('lc_email',e);localStorage.setItem('lc_nome',clienteNome);
-  fecharLoginCliente();atualizarHeader();
-  alert('✅ Entraste com '+_socialTipo+' como '+e);
-}
-function entrarCliente(){
-  var email=($id('cliEmail').value||'').trim(), s=$id('cliSenha').value||'';
-  if(!email||!s){$id('msgCliente').innerText='Preenche e-mail e senha';return}
-  clienteEmail=email;localStorage.setItem('lc_email',email);fecharLoginCliente();atualizarHeader();
-}
-function criarContaCliente(){
-  var nome=$id('cliNomeConta').value.trim(), email=($id('cliEmailCriar').value||'').trim(), s1=$id('cliSenhaCriar').value, s2=$id('cliSenhaConfirmar').value;
-  if(!nome||!email||!s1){$id('msgCliente').innerText='Preenche tudo';return}
-  if(s1!==s2){$id('msgCliente').innerText='Senhas diferentes';return}
-  clienteEmail=email;clienteNome=nome;localStorage.setItem('lc_email',email);localStorage.setItem('lc_nome',nome);fecharLoginCliente();atualizarHeader();alert('✅ Conta criada!');
-}
-function atualizarHeader(){
-  if(clienteEmail){$id('nomeClienteTop').innerText=clienteNome||clienteEmail.split('@')[0];$id('emailClienteTop').innerText=clienteEmail;$id('barraContaTxt').innerText='Conta'}
-  else{$id('nomeClienteTop').innerText='Visitante!';$id('emailClienteTop').innerText='Cria conta antes de comprar'}
-}
-function setFiltro(c){filtroAtual=c;renderProdutos()}
-function renderProdutos(){
-  var q=($id('pesquisa').value||'').toLowerCase();
-  var lista=todosProdutos.filter(function(o){return (filtroAtual==='todos'||o.data.categoria===filtroAtual) && (!q||(o.data.nome||'').toLowerCase().indexOf(q)>-1)});
-  function card(o){
-    var d=o.data;
-    var foto=(d.fotos&&d.fotos[0])||d.foto||'https://via.placeholder.com/300';
-    return '<div class="card" onclick="abrirDetalheProduto(\''+o.id+'\')"><img src="'+foto+'"><div><b>'+(d.nome||'')+'</b><p style="color:#d4af37;font-weight:800">'+Number(d.preco||0).toLocaleString('pt-AO')+' Kz</p><button onclick="event.stopPropagation();abrirDetalheProduto(\''+o.id+'\')">VER</button></div></div>';
-  }
-  $id('produtos').innerHTML=lista.map(card).join('')||'<p>Nenhum produto</p>';
-  var dest=lista.filter(function(o){return o.data.destaque});
-  $id('produtosDestaque').innerHTML=(dest.length?dest:lista.slice(0,4)).map(card).join('');
-  $id('qtdMostra').innerText='('+lista.length+')';
-  $id('status').innerText='✅ '+lista.length+' produtos';
-}
-function carregarProdutos(){ carregarDemo(); }
-function carregarDemo(){
-  todosProdutos=[
-    {id:'demo1',data:{nome:'Perfume LISSANTE Gold',preco:15000,desc:'Perfume elegante, longa duração.',categoria:'perfume',estoque:20,cores:'Preto, Branco',tamanhos:'',foto:'https://images.unsplash.com/photo-1541643600914-78b084683601?w=600',destaque:true}},
-    {id:'demo2',data:{nome:'Ténis LISSANTE Air',preco:35000,desc:'Conforto total.',categoria:'tenis',estoque:15,cores:'Preto, Branco',tamanhos:'38, 39, 40, 41',foto:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600',destaque:true}},
-    {id:'demo3',data:{nome:'Relógio LISSANTE Classic',preco:25000,desc:'Elegância no pulso.',categoria:'relogio',estoque:10,cores:'Preto',tamanhos:'',foto:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600',destaque:false}}
-  ];renderProdutos();
-}
-function adicionarAoCarrinho(nome){
-  var ach=carrinho.find(function(c){return c.nome===nome});
-  if(ach)ach.qtd++;
-  else{var o=todosProdutos.find(function(x){return x.data.nome===nome.split(' - ')[0]});carrinho.push({nome:nome,preco:o?Number(o.data.preco):0,qtd:1})}
-  localStorage.setItem('lc_carrinho',JSON.stringify(carrinho));atualizarCarrinho();
-}
-function atualizarCarrinho(){
-  var tq=carrinho.reduce(function(a,c){return a+c.qtd},0), tot=carrinho.reduce(function(a,c){return a+c.preco*c.qtd},0);
-  $id('cartCount').innerText=tq;
-  $id('cartItems').innerHTML=carrinho.length?carrinho.map(function(c,i){return '<div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #eee"><span>'+c.nome+' x'+c.qtd+'</span><b>'+(c.preco*c.qtd)+' Kz <button onclick="removerItem('+i+')">X</button></b></div>'}).join(''):'<p>Carrinho vazio</p>';
-  $id('cartTotal').innerText='Total: '+tot.toLocaleString('pt-AO')+' Kz';
-}
-function removerItem(i){carrinho.splice(i,1);localStorage.setItem('lc_carrinho',JSON.stringify(carrinho));atualizarCarrinho()}
-function verCarrinho(){$id('cartModal').style.display='flex';atualizarCarrinho()}
-function fecharCarrinho(){$id('cartModal').style.display='none'}
-function abrirMeusPedidos(){
-  if(!clienteEmail){abrirLoginCliente();return}
-  $id('meusPedidosModal').style.display='flex';
-  var ped=[];
-  try{ped=JSON.parse(localStorage.getItem('lc_pedidos')||'[]').filter(function(p){return p.email===clienteEmail})}catch(e){ped=[]}
-  $id('listaMeusPedidos').innerHTML=ped.length?ped.map(function(p){return '<div style="background:#f5f5f5;padding:10px;margin:6px;border-radius:10px"><b>#'+p.id+'</b><br>'+p.itens+'<br>Total: '+p.total+' Kz - '+p.status+'<br>📍 '+(p.entrega||'')+'</div>'}).join(''):'<p>Nenhum pedido ainda.</p>';
-}
-function fecharMeusPedidos(){$id('meusPedidosModal').style.display='none'}
-function abrirPagamento(){
-  if(!carrinho.length){alert('Carrinho vazio');return}
-  if(!clienteEmail){fecharCarrinho();abrirLoginCliente();return}
-  $id('cartModal').style.display='none';$id('pagModal').style.display='flex';
-  var tot=carrinho.reduce(function(a,c){return a+c.preco*c.qtd},0);
-  $id('pagResumo').innerText=carrinho.map(function(c){return c.nome+' x'+c.qtd+' = '+(c.preco*c.qtd)+' Kz'}).join('\n')+'\nTotal: '+tot+' Kz';
-  $id('cliNome').value=clienteNome||'';$id('cliEmailPag').value=clienteEmail;
-  escolherEntrega('recolha');
-}
-function fecharPagamento(){$id('pagModal').style.display='none'}
-function recuarParaCarrinho(){fecharPagamento();verCarrinho()}
-function confirmarPedido(){
-  if(!carrinho.length)return;
-  if(_tipoEntrega==='entrega' && !($id('cliEndereco').value||'').trim()){alert('Preenche o Bairro, rua, casa para entrega');return}
-  var tot=carrinho.reduce(function(a,c){return a+c.preco*c.qtd},0);
-  var morada=_tipoEntrega==='entrega' ? 'ENTREGA: '+($id('cliPais').value||'')+' - '+($id('cliCidade').value||'')+' - '+($id('cliEndereco').value||'')+' - Ref: '+($id('cliReferencia').value||'') : 'RECOLHA NA LOJA LISSANTE - Luanda, Cazenga';
-  var ped={id:Date.now().toString().slice(-6),email:clienteEmail,nome:$id('cliNome').value||clienteNome||clienteEmail,itens:carrinho.map(function(c){return c.nome+' x'+c.qtd}).join(', '),total:tot,status:'pendente',entrega:morada,metodo:$id('metodoPag').value};
-  var todos=[];
-  try{todos=JSON.parse(localStorage.getItem('lc_pedidos')||'[]')}catch(e){todos=[]}
-  todos.push(ped);localStorage.setItem('lc_pedidos',JSON.stringify(todos));
-  carrinho=[];localStorage.setItem('lc_carrinho','[]');atualizarCarrinho();fecharPagamento();alert('✅ Pedido criado!\n'+morada);
-}
-function mostrarProcessamento(){
-  var m=$id('procModal');m.style.display='flex';
-  $id('procBarra').style.width='5%';$id('procTitulo').innerText='A processar...';$id('procTexto').innerText='Aguarda, os paus estão a abanar...';
-  setTimeout(function(){$id('procBarra').style.width='45%';$id('procTitulo').innerText='A verificar pagamento...'},900);
-  setTimeout(function(){$id('procBarra').style.width='75%';$id('procTitulo').innerText='A criar pedido...'},1900);
-  setTimeout(function(){$id('procBarra').style.width='100%';$id('procTitulo').innerText='✅ Pedido criado!';setTimeout(function(){m.style.display='none';confirmarPedido()},1100)},2900);
-}
-function lerFotos(e){
-  _fotosTemp=[];var fs=e.target.files;
-  for(var i=0;i<Math.min(fs.length,5);i++){ (function(f){var r=new FileReader();r.onload=function(ev){_fotosTemp.push(ev.target.result);$id('previewFotos').innerHTML=_fotosTemp.map(function(s){return '<img src="'+s+'" style="width:60px;height:60px;object-fit:cover;margin:3px">'}).join('')};r.readAsDataURL(f)})(fs[i]) }
-}
-function salvarProduto(){
-  var nome=$id('nome').value.trim(), preco=Number($id('preco').value||0);
-  if(!nome||!preco){alert('Mete nome e preço');return}
-  var d={nome:nome,preco:preco,desc:$id('desc').value||'',categoria:$id('categoria').value,cores:$id('prodCores').value||'',tamanhos:$id('prodTamanhos').value||'',estoque:Number($id('estoque').value||0),destaque:$id('chkDestaque').checked,fotos:_fotosTemp.length?_fotosTemp:['https://via.placeholder.com/300?text='+encodeURIComponent(nome)]};
-  todosProdutos.push({id:'p'+Date.now(),data:d});renderProdutos();renderProdutosAdmin();alert('✅ Adicionado! (modo demo)');limparForm();
-}
-function limparForm(){['nome','preco','desc','prodCores','prodTamanhos','estoque'].forEach(function(i){$id(i).value=''});$id('chkDestaque').checked=false;_fotosTemp=[];$id('previewFotos').innerHTML=''}
-function renderProdutosAdmin(){
-  $id('produtosAdmin').innerHTML=todosProdutos.map(function(o){return '<div style="background:#0b1220;padding:10px;margin:6px;border-radius:10px;border:1px solid rgba(255,255,255,.1);color:#fff"><b>'+o.data.nome+'</b> - '+Number(o.data.preco||0)+' Kz <button onclick="apagarProduto(\''+o.id+'\')">🗑️</button></div>'}).join('')||'<p>Sem produtos</p>';
-}
-function apagarProduto(id){
-  if(!confirm('Apagar?'))return;
-  todosProdutos=todosProdutos.filter(function(x){return x.id!==id});renderProdutos();renderProdutosAdmin();
-}
-function carregarPedidosAdmin(){
-  var ped=[];
-  try{ped=JSON.parse(localStorage.getItem('lc_pedidos')||'[]')}catch(e){ped=[]}
-  $id('pedCount').innerText=ped.length;
-  $id('listaPedidos').innerHTML=ped.length?ped.map(function(p,i){return '<div style="background:#0b1220;padding:10px;margin:6px;border-radius:10px;color:#fff"><b>#'+p.id+'</b> '+p.nome+' - '+p.total+' Kz<br>'+p.itens+'<br>'+p.status+'<br>📍 '+(p.entrega||'')+'<br>💳 '+(p.metodo||'')+' <button onclick="confirmarPedidoAdmin('+i+')">✅ CONFIRMAR</button></div>'}).join(''):'<p>Sem pedidos</p>';
-}
-function confirmarPedidoAdmin(i){var t=[];try{t=JSON.parse(localStorage.getItem('lc_pedidos')||'[]')}catch(e){t=[]}t[i].status='confirmado';localStorage.setItem('lc_pedidos',JSON.stringify(t));carregarPedidosAdmin();alert('✅ Confirmado!')}
-function renderClientesAdmin(){
-  var ped=[];
-  try{ped=JSON.parse(localStorage.getItem('lc_pedidos')||'[]')}catch(e){ped=[]}
-  var em={};
-  ped.forEach(function(p){em[p.email]=(em[p.email]||0)+1});
-  if(clienteEmail)em[clienteEmail]=em[clienteEmail]||0;
-  var lista=Object.keys(em);$id('cliCount').innerText=lista.length;
-  $id('listaClientes').innerHTML=lista.length?lista.map(function(e){return '<div style="background:#0b1220;padding:10px;margin:6px;border-radius:10px;color:#fff">'+e+' - '+em[e]+' pedido(s)</div>'}).join(''):'<p>Sem clientes</p>';
-}
-var _tipoEntrega='recolha';
-function escolherEntrega(t){
-  _tipoEntrega=t;
-  $id('btnRecolha').className=t==='recolha'?'ativo':'';
-  $id('btnEntrega').className=t==='entrega'?'ativo':'';
-  $id('areaEntrega').style.display=t==='entrega'?'block':'none';
-  $id('areaRecolha').style.display=t==='recolha'?'block':'none';
-}
-function lerComprovativo(e){$id('compMsg').innerText='✅ Comprovativo carregado';$id('compMsg').style.color='green'}
-function abrirWhatsAppLoja(){window.open('https://wa.me/244900000000?text='+encodeURIComponent('Olá LISSANTE! Quero saber mais.'),'_blank')}
-function abrirSobreLoja(){alert('LISSANTE FASHION\n\nLoja oficial em Luanda.\nPerfumes, Ténis, Roupas, Relógios e Acessórios.\nEntrega rápida em todo Luanda.')}
-function abrirAssistenteIA(){
-  var p=prompt('🤖 Assistente LISSANTE\nO que procuras hoje?\nEx: perfume barato, ténis branco');
-  if(!p)return;var q=p.toLowerCase();
-  if(q.indexOf('perfume')>-1)setFiltro('perfume');
-  else if(q.indexOf('tenis')>-1||q.indexOf('ténis')>-1)setFiltro('tenis');
-  else if(q.indexOf('roupa')>-1)setFiltro('roupa');
-  else if(q.indexOf('relogio')>-1||q.indexOf('relógio')>-1)setFiltro('relogio');
-  else setFiltro('todos');
-  alert('🤖 Mostrei os melhores para: '+p);
-}
-function abrirAssistenteIAAdmin(){
-  var p=prompt('🤖 Assistente Admin\n1 - Ideia de preço\n2 - Ideia de descrição\n3 - Qual produto vende mais?');
-  if(p==='1')alert('💡 Perfume 12.000-18.000 Kz vende mais. Ténis 30.000-40.000 Kz.');
-  else if(p==='2')alert('✍️ Descrição boa: nome + benefício + material + para quem é.');
-  else if(p==='3'){var t=todosProdutos[0];alert(t?'🏆 Destaque: '+t.data.nome:'Ainda não tens produtos.');}
-}
-function abrirRelatorioAdmin(){
-  var ped=[];
-  try{ped=JSON.parse(localStorage.getItem('lc_pedidos')||'[]')}catch(e){ped=[]}
-  var total=ped.reduce(function(a,x){return a+Number(x.total||0)},0);
-  alert('📊 RELATÓRIO LISSANTE\n\nPedidos: '+ped.length+'\nTotal vendido: '+total.toLocaleString('pt-AO')+' Kz');
-  irParaAbaAdmin('ped');
-}
-function abrirLookEstilista(){
-  var c=prompt('👕 MODO LOOK & ESTILISTA\n1 - Casual\n2 - Festa\n3 - Trabalho');
-  if(c==='1'){setFiltro('tenis');alert('👕 Look Casual: Ténis + Roupa leve')}
-  else if(c==='2'){setFiltro('perfume');alert('✨ Look Festa: Perfume + Relógio')}
-  else if(c==='3'){setFiltro('roupa');alert('💼 Look Trabalho: Roupa + Relógio')}
-  else return;
-}
-function partilharLojaMenu(){
-  var l=location.origin+location.pathname;
-  if(navigator.share){navigator.share({title:'LISSANTE',text:'Visita a loja LISSANTE',url:l})}
-  else if(navigator.clipboard){navigator.clipboard.writeText(l);alert('Link copiado: '+l)}
-  else window.open('https://wa.me/?text='+encodeURIComponent('Visita a LISSANTE: '+l),'_blank');
-}
-function ativarAlertas(){
-  if('Notification' in window){
-    Notification.requestPermission().then(function(p){if(p==='granted'){alert('✅ Alertas ativados!');try{new Notification('LISSANTE',{body:'Alertas ativados!'})}catch(e){}}else alert('Alertas não ativados.')});
-  }else alert('Ativa no WhatsApp da loja.');
-}
-function adicionarEcrãPrincipal(){alert('📱 Android: Menu Chrome > Adicionar ao ecrã principal\n\niPhone: Partilhar > Adicionar ao Ecrã Principal')}
-function trocarTema(){
-  var claro=document.body.classList.toggle('claro');
-  localStorage.setItem('lc_tema',claro?'claro':'escuro');
-  alert(claro?'☀️ Tema Claro Suave ativado':'🌙 Tema Escuro ativado');
-}
-if(localStorage.getItem('lc_tema')==='claro') document.body.classList.add('claro');
-function corParaHex(c){var m={preto:'#111',branco:'#fff',azul:'#0a7cff',vermelho:'#ff4444',verde:'#00d26a',amarelo:'#ffcc00',rosa:'#ff8fab',cinza:'#888',bege:'#f5e6c8',laranja:'#ff7a00',roxo:'#8b5cf6'};return m[(c||'').toLowerCase()]||'#ddd'}
-var _det=null,_detCor='',_detTam='',_detQtd=1;
-function abrirDetalheProduto(id){
-  var o=todosProdutos.find(function(x){return x.id===id});if(!o)return;
-  _det=o;_detCor='';_detTam='';_detQtd=1;var d=o.data,fotos=d.fotos||(d.foto?[d.foto]:[]);
-  $id('detTopoNome').innerText=d.nome;$id('detNome').innerText=d.nome;$id('detDesc').innerText=d.desc||'';$id('detPreco').innerText=Number(d.preco||0).toLocaleString('pt-AO')+' Kz';$id('detImg').src=fotos[0]||'';$id('detStock').innerText='✅ Em stock: '+(d.estoque||0);$id('detQtd').innerText='1';$id('detMsg').innerText='';
-  var cores=(d.cores||'').split(',').map(function(s){return s.trim()}).filter(Boolean);
-  $id('detCoresBox').style.display=cores.length?'block':'none';
-  $id('detCores').innerHTML=cores.map(function(c){return '<span onclick="detCor(this,\''+c+'\')" style="display:inline-block;width:40px;height:40px;border-radius:50%;background:'+corParaHex(c)+';border:2px solid #ddd;margin:4px"></span>'}).join('');
-  var tams=(d.tamanhos||'').split(',').map(function(s){return s.trim()}).filter(Boolean);
-  $id('detTamBox').style.display=tams.length?'block':'none';
-  $id('detTamanhos').innerHTML=tams.map(function(t){return '<button onclick="detTam(this,\''+t+'\')" style="padding:10px 18px;border-radius:20px;margin:4px">'+t+'</button>'}).join('');
-  $id('telaDetalhe').style.display='block';$id('telaDetalhe').scrollTop=0;document.body.style.overflow='hidden';
-}
-function fecharDetalheProduto(){$id('telaDetalhe').style.display='none';document.body.style.overflow=''}
-function detCor(el,c){document.querySelectorAll('#detCores span').forEach(function(x){x.style.border='2px solid #ddd'});el.style.border='3px solid #d4af37';_detCor=c}
-function detTam(el,t){document.querySelectorAll('#detTamanhos button').forEach(function(x){x.style.background='#fff';x.style.color='#111'});el.style.background='#111';el.style.color='#fff';_detTam=t}
-function detMais(){_detQtd++;$id('detQtd').innerText=_detQtd}
-function detMenos(){if(_detQtd>1){_detQtd--;$id('detQtd').innerText=_detQtd}}
-function detAdicionar(){
-  if(!clienteEmail){fecharDetalheProduto();abrirLoginCliente();return}
-  if($id('detCoresBox').style.display!=='none'&&!_detCor){$id('detMsg').innerText='Escolhe a cor';return}
-  if($id('detTamBox').style.display!=='none'&&!_detTam){$id('detMsg').innerText='Escolhe o tamanho';return}
-  var nome=_det.data.nome+(_detCor?' - Cor: '+_detCor:'')+(_detTam?' - Tam: '+_detTam:'');
-  for(var i=0;i<_detQtd;i++)adicionarAoCarrinho(nome);
-  var a=carrinho.find(function(c){return c.nome===nome});if(a)a.qtd=_detQtd;
-  localStorage.setItem('lc_carrinho',JSON.stringify(carrinho));atualizarCarrinho();fecharDetalheProduto();alert('✅ Adicionado: '+nome+' x'+_detQtd);
-}
-function detComprarAgora(){detAdicionar();setTimeout(function(){verCarrinho()},300)}
-atualizarHeader();atualizarCarrinho();carregarProdutos();
-setTimeout(function(){var t=$id('telaCarregamento');if(t)t.style.display='none'},1000);
-if(location.search.indexOf('admin=1')>-1)setTimeout(function(){abrirLoginAdmin()},500);
-</script>
+
+<div id="clienteModal" class="modal">
+  <div class="modalBox">
+    <div style="display:flex;justify-content:space-between"><h3>👤 Conta EMPIRE</h3><button onclick="fecharLoginCliente()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px;cursor:pointer">X</button></div>
+    <div style="display:flex;gap:8px;margin:12px 0"><button id="btnTabEntrar" class="btn" style="flex:1" onclick="mostrarTelaLogin()">Entrar</button><button id="btnTabCriar" class="btn" style="flex:1;background:rgba(0,0,0,.3);color:#fff;border:1px solid rgba(255,255,255,.14)" onclick="mostrarTelaCriar()">Criar Conta</button></div>
+    <div id="telaLogin">
+      <input id="cliEmail" placeholder="E-mail"><div style="position:relative"><input id="cliSenha" type="password" placeholder="Senha"><button onclick="verSenha('cliSenha',this)" style="position:absolute;right:10px;top:14px;background:none;border:0">👁️</button></div>
+      <button class="btn" onclick="entrarCliente()">ENTRAR</button>
+      <p style="text-align:center;color:#d4af37;cursor:pointer;margin-top:8px" onclick="esqueceuSenha()">Esqueceu a senha?</p>
+    </div>
+    <div id="telaCriar" style="display:none">
+      <input id="cliNomeConta" placeholder="Teu nome"><input id="cliEmailCriar" placeholder="E-mail"><input id="cliWhatsConta" placeholder="WhatsApp - 9xx xxx xxx"><input id="cliSenhaCriar" type="password" placeholder="Cria senha (mín 6)"><input id="cliSenhaConfirmar" type="password" placeholder="Repete a senha">
+      <button class="btn" onclick="criarContaCliente()">CRIAR CONTA</button>
+    </div>
+    <div id="telaEsqueceu" style="display:none">
+      <input id="cliEmailEsqueceu" placeholder="Teu e-mail"><button class="btn" onclick="enviarRecuperacao()">ENVIAR LINK</button><p style="text-align:center;color:#d4af37;cursor:pointer;margin-top:8px" onclick="mostrarTelaLogin()">← Voltar</p>
+    </div>
+    <p id="msgCliente" style="color:#ffb3b3;font-size:13px;margin-top:8px"></p>
+  </div>
+</div>
+
+<div id="cartModal" class="modal">
+  <div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>🛒 Carrinho</h3><button onclick="fecharCarrinho()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><div id="cartItems"></div><h3 id="cartTotal">Total: 0 Kz</h3><button class="btn" onclick="abrirPagamento()">💳 PAGAR</button></div>
+</div>
+
+<div id="pagModal" class="modal">
+  <div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>💳 Pagamento</h3><button onclick="fecharPagamento()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p id="pagCliente" class="small"></p><pre id="pagResumo" style="white-space:pre-wrap;background:rgba(0,0,0,.25);padding:10px;border-radius:12px;font-size:12px"></pre><input id="cliNome" placeholder="Teu nome"><input id="cliWhats" placeholder="WhatsApp"><input id="cliEmailPag" placeholder="E-mail para recibo (opcional)"><select id="metodoPag" onchange="mostrarDadosPag()"><option value="">Escolhe método...</option><option>Unitel Money</option><option>Multicaixa Express</option><option>PayPay</option><option>Transferência via IBAN</option></select><div id="infoPag" style="display:none;background:rgba(0,0,0,.25);padding:12px;border-radius:12px;white-space:pre-wrap;font-size:13px"></div><label style="font-size:13px">📎 Comprovativo (foto ou PDF)</label><input type="file" id="inputComp" accept="image/*,.pdf" onchange="lerComprovativo(event)"><div id="prevCompBox"></div><p id="compMsg" style="color:#ff8888;font-size:12px">⚠️ Ainda não subiste o comprovativo</p><button class="btn" onclick="confirmarPedido()">✅ CONFIRMAR PEDIDO</button><button class="btn" style="background:#333;color:#fff" onclick="recuarParaCarrinho()">← Voltar ao Carrinho</button></div>
+</div>
+
+<div id="imgModal" class="modal" onclick="fecharImg()"><img id="imgGrande" style="max-width:95%;max-height:90vh;border-radius:12px"></div>
+
+<div class="barraBaixo">
+  <button class="ativo" onclick="mostrarLoja()"><span>🏠</span>Loja</button>
+  <button onclick="verCarrinho()"><span>🛒</span>Carrinho</button>
+  <button onclick="abrirLoginCliente()"><span>👤</span>Conta</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="script.js"></script>
+<script src="menu.js"></script>
 </body>
 </html>
