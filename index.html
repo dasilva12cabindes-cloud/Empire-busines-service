@@ -220,7 +220,6 @@
   </div>
 </div>
 
-<!-- MEUS PEDIDOS - CLIENTE -->
 <div id="meusPedidosModal" class="modal">
   <div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>📦 Meus Pedidos</h3><button onclick="fecharMeusPedidos()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p class="small">Aqui vês se o teu pedido foi aceite ou recusado.</p><div id="listaMeusPedidos"></div></div>
 </div>
@@ -257,7 +256,7 @@
     <label>Palavra-passe</label>
     <div class="campo"><span>🔒</span><input id="loginSenha" type="password" placeholder="Tua palavra-passe"><span onclick="var i=document.getElementById('loginSenha'); if(i.type==='password'){i.type='text'; this.innerText='🙈';} else {i.type='password'; this.innerText='👁️';}" style="cursor:pointer;margin-left:8px">👁️</span></div>
     <button class="btnLogin" onclick="entrarNovoLogin()">ENTRAR</button>
-    <div class="criar">Não tens conta? <b onclick="document.getElementById('novoLogin').classList.remove('mostrar')">Criar conta</b></div>
+    <div class="criar">Não tens conta? <b onclick="criarContaAdminNovo()">Criar conta</b></div>
     <p id="loginErro" style="color:#ff6b6b;font-size:13px;margin-top:10px"></p>
   </div>
   <div class="faixa"></div>
@@ -282,19 +281,37 @@ function copiarLinkAdmin(){
 }
 function partilharWhatsAppLoja(){ var l=linkLimpo(); window.open('https://wa.me/?text='+encodeURIComponent('Visita a minha loja EMPIRE: '+l),'_blank'); }
 
-// Se abrir com ?admin=1 -> vai direto tela Admin, e-mail fixo
+// ===== CORRIGIDO: ?admin=1 agora usa os IDs REAIS (loginEmail / loginSenha) =====
 window.addEventListener('load', ()=>{
   var p = new URLSearchParams(window.location.search);
   if(p.get('admin')==='1'){
-    var b=document.getElementById('btnAdmin'); if(b) b.click();
     setTimeout(()=>{
-      var email=document.getElementById('adminEmail');
+      var email = document.getElementById('loginEmail');
       if(email){ email.value='dasilva12cabindes-admin@empire.com'; email.readOnly=true; }
-      var senha=document.getElementById('adminSenha');
+      var senha = document.getElementById('loginSenha');
       if(senha){ senha.value=''; senha.focus(); }
-    }, 600);
+      var box = document.getElementById('novoLogin');
+      if(box) box.classList.add('mostrar');
+    }, 800);
   }
 });
+
+// ===== CORRIGIDO: Criar conta Admin agora abre mesmo a tela de criar =====
+function criarContaAdminNovo(){
+  document.getElementById('novoLogin').classList.remove('mostrar');
+  // Abre o modal de cliente na aba Criar Conta
+  if(typeof abrirLoginCliente === 'function'){
+    abrirLoginCliente();
+    setTimeout(function(){
+      if(typeof mostrarTelaCriar === 'function') mostrarTelaCriar();
+      var e = document.getElementById('cliEmailCriar');
+      if(e) e.value = 'dasilva12cabindes-admin@empire.com';
+    }, 300);
+  } else {
+    alert('Para criar a conta Admin, usa o Firebase Console > Authentication > Add user com o e-mail dasilva12cabindes-admin@empire.com');
+  }
+}
+
 { document.getElementById('menuLateral').classList.remove('aberto'); document.getElementById('overlayMenu').classList.remove('mostrar'); }
 function tocarSomNotif(){ try{ var a=new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg'); a.play(); }catch(e){} }
 // --- LOGIN ADMIN SEM CAIR ---
@@ -304,7 +321,6 @@ function entrarNovoLogin(){
   if(!email||!senha){document.getElementById('loginErro').innerText='Preenche e-mail e senha';return;}
   document.getElementById('loginErro').innerText='A entrar...';
   firebase.auth().signInWithEmailAndPassword(email,senha).then(function(cred){
-    // Grava lastSeen para o Admin não dizer "Nunca entrou"
     try{ firebase.firestore().collection('users').doc(cred.user.uid).set({lastSeen:firebase.firestore.FieldValue.serverTimestamp(), online:true, email:email},{merge:true}); }catch(e){}
     document.getElementById('novoLogin').classList.remove('mostrar');
     window.location.href = window.location.pathname + '?admin=1';
@@ -324,7 +340,6 @@ mostrarLoginAdmin=function(){
   });
 };
 if(location.search.includes('admin=1')){ setTimeout(function(){ if(typeof mostrarLoginAdmin==='function') mostrarLoginAdmin(); }, 800); }
-// Ignora ?user= / ?uid= partilhado - link universal
 if(location.search.includes('user=')||location.search.includes('uid=')){ window.location.href = window.location.pathname; }
 
 // --- STOCK ---
@@ -355,7 +370,6 @@ function editarStock(id){
   var max=prompt('Stock MÁXIMO', p.estoqueMax||100); if(max===null) return;
   firebase.firestore().collection('produtos').doc(id).update({estoque:Number(novo), estoqueMin:Number(min), estoqueMax:Number(max)}).then(function(){ alert('Stock atualizado!'); });
 }
-// Guarda stock quando salvar produto - intercepta salvarProduto se existir
 var _salvarOriginal = window.salvarProduto;
 window.salvarProduto = function(){
   var est=document.getElementById('estoque'); if(est) window._novoEstoque={estoque:Number(est.value||0), estoqueMin:Number(document.getElementById('estoqueMin').value||5), estoqueMax:Number(document.getElementById('estoqueMax').value||100)};
@@ -379,11 +393,9 @@ function carregarMeusPedidos(user){
     var agora=Date.now(); var html='';
     snap.forEach(function(doc){
       var p=doc.data(); var id=doc.id;
-      // Regra 24h: aceite + não pago + >24h => esconde SÓ para o cliente
       var criado=p.criadoEm && p.criadoEm.toMillis ? p.criadoEm.toMillis() : (p.criadoEm||agora);
       if((p.status==='aceito'||p.status==='aceite') && !p.pago && (agora-criado > 24*60*60*1000)){ return; }
       var statusTxt = p.status==='aceito'||p.status==='aceite' ? '✅ PEDIDO ACEITE' : (p.status==='recusado' ? '❌ PEDIDO RECUSADO' : '🟡 À ESPERA DE APROVAÇÃO');
-      var whatsNum = (document.getElementById('cfgWhats') && document.getElementById('cfgWhats').value) || '';
       html += '<div class="pedido-card"><b>Pedido #'+id.slice(-6).toUpperCase()+'</b> <span class="badge-notif">'+statusTxt+'</span><br><span style="font-size:12px">'+(p.itens||p.resumo||'')+'</span><br><b>Total: '+(p.total||0)+' Kz</b><br><button class="btn" style="background:#25D366;color:#000;margin-top:8px" onclick="avisarWhatsApp(\''+id+'\')">📱 Avisar no WhatsApp que já fiz o pedido</button></div>';
     });
     box.innerHTML = html || '<p>Nenhum pedido visível. Pedidos aceites sem pagamento após 24h são removidos da tua vista.</p>';
@@ -399,7 +411,6 @@ function marcarNotifsLidas(uid){
   var b=document.getElementById('sinoCount'); if(b){ b.style.display='none'; b.innerText='0'; }
   var b2=document.getElementById('badgePedidosMenu'); if(b2) b2.style.display='none';
 }
-// Listener cliente: sino + som quando admin aceita/recusa
 firebase.auth().onAuthStateChanged(function(user){
   if(!user) return;
   try{
@@ -411,11 +422,9 @@ firebase.auth().onAuthStateChanged(function(user){
         if(ch.type==='added' && !_ultimosPedidosCliente[ch.doc.id]){ tocarSomNotif(); _ultimosPedidosCliente[ch.doc.id]=1; }
       });
     });
-    // Atualiza lastSeen sempre que entra
     firebase.firestore().collection('users').doc(user.uid).set({lastSeen:firebase.firestore.FieldValue.serverTimestamp(), online:true, email:user.email},{merge:true});
   }catch(e){}
 });
-// Listener admin: novo pedido
 var _adminListenerOn=false;
 function iniciarListenerAdmin(){
   if(_adminListenerOn) return; _adminListenerOn=true;
@@ -430,7 +439,6 @@ function iniciarListenerAdmin(){
     });
   }catch(e){}
 }
-// Funções que o Admin usa para aceitar/recusar - chama estas no teu script.js se já tens botões, ou usa no painel
 function aceitarPedidoAdmin(id, emailCliente, uidCliente){
   firebase.firestore().collection('pedidos').doc(id).update({status:'aceito', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
     return firebase.firestore().collection('notificacoes').add({paraUid:uidCliente||'', paraEmail:emailCliente||'', pedidoId:id, tipo:'aceito', titulo:'Pedido Aceite ✅', lida:false, criadoEm:firebase.firestore.FieldValue.serverTimestamp()});
@@ -438,4 +446,9 @@ function aceitarPedidoAdmin(id, emailCliente, uidCliente){
 }
 function recusarPedidoAdmin(id, emailCliente, uidCliente){
   firebase.firestore().collection('pedidos').doc(id).update({status:'recusado', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
-    return firebase.firestore().collection('notificacoes').add({paraUid:uidCliente||'', paraEmail:emailCliente||'', pedidoId:id, tipo:'recusado', titulo:'Pedido Recus
+    return firebase.firestore().collection('notificacoes').add({paraUid:uidCliente||'', paraEmail:emailCliente||'', pedidoId:id, tipo:'recusado', titulo:'Pedido Recusado ❌', lida:false, criadoEm:firebase.firestore.FieldValue.serverTimestamp()});
+  }).then(function(){ alert('Pedido recusado! Cliente já recebeu sino + som.'); });
+}
+</script>
+</body>
+</html>
