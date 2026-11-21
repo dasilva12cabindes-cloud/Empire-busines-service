@@ -1,286 +1,321 @@
-(function(){
-  // ===== CSS do menu (+ esconder e-mail e link no ecrã) =====
-  var st=document.createElement('style');
-  st.textContent=
-  '#emailClienteTop,p:has(#linkLojaTexto),p:has(#linkLojaAdmin){display:none!important}'+
-  'button[onclick="copiarLinkLoja()"],button[onclick="partilharWhatsAppLoja()"]{display:none!important}'+
-  'html,body{max-width:100%;overflow-x:hidden}'+
-  '.docBox,.pedidoCard,.relItem,#prevCompBox,#compMsg{max-width:100%;overflow-wrap:anywhere;word-break:break-word}'+
-  '.relItem>div{min-width:0}'+
-  '.secao{scroll-margin-top:70px}'+
-  '#menuFundo{position:fixed;inset:0;background:rgba(0,20,28,.65);z-index:1200;opacity:0;pointer-events:none;transition:opacity .25s}'+
-  '.menuPainel{position:fixed;top:0;bottom:0;left:0;width:82%;max-width:320px;background:var(--fundo-escuro,#034556);border-right:1px solid var(--borda,rgba(255,255,255,.14));z-index:1201;transform:translateX(-100%);transition:transform .28s;overflow-y:auto;padding-bottom:30px}'+
-  '#menuLateral.aberto #menuFundo{opacity:1;pointer-events:auto}'+
-  '#menuLateral.aberto .menuPainel{transform:none}'+
-  '.menuTopo{display:flex;justify-content:space-between;align-items:center;padding:18px 16px 8px}'+
-  '.menuLogo{font-weight:800;letter-spacing:2px;font-size:16px}'+
-  '.menuX{background:var(--card,#176a7d);border:1px solid var(--borda,rgba(255,255,255,.14));color:#fff;width:36px;height:36px;border-radius:12px;font-size:16px;cursor:pointer}'+
-  '.menuUser{margin:6px 16px 10px;padding:12px 14px;background:var(--card,#176a7d);border-radius:14px;font-size:13px;color:var(--suave,#b9d6dd)}'+
-  '.menuTitulo{margin:16px 18px 6px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--destaque,#d4af37)}'+
-  '.menuPainel nav button{display:flex;align-items:center;gap:12px;width:100%;background:none;border:0;border-bottom:1px solid rgba(255,255,255,.07);color:#fff;padding:14px 18px;font-size:15px;font-weight:500;text-align:left;cursor:pointer}'+
-  '.menuPainel nav button:active{background:rgba(255,255,255,.08)}';
-  document.head.appendChild(st);
-
-  // ===== HTML do menu =====
-  var cats=[['perfume','🌸','Perfumes'],['tenis','👟','Ténis'],['roupa','👕','Roupas'],['relogio','⌚','Relógios'],['acessorio','💍','Acessórios']];
-  var catsHtml=cats.map(function(c,i){return '<button data-cat="'+c[0]+'" data-i="'+(i+1)+'"><span>'+c[1]+'</span>'+c[2]+'</button>';}).join('');
-  var m=document.createElement('div');
-  m.id='menuLateral';
-  m.innerHTML=
-    '<div id="menuFundo"></div>'+
-    '<aside class="menuPainel">'+
-      '<div class="menuTopo"><div class="menuLogo" id="menuLogo"></div><button class="menuX" data-acao="fechar">✕</button></div>'+
-      '<div class="menuUser" id="menuUser"></div>'+
-      '<nav>'+
-        '<button data-acao="inicio"><span>🏠</span>Início</button>'+
-        '<button data-acao="destaques"><span>⭐</span>Destaques</button>'+
-        '<div class="menuTitulo">Categorias</div>'+catsHtml+
-        '<div class="menuTitulo">Mais</div>'+
-        '<button data-acao="whats"><span>💬</span>Falar no WhatsApp</button>'+
-        '<button data-acao="copiar"><span>📋</span>Copiar link da loja</button>'+
-        '<button data-acao="partilhar"><span>💬</span>Partilhar no WhatsApp</button>'+
-        '<button data-acao="sobre"><span>👑</span>Sobre a loja</button>'+
-        '<button data-acao="conta" id="menuConta"></button>'+
-      '</nav>'+
-    '</aside>';
-  document.body.appendChild(m);
-
-  function abrir(){
-    var logo=document.getElementById('logoTexto');
-    document.getElementById('menuLogo').textContent=logo?logo.innerText:'EMPIRE';
-    var logado=!!window.clienteEmail;
-    document.getElementById('menuUser').textContent=logado?('👤 '+(window.clienteNome||'Minha conta')):'👤 Visitante · cria conta para comprar';
-    document.getElementById('menuConta').innerHTML=logado?'<span>👤</span>Minha conta':'<span>🔐</span>Entrar / Criar conta';
-    m.classList.add('aberto');
-  }
-  function fechar(){ m.classList.remove('aberto'); }
-  function irPara(el){
-    fechar(); mostrarLoja();
-    if(el) setTimeout(function(){ el.scrollIntoView({behavior:'smooth',block:'start'}); },80);
-  }
-  function secaoDe(id){ var e=document.getElementById(id); return e?e.closest('.secao'):null; }
-
-  m.addEventListener('click',function(e){
-    if(e.target.id==='menuFundo') return fechar();
-    var b=e.target.closest('button'); if(!b) return;
-    if(b.dataset.cat){
-      var btns=document.querySelectorAll('.acoes.filtros button');
-      fechar(); mostrarLoja();
-      if(btns[b.dataset.i]) setFiltro(b.dataset.cat,btns[b.dataset.i]);
-      return irPara(secaoDe('produtos'));
-    }
-    switch(b.dataset.acao){
-      case 'fechar': fechar(); break;
-      case 'inicio': fechar(); mostrarLoja(); break;
-      case 'destaques':
-        var d=document.getElementById('areaDestaque');
-        irPara(d&&d.style.display!=='none'?d:secaoDe('produtos')); break;
-      case 'whats':
-        var n=String((window.CFG&&CFG.whats)||'244972370499').replace(/\D/g,'');
-        fechar(); window.open('https://wa.me/'+n,'_blank'); break;
-      case 'copiar': fechar(); copiarLinkLoja(); break;
-      case 'partilhar': fechar(); partilharWhatsAppLoja(); break;
-      case 'sobre': irPara(secaoDe('sobreTitulo')); break;
-      case 'conta':
-        fechar();
-        abrirLoginCliente();
-        break;
-    }
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a2a33">
+<title>LISSANTE - Loja Oficial</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=20">
+<style>
+*{font-family:'Inter',sans-serif!important}
+body{background:#0a2a33!important}
+#areaLoja .topo{position:sticky;top:0;z-index:100;background:#0a2a33!important;padding:10px 12px!important}
+#logoTexto{color:#fff!important;font-size:22px!important;font-weight:800!important}
+#areaLoja .pesquisaBox{background:#14383d!important;border:1px solid rgba(255,255,255,.15)!important;border-radius:30px!important;padding:8px 14px!important;margin:10px 12px!important;display:flex;align-items:center}
+#areaLoja .pesquisaBox input{color:#fff!important;background:transparent!important}
+#areaLoja .pesquisaBox input::placeholder{color:#bcd0d2!important}
+#areaLoja .pesquisaBox span{color:#fff!important}
+#catsCirculares{display:flex;gap:12px;overflow-x:auto;padding:12px;background:#0a2a33}
+.catCirc{flex:0 0 72px;text-align:center;cursor:pointer}
+.catCirc .img{width:64px;height:64px;border-radius:50%;background:#14383d;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 6px;color:#fff}
+.catCirc span{font-size:11px;font-weight:600;color:#fff}
+#bannerCarousel{margin:10px 12px;border-radius:14px;overflow:hidden;position:relative;height:170px;background:#14383d}
+#bannerCarousel .slide{position:absolute;inset:0;opacity:0;transition:.6s;display:flex;align-items:center;justify-content:center}
+#bannerCarousel .slide.ativo{opacity:1}
+#bannerCarousel .slide img{width:100%;height:100%;object-fit:cover}
+#bannerCarousel .slide .txt{position:absolute;left:14px;bottom:14px;color:#fff}
+#bannerCarousel .slide .txt b{font-size:22px;display:block;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+#bannerCarousel .slide .txt span{background:#ffcc00;color:#000;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:800;display:inline-block;margin-top:6px}
+#bannerDots{position:absolute;bottom:8px;right:12px;display:flex;gap:5px}
+#bannerDots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.6);display:block}
+#bannerDots i.ativo{background:#fff;width:18px;border-radius:10px}
+.saudacao{background:#0a2a33!important;color:#fff!important}
+.saudacao h1{color:#fff!important}
+.saudacao p{color:#e6efef!important}
+.secao{background:#14383d!important;border-radius:14px!important;margin:10px 12px!important;padding:12px!important;color:#fff!important}
+.secaoTop b{color:#fff!important;font-size:16px!important;font-weight:800!important}
+.secao p,.secao h3{color:#fff!important}
+#produtos,#produtosDestaque{display:flex!important;gap:12px!important;overflow-x:auto!important;padding:4px 2px 10px!important}
+#produtos>div,#produtosDestaque>div{flex:0 0 170px!important;background:#0a2a33!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:14px!important;overflow:hidden!important;padding:0!important;color:#fff!important}
+#produtos img,#produtosDestaque img{width:100%!important;height:150px!important;object-fit:cover!important}
+.barraBaixo{position:fixed!important;bottom:0;left:0;right:0;background:#0a2a33!important;border-top:1px solid rgba(255,255,255,.12)!important;display:flex!important;justify-content:space-around!important;padding:6px 0 8px!important;z-index:9999!important}
+.barraBaixo button{background:none!important;border:0!important;color:#bcd0d2!important;font-size:10px!important;display:flex!important;flex-direction:column!important;align-items:center!important;flex:1;white-space:nowrap!important;min-width:0!important}
+.barraBaixo button span{font-size:20px!important;line-height:1!important}
+.barraBaixo button.ativo{color:#d4af37!important}
+.barraBaixo button.ofertaBtn .bola{background:#d4af37;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;margin-top:-24px;border:4px solid #0a2a33;color:#000}
+#barraContaTxt{font-size:10px!important;max-width:64px!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.btnGoogle{background:#fff!important;color:#222!important;border:1px solid #ddd!important;border-radius:10px!important;padding:12px!important;width:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:10px!important;font-weight:600!important;cursor:pointer}
+.divisor{display:flex;align-items:center;gap:10px;color:#999;font-size:12px;margin:16px 0}
+.divisor:before,.divisor:after{content:'';flex:1;height:1px;background:#eee}
+.checkout-box{background:#fff;border-radius:14px;padding:12px;margin:8px 0}
+.entrega-opt{display:flex;gap:10px}
+.entrega-opt button{flex:1;padding:11px;border-radius:10px;border:1px solid #eee;background:#f5f5f5;font-weight:700;cursor:pointer;font-size:14px!important}
+.entrega-opt button.selec{background:#fff8e1!important;border-color:#d4af37!important;color:#000!important}
+.pag-opt{display:flex;align-items:center;gap:10px;padding:12px 10px;border:1px solid #eee;border-radius:12px;margin:8px 0;cursor:pointer;overflow:hidden!important;box-sizing:border-box!important}
+.pag-opt.selec{border-color:#d4af37!important;background:#fff8e1!important}
+.pag-opt b{font-size:14px!important;font-weight:600!important;color:#222!important;line-height:1.3!important;white-space:normal!important;word-break:break-word!important;flex:1!important;min-width:0!important}
+.pag-opt input{flex:0 0 20px!important;width:20px!important;height:20px!important;margin:0!important}
+.var-btn{padding:9px 16px;border-radius:20px;border:1px solid #ddd;background:#fff;font-weight:600;cursor:pointer;margin:4px}
+.var-btn.selec{background:#111!important;color:#fff!important}
+.var-cor{width:36px;height:36px;border-radius:50%;border:2px solid #ddd;cursor:pointer;display:inline-block;margin:4px}
+.var-cor.selec{border-color:#d4af37!important}
+#novoLogin{position:fixed;inset:0;background:#fff;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}
+#novoLogin.mostrar{display:flex}
+#novoLogin .card{background:#fff;width:100%;max-width:380px;padding:10px}
+#novoLogin h2{color:#111;font-size:20px}
+#novoLogin .campo{background:#fff;border:1px solid #ddd;border-radius:10px}
+#novoLogin input{color:#111!important}
+#novoLogin .btnLogin{background:#d4af37!important;color:#000!important;width:100%;border-radius:10px}
+.pedido-card{background:#fff;border:1px solid #eee;border-radius:12px;padding:12px;margin:10px 0;color:#222}
+.badge-notif{background:#ff4444;color:#fff;font-size:11px;padding:2px 8px;border-radius:20px}
+#pagModal{padding:0!important}
+#pagModal .modalBox{width:100%!important;max-width:480px!important;margin:0 auto!important;padding:14px!important;box-sizing:border-box!important;border-radius:16px 16px 0 0!important}
+#pagModal h3{font-size:17px!important}
+#pagModal h4{font-size:11px!important;color:#888!important;letter-spacing:.5px!important;margin:0 0 10px!important}
+#pagModal input,#pagModal select{font-size:14px!important;box-sizing:border-box!important}
+#pagModal #enderecoTxt{font-size:14px!important;color:#0a2a33!important}
+#pagModal .modalBox button.btn{font-size:15px!important}
+#pagModal pre{white-space:pre-wrap!important;word-break:break-word!important;font-size:12px!important}
+.modal{padding:0!important}
+.modalBox{box-sizing:border-box!important;max-width:100%!important}
+.btnMeusPedidos{background:#d4af37!important;color:#000!important}
+@keyframes abanar{0%{transform:rotate(-14deg)}25%{transform:rotate(14deg)}50%{transform:rotate(-14deg)}75%{transform:rotate(14deg)}100%{transform:rotate(0deg)}}
+.pau-abanar{display:inline-block;animation:abanar .35s infinite;font-size:52px}
+</style>
+</head>
+<body>
+<div id="telaCarregamento"><p>A carregar...</p></div>
+<div id="areaLoja">
+  <div class="topo">
+    <button class="iconBtn" style="color:#fff;background:none;border:0;font-size:22px">☰</button>
+    <div class="logo" id="logoTexto" onclick="mostrarLoja()">LISSANTE</div>
+    <div style="flex:1"></div>
+    <button id="sinoBtn" onclick="abrirMeusPedidos()" style="color:#fff;background:none;border:0;font-size:20px">🔔 <span id="sinoCount">0</span></button>
+    <button onclick="verCarrinho()" style="color:#fff;background:none;border:0;font-size:20px">🛒 <span id="cartCount">0</span></button>
+  </div>
+  <div style="display:none"><span id="logoSlogan"></span><span id="logoImgBox"></span><img id="bannerImg" style="display:none"><span id="cartCountTop">0</span></div>
+  <div class="pesquisaBox"><input id="pesquisa" placeholder="Pesquisar aqui... ex: Perfume" oninput="filtrar()" style="border:0;outline:0;width:100%"><span onclick="filtrar()">🔍</span></div>
+  <div id="catsCirculares">
+    <div class="catCirc" onclick="setFiltro('todos',this)"><div class="img">⭐</div><span>Novidades</span></div>
+    <div class="catCirc" onclick="setFiltro('perfume',this)"><div class="img">🌸</div><span>Perfumes</span></div>
+    <div class="catCirc" onclick="setFiltro('tenis',this)"><div class="img">👟</div><span>Ténis</span></div>
+    <div class="catCirc" onclick="setFiltro('roupa',this)"><div class="img">👕</div><span>Roupas</span></div>
+    <div class="catCirc" onclick="setFiltro('relogio',this)"><div class="img">⌚</div><span>Relógios</span></div>
+    <div class="catCirc" onclick="setFiltro('acessorio',this)"><div class="img">💍</div><span>Acessórios</span></div>
+  </div>
+  <div id="bannerCarousel">
+    <div class="slide ativo"><img id="bannerSlide1" src=""><div class="txt"><b id="bannerTxt1">NOVEMBRO É LISSANTE</b><span>MÊS DE DESCONTOS</span></div></div>
+    <div class="slide"><img id="bannerSlide2" src=""><div class="txt"><b>ENTREGA RÁPIDA</b><span>EM TODO LUANDA</span></div></div>
+    <div class="slide"><img id="bannerSlide3" src=""><div class="txt"><b>PAGAMENTO SEGURO</b><span>EXPRESS • TPA • TRANSFERÊNCIA</span></div></div>
+    <div id="bannerDots"><i class="ativo"></i><i></i><i></i></div>
+  </div>
+  <div class="saudacao" style="padding:14px;border-radius:0 0 16px 16px">
+    <h1><span id="textoSaudacao">Boa noite,</span><br><span id="nomeClienteTop">Visitante!</span></h1>
+    <p id="emailClienteTop">Cria conta antes de comprar</p>
+    <p id="avisoVisitante" class="small">Podes visitar à vontade.</p>
+    <div id="areaLogado" style="display:none;color:#00aa55;font-weight:700">✅ Estás ligado! Podes comprar.</div>
+    <div id="areaClienteHeader"></div>
+    <button class="btnMeusPedidos" onclick="abrirMeusPedidos()" style="border:0;padding:10px 14px;border-radius:10px;font-weight:800">📦 MEUS PEDIDOS <span id="badgeMeusPedidosTop" class="badge-notif" style="display:none">0</span></button>
+    <div id="alertaStockAdmin" style="display:none;background:#ff4444;color:#fff;padding:10px;border-radius:10px;margin-top:10px"></div>
+  </div>
+  <div class="acoes filtros" style="display:none">
+    <button class="ativo" onclick="setFiltro('todos',this)">Todos</button>
+    <button onclick="setFiltro('perfume',this)">Perfumes</button>
+    <button onclick="setFiltro('tenis',this)">Ténis</button>
+    <button onclick="setFiltro('roupa',this)">Roupas</button>
+    <button onclick="setFiltro('relogio',this)">Relógios</button>
+    <button onclick="setFiltro('acessorio',this)">Acessórios</button>
+  </div>
+  <div class="secao"><div class="secaoTop"><b>⭐ Produtos em Destaque</b></div><div id="produtosDestaque"></div></div>
+  <div class="secao"><div class="secaoTop"><b>🛍️ Todos os Produtos</b> <span id="qtdMostra"></span></div><div id="produtos"></div><p id="status" style="text-align:center">A carregar...</p><p style="display:none"><span id="statProd">0</span></p></div>
+  <div class="secao"><h3 id="sobreTitulo"></h3><p id="bannerTitulo" style="display:none"></p><p id="bannerSub" style="display:none"></p><p id="sobreTexto"></p><p><b>Visão:</b> <span id="visaoTexto"></span></p><p><b>Missão:</b> <span id="missaoTexto"></span></p><p id="sobreExtra"></p><p id="footerTexto"></p><p><b>Link da loja:</b> <span id="linkLojaTexto"></span></p><button class="btn" onclick="copiarLinkLoja()">🔗 COPIAR LINK</button><button class="btn" style="background:#25D366" onclick="partilharWhatsAppLoja()">💬 PARTILHAR</button></div>
+  <div style="height:90px"></div>
+</div>
+<div id="loginBox" style="display:none;padding:20px">
+  <h2>🔐 Entrar - Admin</h2><p>Só o dono entra aqui.</p>
+  <input id="email" placeholder="E-mail admin">
+  <input id="pass" type="password" placeholder="Senha">
+  <p id="loginMsg"></p>
+  <button class="btn" onclick="login()">ENTRAR</button>
+  <button class="btn" onclick="mostrarLoja()">← Voltar</button>
+</div>
+<div id="adminPanel" style="display:none;padding:15px">
+  <h2>⚙️ Painel Admin</h2>
+  <p>Link: <span id="linkLojaAdmin"></span></p>
+  <div id="alertaStockPainel" style="display:none;background:#ff4444;color:#fff;padding:12px;border-radius:10px"></div>
+  <div id="alertaNovoPedido" style="display:none;background:#00d26a;color:#fff;padding:12px;border-radius:10px"></div>
+  <div class="filtros">
+    <button id="tabProd" onclick="irParaAbaAdmin('prod')">📦 Produtos</button>
+    <button id="tabPed" onclick="irParaAbaAdmin('ped')">🧾 Pedidos (<span id="pedCount">0</span>)</button>
+    <button id="tabNotif" onclick="irParaAbaAdmin('notif')">🔔 Notificação</button>
+    <button id="tabStock" onclick="irParaAbaAdmin('stock')">📦 Stock</button>
+    <button id="tabRel" onclick="irParaAbaAdmin('rel')">📊 Relatório</button>
+    <button id="tabLoja" onclick="irParaAbaAdmin('loja')">🏪 Loja</button>
+    <button id="tabPag" onclick="irParaAbaAdmin('pag')">💳 Pagamentos</button>
+    <button id="tabCli" onclick="irParaAbaAdmin('cli')">👥 Clientes (<span id="cliCount">0</span>)</button>
+  </div>
+  <div id="abaProd">
+    <h3 id="adminTitle">Adicionar Produto</h3>
+    <input id="nome" placeholder="Nome - ex: Relógio Casio">
+    <input id="preco" type="number" placeholder="Preço em Kz">
+    <input id="desc" placeholder="Descrição">
+    <select id="categoria"><option value="perfume">Perfume</option><option value="tenis">Ténis</option><option value="roupa">Roupa</option><option value="relogio">Relógio</option><option value="acessorio">Acessório</option><option value="outro">Outro</option></select>
+    <h4>🎨 CORES E TAMANHOS</h4>
+    <input id="prodCores" placeholder="Cores - ex: Preto, Branco, Azul">
+    <input id="prodTamanhos" placeholder="Tamanhos - ex: S, M, L, XL ou 38, 39, 40">
+    <input id="prodDesconto" type="number" placeholder="Desconto % - ex: 25">
+    <h4>📦 STOCK</h4>
+    <input id="estoque" type="number" placeholder="Stock Atual - ex: 20">
+    <input id="estoqueMin" type="number" placeholder="Stock Mínimo - ex: 5">
+    <input id="estoqueMax" type="number" placeholder="Stock Máximo - ex: 100">
+    <label><input type="checkbox" id="chkDestaque"> ⭐ Destaque</label><br>
+    <input type="file" accept="image/*" multiple onchange="lerFotos(event)">
+    <div id="previewFotos"></div><p id="fotoMsg">Nenhuma foto. Máximo 5!</p>
+    <button class="btn" id="btnSalvar" onclick="salvarProdutoV20()">+ ADICIONAR</button>
+    <button class="btn" id="btnCancelar" style="display:none" onclick="cancelarEdicao()">Cancelar</button>
+    <div id="produtosAdmin"></div>
+  </div>
+  <div id="abaStock" style="display:none"><h3>📦 Stock</h3><div id="listaStockAdmin"></div></div>
+  <div id="abaPed" style="display:none"><h3>🧾 Pedidos</h3><div id="listaPedidos"></div></div>
+  <div id="abaNotif" style="display:none"><h3>🔔 Notificação</h3><button class="btn" onclick="carregarNotificacoesAdmin()">🔄 ATUALIZAR</button><div id="listaNotificacoesAdmin"></div></div>
+  <div id="abaRel" style="display:none"><h3>📊 Relatório</h3><button class="btn" onclick="gerarRelatorioMensal()">🖨️ RELATÓRIO DO MÊS</button><input type="date" id="dataRel"><button class="btn" onclick="verHoje()">📅 HOJE</button><button class="btn" onclick="verOntem()">📅 ONTEM</button><p id="dataSelecionadaMsg"></p><p>Total do dia: <b id="relTotal">0 Kz</b> | Vendas: <b id="relQtd">0</b></p><p>Total geral: <b id="relTotalGeral">0 Kz</b></p><div id="listaRel"></div><div id="listaTop"></div></div>
+  <div id="abaLoja" style="display:none"><h3>🏪 Loja</h3><input id="cfgNomeLoja" placeholder="Nome da loja"><input id="cfgSloganLoja" placeholder="Slogan"><input id="cfgBannerTitulo" placeholder="Título banner - ex: NOVEMBRO É LISSANTE"><input id="cfgBannerSub" placeholder="Subtítulo"><input id="cfgSobreTitulo" placeholder="Título Sobre"><textarea id="cfgSobreTexto" placeholder="Texto Sobre"></textarea><input id="cfgVisao" placeholder="Visão"><input id="cfgMissao" placeholder="Missão"><input id="cfgSobreExtra" placeholder="Info extra"><input id="cfgFooter" placeholder="Rodapé"><label>Logo</label><input type="file" id="inputLogo" accept="image/*" onchange="lerLogo(event)"><img id="prevLogo" style="display:none;width:100px"><button class="btn" onclick="removerLogo()">Remover Logo</button><label>Banner</label><input type="file" id="inputBanner" accept="image/*" onchange="lerBanner(event)"><img id="prevBanner" style="display:none;width:100%"><button class="btn" onclick="removerBanner()">Remover Banner</button><button class="btn" onclick="salvarLoja()">💾 SALVAR LOJA</button></div>
+  <div id="abaPag" style="display:none"><h3>💳 Pagamentos</h3><input id="cfgExpress" placeholder="Número Express"><input id="cfgNomeExpress" placeholder="Nome Express"><input id="cfgUnitel" placeholder="Unitel Money"><input id="cfgNomeUnitel" placeholder="Nome Unitel"><input id="cfgPaypay" placeholder="PayPay"><input id="cfgNomePaypay" placeholder="Nome PayPay"><input id="cfgIban" placeholder="IBAN"><input id="cfgBanco" placeholder="Banco"><input id="cfgNomeBanco" placeholder="Nome Banco"><input id="cfgWhats" placeholder="WhatsApp - 244..."><button class="btn" onclick="salvarConfigPag()">💾 SALVAR</button></div>
+  <div id="abaCli" style="display:none"><h3>👥 Clientes</h3><div id="listaClientes"></div></div>
+  <button class="btn" onclick="mostrarLoja()">← Voltar</button>
+</div>
+<div id="clienteModal" class="modal"><div class="modalBox" style="background:#fff;color:#111;border-radius:20px 20px 0 0"><div style="display:flex;justify-content:space-between"><h3 style="color:#111">Entrar</h3><button onclick="fecharLoginCliente()" style="background:none;border:0;font-size:22px">✕</button></div>
+<div style="display:flex;gap:8px;margin:12px 0"><button id="btnTabEntrar" class="btn" style="flex:1;background:#d4af37;color:#000" onclick="mostrarTelaLogin()">Entrar</button><button id="btnTabCriar" class="btn" style="flex:1;background:#eee;color:#111" onclick="mostrarTelaCriar()">Criar Conta</button></div>
+<div id="telaLogin"><label>E-mail *</label><input id="cliEmail" placeholder="E-mail" style="border:1px solid #ddd;border-radius:10px"><label>Senha *</label><input id="cliSenha" type="password" placeholder="Senha" style="border:1px solid #ddd;border-radius:10px"><p style="text-align:right;color:#0a2a33;cursor:pointer" onclick="esqueceuSenha()">Esqueceu sua senha?</p><button class="btn" style="background:#d4af37;color:#000;width:100%;border-radius:10px" onclick="entrarCliente()">Conecte-se</button><div class="divisor">Or continue with</div><button class="btnGoogle" onclick="entrarComGoogle()"><img src="https://www.google.com/favicon.ico" style="width:20px"> Continue with Google</button><p style="text-align:center;margin-top:14px">Não tem conta? <b style="color:#0a2a33;cursor:pointer" onclick="mostrarTelaCriar()">Inscrever-se</b></p></div>
+<div id="telaCriar" style="display:none"><input id="cliNomeConta" placeholder="Teu nome" style="border:1px solid #ddd;border-radius:10px"><input id="cliEmailCriar" placeholder="E-mail" style="border:1px solid #ddd;border-radius:10px"><input id="cliWhatsConta" placeholder="WhatsApp" style="border:1px solid #ddd;border-radius:10px"><input id="cliSenhaCriar" type="password" placeholder="Cria senha" style="border:1px solid #ddd;border-radius:10px"><input id="cliSenhaConfirmar" type="password" placeholder="Repete a senha" style="border:1px solid #ddd;border-radius:10px"><button class="btn" style="background:#d4af37;color:#000;width:100%;border-radius:10px" onclick="criarContaCliente()">CRIAR CONTA</button><div class="divisor">Or continue with</div><button class="btnGoogle" onclick="entrarComGoogle()"><img src="https://www.google.com/favicon.ico" style="width:20px"> Continue with Google</button></div>
+<div id="telaEsqueceu" style="display:none"><input id="cliEmailEsqueceu" placeholder="Teu e-mail" style="border:1px solid #ddd;border-radius:10px"><button class="btn" onclick="enviarRecuperacao()">ENVIAR LINK</button><p style="text-align:center;color:#0a2a33;cursor:pointer" onclick="mostrarTelaLogin()">← Voltar</p></div>
+<p id="msgCliente" style="color:red"></p></div></div>
+<div id="meusPedidosModal" class="modal"><div class="modalBox" style="background:#fff;color:#111"><h3>📦 Meus Pedidos</h3><button onclick="fecharMeusPedidos()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button><div id="listaMeusPedidos"></div></div></div>
+<div id="cartModal" class="modal"><div class="modalBox" style="background:#fff;color:#111"><h3>🛒 Carrinho</h3><button onclick="fecharCarrinho()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button><div id="cartItems"></div><h3 id="cartTotal">Total: 0 Kz</h3><button class="btn" style="background:#d4af37;color:#000" onclick="abrirPagamento()">💳 PAGAR</button></div></div>
+<div id="pagModal" class="modal"><div class="modalBox" style="background:#f5f7fa;color:#111;max-height:92vh;overflow-y:auto"><div style="display:flex;justify-content:space-between"><button onclick="fecharPagamento()" style="background:none;border:0;font-size:20px">‹</button><h3 style="flex:1;text-align:center">Checkout</h3><button onclick="fecharPagamento()" style="background:none;border:0;font-size:20px">✕</button></div>
+<div class="checkout-box"><h4>MÉTODO DE ENTREGA</h4><div class="entrega-opt"><button id="btnRecolha" onclick="escolherEntrega('recolha')">📍 Recolha</button><button id="btnEntrega" class="selec" onclick="escolherEntrega('entrega')">🏠 Entrega</button></div></div>
+<div class="checkout-box"><h4>ENDEREÇO</h4><div onclick="pedirEndereco()" style="color:#0a2a33;font-weight:700;cursor:pointer">+ <span id="enderecoTxt">Adicionar Novo Endereço</span></div><input id="cliEndereco" placeholder="Bairro, rua, casa" style="border:1px solid #ddd;border-radius:10px;margin-top:10px;display:none"></div>
+<div class="checkout-box"><h4>MÉTODO DE PAGAMENTO</h4>
+<div class="pag-opt" onclick="escolherPagCheckout('TPA',this)"><input type="radio" name="pagCheck"><b>💳 TPA - Pagamento na Entrega</b></div>
+<div class="pag-opt selec" onclick="escolherPagCheckout('Multicaixa Express',this)"><input type="radio" name="pagCheck" checked><b>🌟 MULTICAIXA Express</b></div>
+<div class="pag-opt" onclick="escolherPagCheckout('Transferência',this)"><input type="radio" name="pagCheck"><b>🏦 Transferência Bancária</b></div>
+<div class="pag-opt" onclick="escolherPagCheckout('Unitel Money',this)"><input type="radio" name="pagCheck"><b>📱 Unitel Money</b></div>
+</div>
+<p id="pagCliente"></p><pre id="pagResumo" style="background:#fff;padding:10px;border-radius:12px;font-size:12px"></pre><input id="cliNome" placeholder="Teu nome" style="border:1px solid #ddd;border-radius:10px"><input id="cliWhats" placeholder="WhatsApp" style="border:1px solid #ddd;border-radius:10px"><input id="cliEmailPag" placeholder="E-mail (opcional)" style="border:1px solid #ddd;border-radius:10px">
+<select id="metodoPag" onchange="mostrarDadosPagExpress()" style="display:none"><option value="">Escolhe...</option><option>Unitel Money</option><option>Multicaixa Express</option><option>PayPay</option><option>Transferência via IBAN</option><option>TPA</option></select>
+<div id="boxNumeroExpress" style="display:none;background:#fff3cd;padding:12px;border-radius:12px"><label><b>📱 O TEU número Express</b></label><input id="numeroExpress" placeholder="Ex: 923 000 000"></div>
+<div id="infoPag" style="display:none;background:#fff;padding:12px;border-radius:12px"></div>
+<div id="boxComprovativo"><label>📎 Comprovativo</label><input type="file" id="inputComp" accept="image/*,.pdf" onchange="lerComprovativo(event)"><div id="prevCompBox"></div><p id="compMsg" style="color:red;font-size:12px">⚠️ Ainda não subiste o comprovativo</p></div>
+<div style="background:#fff8e1;padding:10px;border-radius:10px;text-align:center;color:#0a2a33">🛡️ Pagamento seguro</div>
+<button class="btn" id="btnFazerPedido" style="background:#d4af37;color:#000;width:100%;border-radius:12px;padding:14px" onclick="mostrarProcessamento()">🔒 FAZER PEDIDO</button><button class="btn" style="background:#eee;color:#111" onclick="recuarParaCarrinho()">← Voltar ao Carrinho</button></div></div>
+<div id="imgModal" class="modal" onclick="fecharImg()"><img id="imgGrande" style="max-width:95%;max-height:90vh;border-radius:12px"></div>
+<div id="varianteModal" class="modal"><div class="modalBox" style="background:#fff;color:#111;border-radius:20px 20px 0 0"><div style="display:flex;justify-content:space-between"><h3 id="varNome">Produto</h3><button onclick="fecharVariantes()" style="background:none;border:0;font-size:22px">✕</button></div><img id="varImg" style="width:100%;height:200px;object-fit:cover;border-radius:12px;margin:10px 0"><p id="varPreco" style="font-weight:800;font-size:18px"></p><div id="varCoresBox"><h4>Cor</h4><div id="varCores"></div></div><div id="varTamBox"><h4>Tamanho</h4><div id="varTamanhos"></div></div><p id="varMsg" style="color:red"></p><button class="btn" style="background:#d4af37;color:#000;width:100%;border-radius:12px" onclick="confirmarVarianteEAdicionar()">🛒 ADICIONAR</button></div></div>
+<div class="barraBaixo">
+  <button class="ativo" onclick="mostrarLoja();marcarBarra(this)"><span>🏠</span>Início</button>
+  <button onclick="abrirCategoriasBarra();marcarBarra(this)"><span>⊞</span>Categorias</button>
+  <button class="ofertaBtn" onclick="mostrarOfertas();marcarBarra(this)"><span class="bola">🏷️</span>Ofertas</button>
+  <button onclick="abrirWhatsAppLoja();marcarBarra(this)"><span style="color:#25D366">💬</span>Whatsapp</button>
+  <button onclick="abrirLoginCliente();marcarBarra(this)"><span>👤</span><span id="barraContaTxt">Conta</span></button>
+</div>
+<div id="menuAdminLateral" style="position:fixed;top:0;left:-280px;width:260px;height:100%;background:#0a2a33;z-index:100000;transition:.3s;padding:20px"><h3 style="color:#fff">☰ Menu Admin</h3><button onclick="irParaAbaAdmin('prod')" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">📦 Produtos</button><button onclick="irParaAbaAdmin('ped')" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">🧾 Pedidos</button><button onclick="irParaAbaAdmin('notif')" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">🔔 Notificação</button><button onclick="irParaAbaAdmin('stock')" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">📦 Stock</button><button onclick="irParaAbaAdmin('rel')" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">📊 Relatório</button><button onclick="irParaAbaAdmin('loja')" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">🏪 Loja</button><button onclick="irParaAbaAdmin('pag')" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">💳 Pagamentos</button><button onclick="irParaAbaAdmin('cli')" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">👥 Clientes</button><button onclick="fecharMenuAdmin();mostrarLoja()" style="width:100%;background:#25D366;border:0;padding:12px;border-radius:10px;margin:6px 0">🏠 Ver Loja</button><button onclick="fecharMenuAdmin();logout()" style="width:100%;background:#ff4444;border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">🚪 Sair</button></div>
+<div id="overlayMenuAdmin" onclick="fecharMenuAdmin()" style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99999;display:none"></div>
+<div id="procModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999999;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;width:100%;max-width:340px;border-radius:16px;padding:24px;text-align:center">
+    <div id="procPau" class="pau-abanar">🪵</div>
+    <h3 id="procTitulo" style="margin:12px 0 6px;color:#0a2a33;font-size:18px">A processar...</h3>
+    <p id="procTexto" style="color:#666;font-size:14px;margin:0">Aguarda um pouco...</p>
+    <div style="background:#eee;height:8px;border-radius:10px;overflow:hidden;margin-top:16px"><div id="procBarra" style="height:8px;width:5%;background:#d4af37;transition:.5s"></div></div>
+    <p style="font-size:12px;color:#999;margin-top:10px">LISSANTE • Pagamento seguro</p>
+  </div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="script.js?v=20"></script>
+<script src="menu.js?v=20"></script>
+<div id="novoLogin"><div class="card"><h2>Entrar</h2><label>E-mail *</label><div class="campo"><input id="loginEmail" type="email" placeholder="E-mail"></div><label>Senha *</label><div class="campo"><input id="loginSenha" type="password" placeholder="Senha"></div><button class="btnLogin" onclick="entrarNovoLogin()">Conecte-se</button><div class="divisor">Or continue with</div><button class="btnGoogle" onclick="entrarComGoogle()"><img src="https://www.google.com/favicon.ico" style="width:20px"> Continue with Google</button><p id="loginErro" style="color:red"></p></div></div>
+<script>
+function entrarComGoogle(){
+  var provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider).then(function(cred){
+    alert('Bem-vindo '+(cred.user.displayName||cred.user.email)+' ✅ Entraste com Google!');
+    document.getElementById('novoLogin').classList.remove('mostrar');
+    var m=document.getElementById('clienteModal'); if(m) m.style.display='none';
+    mostrarLoja();
+  }).catch(function(e){
+    if(e.code==='auth/operation-not-allowed') alert('⚠️ Ativa o Google no Firebase: Authentication > Google > Ativar');
+    else alert('Erro Google: '+e.message);
   });
-  document.addEventListener('keydown',function(e){ if(e.key==='Escape') fechar(); });
-
-  // ===== Conta: perfil quando ligado + título com o nome atual da loja =====
-  var pm=document.createElement('div');
-  pm.id='perfilModal'; pm.className='modal';
-  pm.innerHTML=
-    '<div class="modalBox" style="text-align:center">'+
-      '<div style="display:flex;justify-content:space-between;align-items:center"><h3 id="perfilTitulo"></h3><button id="perfilX" style="background:#ff4444;border:0;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer">X</button></div>'+
-      '<div id="perfilAvatar" style="width:70px;height:70px;background:var(--destaque,#d4af37);color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;margin:18px auto 10px"></div>'+
-      '<h3 id="perfilNome" style="font-size:20px"></h3>'+
-      '<p style="display:flex;justify-content:center;align-items:center;gap:8px;color:#00ff88;font-weight:700;margin:8px 0 18px"><span class="luz-verde"></span>Conectado</p>'+
-      '<button class="btn" id="perfilSair" style="background:rgba(0,0,0,.3);color:#fff;border:1px solid rgba(255,255,255,.14)">🚪 Sair da conta</button>'+
-    '</div>';
-  document.body.appendChild(pm);
-
-  function nomeLoja(){ return (window.LOJA&&window.LOJA.nomeLoja)||'Loja'; }
-  function fecharPerfil(){ pm.style.display='none'; }
-  function abrirPerfil(){
-    var nome=window.clienteNome||'Cliente';
-    document.getElementById('perfilTitulo').textContent='👤 Conta '+nomeLoja();
-    document.getElementById('perfilNome').textContent=nome;
-    document.getElementById('perfilAvatar').textContent=nome.charAt(0).toUpperCase();
-    pm.style.display='flex';
-  }
-  document.getElementById('perfilX').onclick=fecharPerfil;
-  pm.addEventListener('click',function(e){ if(e.target===pm) fecharPerfil(); });
-  document.getElementById('perfilSair').onclick=function(){ fecharPerfil(); sairCliente(); };
-
-  var loginOriginal=window.abrirLoginCliente;
-  window.abrirLoginCliente=function(){
-    if(window.clienteEmail){ abrirPerfil(); return; }
-    loginOriginal();
-    var h=document.querySelector('#clienteModal h3');
-    if(h) h.textContent='👤 Conta '+nomeLoja();
-  };
-
-  // ===== Nome da loja automático (avisos, recibos, relatórios, WhatsApp, cards) =====
-  // Troca numa só passagem: nome, slogan, cidade e WhatsApp da loja.
-  // O número do recibo perde o prefixo: EMPIRE-AB12CD vira AB12CD.
-  function numFmt(){
-    var d=String((window.CFG&&window.CFG.whats)||'244972370499').replace(/\D/g,'');
-    return (d.length===12&&d.indexOf('244')===0) ? '+244 '+d.slice(3,6)+' '+d.slice(6,9)+' '+d.slice(9) : '+'+d;
-  }
-  function cidadeLoja(){ return ((window.LOJA&&window.LOJA.cidade)||'').trim(); }
-  function troca(t,enc){
-    if(typeof t!=='string') return t;
-    var E=function(s){ return enc?encodeURIComponent(s):s; };
-    return t.replace(/EMPIRE-|EMPIRE|LOJA OFICIAL|\+244 972 370 499|Luanda(?:, Angola)?/g,function(m){
-      if(m==='EMPIRE-') return '';
-      if(m==='EMPIRE') return E(nomeLoja());
-      if(m==='LOJA OFICIAL') return E((window.LOJA&&window.LOJA.sloganLoja)||m);
-      if(m.charAt(0)==='+') return E(numFmt());
-      var c=cidadeLoja(); if(!c) return m;
-      return E(m.length>6 ? c : c.split(',')[0].trim());
-    });
-  }
-  function trocaNome(t){ return troca(t,false); }
-  function trocaNomeUrl(u){ return troca(u,true); }
-
-  // Campo "Cidade" no Admin → Loja (guardado junto com os dados da loja)
-  var cfgSlogan=document.getElementById('cfgSloganLoja');
-  if(cfgSlogan){
-    var inpCidade=document.createElement('input');
-    inpCidade.id='cfgCidade'; inpCidade.placeholder='Cidade, País - ex: Luanda, Angola';
-    cfgSlogan.insertAdjacentElement('afterend',inpCidade);
-    var aplicarOriginal=window.aplicarLoja;
-    window.aplicarLoja=function(){ aplicarOriginal.apply(this,arguments); inpCidade.value=(window.LOJA&&window.LOJA.cidade)||''; };
-    var salvarOriginal=window.salvarLoja;
-    window.salvarLoja=function(){ if(window.LOJA) window.LOJA.cidade=inpCidade.value.trim(); return salvarOriginal.apply(this,arguments); };
-    inpCidade.value=(window.LOJA&&window.LOJA.cidade)||'';
-  }
-
-  var _prompt=window.prompt, _open=window.open;
-  window.prompt=function(t,d){ return _prompt.call(window,trocaNome(t),d); };
-
-  // ----- Caixas de aviso da própria loja (sem "xxx.github.io diz") -----
-  var cs=document.createElement('style');
-  cs.textContent=
-    '#caixaFundo{position:fixed;inset:0;background:rgba(0,20,28,.75);z-index:1300;display:none;align-items:center;justify-content:center;padding:20px}'+
-    '#caixaBox{background:var(--fundo,#04566b);border:1px solid var(--borda,rgba(255,255,255,.14));border-radius:20px;padding:22px;width:100%;max-width:340px;text-align:center}'+
-    '#caixaMsg{white-space:pre-line;font-size:15px;line-height:1.5;margin-bottom:18px;word-break:break-word}'+
-    '#caixaBtns{display:flex;gap:10px}'+
-    '#caixaBtns button{flex:1;border:0;border-radius:14px;padding:13px;font-weight:700;font-size:14px;cursor:pointer}'+
-    '#caixaOk{background:var(--destaque,#d4af37);color:#000}'+
-    '#caixaNao{background:rgba(0,0,0,.3);color:#fff}'+
-    '#toastLoja{position:fixed;left:50%;bottom:95px;transform:translateX(-50%);background:var(--destaque,#d4af37);color:#000;font-weight:700;padding:12px 20px;border-radius:30px;z-index:1300;max-width:90%;text-align:center;display:none;box-shadow:0 6px 20px rgba(0,0,0,.35)}';
-  document.head.appendChild(cs);
-  var cx=document.createElement('div');
-  cx.id='caixaFundo';
-  cx.innerHTML='<div id="caixaBox"><div id="caixaMsg"></div><div id="caixaBtns"><button id="caixaNao">Cancelar</button><button id="caixaOk">OK</button></div></div>';
-  document.body.appendChild(cx);
-  var toast=document.createElement('div'); toast.id='toastLoja'; document.body.appendChild(toast);
-
-  var fila=[], aberta=false, toastT;
-  function proxima(){
-    if(aberta||!fila.length) return;
-    var it=fila.shift(); aberta=true;
-    document.getElementById('caixaMsg').textContent=trocaNome(it.msg);
-    document.getElementById('caixaNao').style.display=it.conf?'block':'none';
-    document.getElementById('caixaOk').textContent=it.conf?'Sim':'OK';
-    cx.style.display='flex';
-    function fim(r){ cx.style.display='none'; aberta=false; it.res(r); proxima(); }
-    document.getElementById('caixaOk').onclick=function(){ fim(true); };
-    document.getElementById('caixaNao').onclick=function(){ fim(false); };
-  }
-  function caixa(msg,conf){ return new Promise(function(res){ fila.push({msg:String(msg),conf:conf,res:res}); proxima(); }); }
-
-  window.alert=function(t){
-    t=String(t);
-    if(/adicionado!/.test(t)){ // aviso curto do carrinho
-      toast.textContent=trocaNome(t); toast.style.display='block';
-      clearTimeout(toastT); toastT=setTimeout(function(){ toast.style.display='none'; },1800);
-      return;
-    }
-    caixa(t,false);
-  };
-
-  // Funções que perguntam "Tens a certeza?" passam a usar a caixa da loja
-  function comConfirmacao(nome){
-    var orig=window[nome]; if(typeof orig!=='function') return;
-    window[nome]=function(){
-      var args=arguments, self=this, msg=null, real=window.confirm;
-      window.confirm=function(t){ msg=t; return false; };
-      try{ orig.apply(self,args); } finally { window.confirm=real; }
-      if(msg===null) return;
-      caixa(msg,true).then(function(ok){
-        if(!ok) return;
-        window.confirm=function(){ return true; };
-        try{ orig.apply(self,args); } finally { window.confirm=real; }
-      });
-    };
-  }
-  ['sairCliente','logout','diminuirQtd','removerItemCarrinho','recusarPedido','apagarPedido','apagar'].forEach(comConfirmacao);
-  window.open=function(url,alvo,feat){
-    var w=_open.call(window,trocaNomeUrl(url),alvo,feat);
-    if(w && url===''){ // janelas de recibo e relatório: depois de escritas, troca o nome no cabeçalho e no texto
-      setTimeout(function(){
-        try{
-          var d=w.document, tw=d.createTreeWalker(d.body,4), n;
-          while((n=tw.nextNode())){ n.nodeValue=trocaNome(n.nodeValue); }
-          d.title=trocaNome(d.title);
-        }catch(e){}
-      },150);
-    }
-    return w;
-  };
-
-  function ajustaCards(){
-    document.querySelectorAll('.card .info p').forEach(function(p){
-      if(p.dataset.nomeOk) return;
-      p.dataset.nomeOk='1';
-      if(p.textContent.indexOf('EMPIRE')>=0) p.textContent=trocaNome(p.textContent);
-    });
-  }
-  ['produtos','produtosDestaque'].forEach(function(id){
-    var el=document.getElementById(id);
-    if(el) new MutationObserver(ajustaCards).observe(el,{childList:true});
-  });
-  ajustaCards();
-
-  // ===== Continuar ligado ao atualizar a página =====
-  // Antes, o site só mostrava a conta depois de ler o Firestore; com rede fraca isso falhava
-  // e parecia que a pessoa tinha saído. Agora a conta aparece logo que o Firebase a reconhece.
-  // (Isto só muda o que se vê; quem protege os dados são as Regras do Firestore.)
-  var ADMIN_EMAIL='dasilva12cabindes@gmail.com';
-  function marcaAdmin(){
-    window.isAdmin=true; window.modoAdmin=true;
-    var b=document.getElementById('btnAdminEscondido'); if(b) b.style.display='block';
-  }
-  if(window.auth){
-    window.auth.onAuthStateChanged(function(u){
-      if(!u) return;
-      var email=u.email||'';
-      if(!window.clienteEmail){
-        window.clienteEmail=email;
-        window.clienteNome=window.clienteNome||u.displayName||email.split('@')[0];
-        atualizarHeaderCliente();
-      }
-      var ehAdmin=email.toLowerCase()===ADMIN_EMAIL;
-      if(ehAdmin){ marcaAdmin(); setTimeout(marcaAdmin,3000); }
-      window.db.collection('clientes').doc(u.uid).get().then(function(s){
-        if(s.exists&&s.data().nome){ window.clienteNome=s.data().nome; atualizarHeaderCliente(); }
-        if(ehAdmin) marcaAdmin();
-      }).catch(function(){});
-    });
-  }
-  var adminOriginal=window.btnAdminClick;
-  window.btnAdminClick=function(){
-    var u=window.auth&&window.auth.currentUser;
-    if(u&&(u.email||'').toLowerCase()===ADMIN_EMAIL){ marcaAdmin(); mostrarAdmin(); return; }
-    adminOriginal();
-  };
-
-  // ===== Liga ao botão ☰ do topo =====
-  var hamb=document.querySelector('.topo .iconBtn');
-  if(hamb){ hamb.onclick=abrir; hamb.setAttribute('aria-label','Menu'); }
-})();
+}
+var _bannerIdx=0;
+setInterval(function(){
+  var slides=document.querySelectorAll('#bannerCarousel .slide'); if(!slides.length) return;
+  slides.forEach(function(s){ s.classList.remove('ativo'); });
+  _bannerIdx=(_bannerIdx+1)%slides.length;
+  slides[_bannerIdx].classList.add('ativo');
+  var dots=document.querySelectorAll('#bannerDots i'); dots.forEach(function(d,i){ d.classList.toggle('ativo', i===_bannerIdx); });
+}, 3500);
+function marcarBarra(btn){ document.querySelectorAll('.barraBaixo button').forEach(function(b){ b.classList.remove('ativo'); }); if(btn) btn.classList.add('ativo'); }
+function abrirCategoriasBarra(){ var el=document.getElementById('catsCirculares'); if(el) el.scrollIntoView({behavior:'smooth'}); }
+function mostrarOfertas(){ setFiltro('todos', document.querySelector('.filtros button')); window.scrollTo({top:0,behavior:'smooth'}); }
+function abrirWhatsAppLoja(){ var num=(document.getElementById('cfgWhats') && document.getElementById('cfgWhats').value) || '244900000000'; window.open('https://wa.me/'+num.replace(/\D/g,'')+'?text='+encodeURIComponent('Olá LISSANTE! Quero saber mais.'),'_blank'); }
+var _tipoEntrega='entrega';
+function escolherEntrega(t){ _tipoEntrega=t; document.getElementById('btnRecolha').classList.toggle('selec', t==='recolha'); document.getElementById('btnEntrega').classList.toggle('selec', t==='entrega'); }
+function pedirEndereco(){ var inp=document.getElementById('cliEndereco'); if(inp){ inp.style.display='block'; inp.focus(); } var e=prompt('Mete o teu endereço: Bairro, Rua, Casa'); if(e){ document.getElementById('enderecoTxt').innerText=e; if(inp) inp.value=e; } }
+function escolherPagCheckout(metodo, el){
+  document.querySelectorAll('.pag-opt').forEach(function(o){ o.classList.remove('selec'); o.querySelector('input').checked=false; });
+  if(el){ el.classList.add('selec'); el.querySelector('input').checked=true; }
+  var sel=document.getElementById('metodoPag'); if(sel){ if(metodo==='Transferência') sel.value='Transferência via IBAN'; else if(metodo==='TPA') sel.value='TPA'; else sel.value=metodo; }
+  mostrarDadosPagExpress();
+}
+var _produtoVariante=null, _corEscolhida='', _tamEscolhido='';
+function abrirVariantes(nome, preco, img, cores, tamanhos){
+  _produtoVariante={nome:nome, preco:preco}; _corEscolhida=''; _tamEscolhido='';
+  document.getElementById('varNome').innerText=nome;
+  document.getElementById('varPreco').innerText='Kz '+Number(preco||0).toLocaleString('pt-AO');
+  document.getElementById('varImg').src=img||'';
+  var coresArr=(cores||'').split(',').map(function(s){return s.trim()}).filter(Boolean);
+  var tamArr=(tamanhos||'').split(',').map(function(s){return s.trim()}).filter(Boolean);
+  document.getElementById('varCoresBox').style.display=coresArr.length?'block':'none';
+  document.getElementById('varTamBox').style.display=tamArr.length?'block':'none';
+  document.getElementById('varCores').innerHTML=coresArr.map(function(c){ return '<span class="var-cor" title="'+c+'" style="background:'+corParaHex(c)+'" onclick="escolherCor(this,\''+c+'\')"></span>'; }).join('');
+  document.getElementById('varTamanhos').innerHTML=tamArr.map(function(t){ return '<button class="var-btn" onclick="escolherTam(this,\''+t+'\')">'+t+'</button>'; }).join('');
+  document.getElementById('varianteModal').style.display='flex';
+  if(!coresArr.length && !tamArr.length){ fecharVariantes(); try{ adicionarAoCarrinho(nome); }catch(e){} }
+}
+function corParaHex(c){ var m={preto:'#111',branco:'#fff',azul:'#0a7cff',vermelho:'#ff4444',verde:'#00d26a',amarelo:'#ffcc00',rosa:'#ff8fab',cinza:'#888',bege:'#f5e6c8',laranja:'#ff7a00',roxo:'#8b5cf6'}; return m[(c||'').toLowerCase()]||'#ddd'; }
+function escolherCor(el, cor){ document.querySelectorAll('.var-cor').forEach(function(x){ x.classList.remove('selec'); }); el.classList.add('selec'); _corEscolhida=cor; }
+function escolherTam(el, tam){ document.querySelectorAll('#varTamanhos .var-btn').forEach(function(x){ x.classList.remove('selec'); }); el.classList.add('selec'); _tamEscolhido=tam; }
+function fecharVariantes(){ document.getElementById('varianteModal').style.display='none'; }
+function confirmarVarianteEAdicionar(){
+  if(document.getElementById('varCoresBox').style.display!=='none' && !_corEscolhida){ document.getElementById('varMsg').innerText='Escolhe a cor primeiro'; return; }
+  if(document.getElementById('varTamBox').style.display!=='none' && !_tamEscolhido){ document.getElementById('varMsg').innerText='Escolhe o tamanho primeiro'; return; }
+  var nomeFinal=_produtoVariante.nome + (_corEscolhida ? ' - Cor: '+_corEscolhida : '') + (_tamEscolhido ? ' - Tam: '+_tamEscolhido : '');
+  fecharVariantes(); try{ adicionarAoCarrinho(nomeFinal); }catch(e){} alert('✅ Adicionado: '+nomeFinal);
+}
+function salvarProdutoV20(){ window._coresTemp=document.getElementById('prodCores').value||''; window._tamanhosTemp=document.getElementById('prodTamanhos').value||''; if(typeof salvarProduto==='function') return salvarProduto(); }
+function copiarLinkLoja(){ var l=window.location.origin+window.location.pathname; if(navigator.clipboard) navigator.clipboard.writeText(l); alert('Link copiado! '+l); }
+function partilharWhatsAppLoja(){ var l=window.location.origin+window.location.pathname; window.open('https://wa.me/?text='+encodeURIComponent('Visita a minha loja LISSANTE: '+l),'_blank'); }
+function abrirMenuAdmin(){ document.getElementById('menuAdminLateral').style.left='0'; document.getElementById('overlayMenuAdmin').style.display='block'; }
+function fecharMenuAdmin(){ document.getElementById('menuAdminLateral').style.left='-280px'; document.getElementById('overlayMenuAdmin').style.display='none'; }
+function irParaAbaAdmin(aba){ fecharMenuAdmin(); var todas=['prod','ped','notif','stock','rel','loja','pag','cli']; todas.forEach(function(a){ var id='aba'+a.charAt(0).toUpperCase()+a.slice(1); if(a==='notif') id='abaNotif'; var el=document.getElementById(id); if(el) el.style.display=(a===aba)?'block':'none'; }); if(aba==='notif') carregarNotificacoesAdmin(); if(aba==='stock' && typeof atualizarListaStock==='function') atualizarListaStock(); window.scrollTo({top:0,behavior:'smooth'}); }
+function textoItens(p){ var it=p.itens; if(!it) return p.resumo||''; if(typeof it==='string') return it; if(Array.isArray(it)) return it.map(function(x){ return typeof x==='string'?x:(x.nome||'Produto')+' x'+(x.qtd||1); }).join(', '); return String(it); }
+function ordenarDocs(docs){ return docs.slice().sort(function(a,b){ var ta=a.data().criadoEm && a.data().criadoEm.toMillis ? a.data().criadoEm.toMillis() : 0; var tb=b.data().criadoEm && b.data().criadoEm.toMillis ? b.data().criadoEm.toMillis() : 0; return tb-ta; }); }
+function carregarNotificacoesAdmin(){ var box=document.getElementById('listaNotificacoesAdmin'); if(!box) return; box.innerHTML='A carregar...'; firebase.firestore().collection('pedidos').where('status','==','pendente').get().then(function(snap){ if(snap.empty){ box.innerHTML='✅ Nenhuma notificação.'; return; } var html=''; ordenarDocs(snap.docs).forEach(function(doc){ var p=doc.data(); html+='<div class="pedido-card"><b>Pedido #'+doc.id.slice(-6).toUpperCase()+'</b><br>'+(p.nome||'Cliente')+' - '+(p.total||0)+' Kz<br>'+textoItens(p)+'<br><button class="btn" onclick="irParaAbaAdmin(\'ped\')">👉 VER NOS PEDIDOS</button></div>'; }); box.innerHTML=html; }); }
+function mostrarDadosPagExpress(){ var metodo=document.getElementById('metodoPag').value; var box=document.getElementById('boxNumeroExpress'); var info=document.getElementById('infoPag'); if(metodo==='Multicaixa Express'){ if(box) box.style.display='block'; if(info){ info.style.display='block'; info.innerText='Vais pagar para Express: '+(document.getElementById('cfgExpress').value||'942788931'); } } else { if(box) box.style.display='none'; if(typeof mostrarDadosPag==='function') try{ mostrarDadosPag(); }catch(e){} } }
+function confirmarPedidoExpress(){ var metodo=document.getElementById('metodoPag').value; if(metodo!=='Multicaixa Express' && metodo!=='TPA' && typeof confirmarPedido==='function') return confirmarPedido(); if(typeof confirmarPedido==='function') return confirmarPedido(); }
+function mostrarProcessamento(){
+  var m=document.getElementById('procModal'); if(!m){ confirmarPedidoExpress(); return; }
+  m.style.display='flex';
+  var barra=document.getElementById('procBarra'); var titulo=document.getElementById('procTitulo'); var texto=document.getElementById('procTexto'); var pau=document.getElementById('procPau');
+  if(pau) pau.innerText='🪵';
+  barra.style.width='5%'; titulo.innerText='A processar...'; texto.innerText='Aguarda, o pau está a abanar...';
+  setTimeout(function(){ barra.style.width='45%'; titulo.innerText='A verificar pagamento...'; }, 900);
+  setTimeout(function(){ barra.style.width='75%'; titulo.innerText='A criar pedido...'; }, 1900);
+  setTimeout(function(){ barra.style.width='100%'; titulo.innerText='✅ Pedido criado!'; if(pau) pau.innerText='✅'; setTimeout(function(){ m.style.display='none'; confirmarPedidoExpress(); }, 1100); }, 2900);
+}
+function entrarNovoLogin(){ var email=document.getElementById('loginEmail').value.trim(); var senha=document.getElementById('loginSenha').value; if(!email||!senha){ document.getElementById('loginErro').innerText='Preenche e-mail e senha'; return; } firebase.auth().signInWithEmailAndPassword(email,senha).then(function(){ document.getElementById('novoLogin').classList.remove('mostrar'); window.location.href=window.location.pathname+'?admin=1'; }).catch(function(){ document.getElementById('loginErro').innerText='E-mail ou senha errada'; }); }
+</script>
+</body>
+</html>
