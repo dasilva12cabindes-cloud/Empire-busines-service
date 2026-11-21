@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0a2a33">
 <title>LISSANTE - Loja Oficial</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20">
+<link rel="stylesheet" href="style.css?v=21">
 <style>
 *{font-family:'Inter',sans-serif!important}
 body{background:#0a2a33!important}
@@ -80,15 +80,15 @@ body{background:#0a2a33!important}
 .modal{padding:0!important}
 .modalBox{box-sizing:border-box!important;max-width:100%!important}
 .btnMeusPedidos{background:#d4af37!important;color:#000!important}
-@keyframes abanar{0%{transform:rotate(-14deg)}25%{transform:rotate(14deg)}50%{transform:rotate(-14deg)}75%{transform:rotate(14deg)}100%{transform:rotate(0deg)}}
-.pau-abanar{display:inline-block;animation:abanar .35s infinite;font-size:52px}
+#telaCarregamento{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+#telaCarregamento p{color:#fff;font-size:14px;margin-top:12px}
 </style>
 </head>
 <body>
-<div id="telaCarregamento"><p>A carregar...</p></div>
+<div id="telaCarregamento"><div class="barras-loader"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><p>A carregar...</p></div>
 <div id="areaLoja">
   <div class="topo">
-    <button onclick="abrirMenuLateral()" style="color:#fff;background:none;border:0;font-size:22px">☰</button>
+    <button class="iconBtn" style="color:#fff;background:none;border:0;font-size:22px">☰</button>
     <div class="logo" id="logoTexto" onclick="mostrarLoja()">LISSANTE</div>
     <div style="flex:1"></div>
     <button id="sinoBtn" onclick="abrirMeusPedidos()" style="color:#fff;background:none;border:0;font-size:20px">🔔 <span id="sinoCount">0</span></button>
@@ -218,13 +218,11 @@ body{background:#0a2a33!important}
   <button onclick="abrirWhatsAppLoja();marcarBarra(this)"><span style="color:#25D366">💬</span>Whatsapp</button>
   <button onclick="abrirLoginCliente();marcarBarra(this)"><span>👤</span><span id="barraContaTxt">Conta</span></button>
 </div>
-<div id="menuLateral" style="position:fixed;top:0;left:-280px;width:260px;height:100%;background:#0a2a33;z-index:100000;transition:.3s;padding:20px"><h3 style="color:#fff">☰ Menu</h3><button onclick="fecharMenuLateral();mostrarLoja()" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">🏠 Loja</button><button onclick="fecharMenuLateral();verCarrinho()" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">🛒 Carrinho</button><button onclick="fecharMenuLateral();abrirMeusPedidos()" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">📦 Meus Pedidos</button><button onclick="fecharMenuLateral()" style="width:100%;background:#333;border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">← Fechar</button></div>
-<div id="overlayMenu" onclick="fecharMenuLateral()" style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99999;display:none"></div>
 <div id="menuAdminLateral" style="position:fixed;top:0;left:-280px;width:260px;height:100%;background:#0a2a33;z-index:100000;transition:.3s;padding:20px"><h3 style="color:#fff">☰ Menu Admin</h3><button onclick="irParaAbaAdmin('prod')" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">📦 Produtos</button><button onclick="irParaAbaAdmin('ped')" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">🧾 Pedidos</button><button onclick="irParaAbaAdmin('notif')" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">🔔 Notificação</button><button onclick="irParaAbaAdmin('stock')" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">📦 Stock</button><button onclick="irParaAbaAdmin('rel')" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">📊 Relatório</button><button onclick="irParaAbaAdmin('loja')" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">🏪 Loja</button><button onclick="irParaAbaAdmin('pag')" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">💳 Pagamentos</button><button onclick="irParaAbaAdmin('cli')" style="width:100%;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">👥 Clientes</button><button onclick="fecharMenuAdmin();mostrarLoja()" style="width:100%;background:#25D366;border:0;padding:12px;border-radius:10px;margin:6px 0">🏠 Ver Loja</button><button onclick="fecharMenuAdmin();logout()" style="width:100%;background:#ff4444;border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0">🚪 Sair</button></div>
 <div id="overlayMenuAdmin" onclick="fecharMenuAdmin()" style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99999;display:none"></div>
 <div id="procModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999999;align-items:center;justify-content:center;padding:20px">
   <div style="background:#fff;width:100%;max-width:340px;border-radius:16px;padding:24px;text-align:center">
-    <div id="procPau" class="pau-abanar">🪵</div>
+    <div class="barras-loader"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
     <h3 id="procTitulo" style="margin:12px 0 6px;color:#0a2a33;font-size:18px">A processar...</h3>
     <p id="procTexto" style="color:#666;font-size:14px;margin:0">Aguarda um pouco...</p>
     <div style="background:#eee;height:8px;border-radius:10px;overflow:hidden;margin-top:16px"><div id="procBarra" style="height:8px;width:5%;background:#d4af37;transition:.5s"></div></div>
@@ -234,8 +232,8 @@ body{background:#0a2a33!important}
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="script.js?v=20"></script>
-<script src="menu.js?v=20"></script>
+<script src="script.js?v=21"></script>
+<script src="menu.js?v=21"></script>
 <div id="novoLogin"><div class="card"><h2>Entrar</h2><label>E-mail *</label><div class="campo"><input id="loginEmail" type="email" placeholder="E-mail"></div><label>Senha *</label><div class="campo"><input id="loginSenha" type="password" placeholder="Senha"></div><button class="btnLogin" onclick="entrarNovoLogin()">Conecte-se</button><div class="divisor">Or continue with</div><button class="btnGoogle" onclick="entrarComGoogle()"><img src="https://www.google.com/favicon.ico" style="width:20px"> Continue with Google</button><p id="loginErro" style="color:red"></p></div></div>
 <script>
 function entrarComGoogle(){
@@ -306,32 +304,26 @@ function textoItens(p){ var it=p.itens; if(!it) return p.resumo||''; if(typeof i
 function ordenarDocs(docs){ return docs.slice().sort(function(a,b){ var ta=a.data().criadoEm && a.data().criadoEm.toMillis ? a.data().criadoEm.toMillis() : 0; var tb=b.data().criadoEm && b.data().criadoEm.toMillis ? b.data().criadoEm.toMillis() : 0; return tb-ta; }); }
 function carregarNotificacoesAdmin(){ var box=document.getElementById('listaNotificacoesAdmin'); if(!box) return; box.innerHTML='A carregar...'; firebase.firestore().collection('pedidos').where('status','==','pendente').get().then(function(snap){ if(snap.empty){ box.innerHTML='✅ Nenhuma notificação.'; return; } var html=''; ordenarDocs(snap.docs).forEach(function(doc){ var p=doc.data(); html+='<div class="pedido-card"><b>Pedido #'+doc.id.slice(-6).toUpperCase()+'</b><br>'+(p.nome||'Cliente')+' - '+(p.total||0)+' Kz<br>'+textoItens(p)+'<br><button class="btn" onclick="irParaAbaAdmin(\'ped\')">👉 VER NOS PEDIDOS</button></div>'; }); box.innerHTML=html; }); }
 function mostrarDadosPagExpress(){ var metodo=document.getElementById('metodoPag').value; var box=document.getElementById('boxNumeroExpress'); var info=document.getElementById('infoPag'); if(metodo==='Multicaixa Express'){ if(box) box.style.display='block'; if(info){ info.style.display='block'; info.innerText='Vais pagar para Express: '+(document.getElementById('cfgExpress').value||'942788931'); } } else { if(box) box.style.display='none'; if(typeof mostrarDadosPag==='function') try{ mostrarDadosPag(); }catch(e){} } }
-function confirmarPedidoExpress(){
-  var metodo=document.getElementById('metodoPag').value;
-  if(metodo!=='Multicaixa Express' && metodo!=='TPA' && typeof confirmarPedido==='function') return confirmarPedido();
-  if(typeof confirmarPedido==='function') return confirmarPedido();
-}
+function confirmarPedidoExpress(){ var metodo=document.getElementById('metodoPag').value; if(typeof confirmarPedido==='function') return confirmarPedido(); }
 function mostrarProcessamento(){
   var m=document.getElementById('procModal');
-  if(!m) { confirmarPedidoExpress(); return; }
+  if(!m){ confirmarPedidoExpress(); return; }
   m.style.display='flex';
   var barra=document.getElementById('procBarra');
   var titulo=document.getElementById('procTitulo');
   var texto=document.getElementById('procTexto');
-  var pau=document.getElementById('procPau');
-  if(pau) pau.innerText='🪵';
-  barra.style.width='5%'; titulo.innerText='A processar...'; texto.innerText='Aguarda, o pau está a abanar...';
+  barra.style.width='5%'; titulo.innerText='A processar...'; texto.innerText='Aguarda, os paus estão a abanar...';
   setTimeout(function(){ barra.style.width='45%'; titulo.innerText='A verificar pagamento...'; texto.innerText='A confirmar o teu pagamento...'; }, 900);
   setTimeout(function(){ barra.style.width='75%'; titulo.innerText='A criar pedido...'; texto.innerText='Quase lá, a guardar o teu pedido...'; }, 1900);
   setTimeout(function(){
     barra.style.width='100%'; titulo.innerText='✅ Pedido criado!'; texto.innerText='Obrigado! O admin vai confirmar.';
-    if(pau) pau.innerText='✅';
     setTimeout(function(){ m.style.display='none'; confirmarPedidoExpress(); }, 1100);
   }, 2900);
 }
 function entrarNovoLogin(){ var email=document.getElementById('loginEmail').value.trim(); var senha=document.getElementById('loginSenha').value; if(!email||!senha){ document.getElementById('loginErro').innerText='Preenche e-mail e senha'; return; } firebase.auth().signInWithEmailAndPassword(email,senha).then(function(){ document.getElementById('novoLogin').classList.remove('mostrar'); window.location.href=window.location.pathname+'?admin=1'; }).catch(function(){ document.getElementById('loginErro').innerText='E-mail ou senha errada'; }); }
-function abrirMenuLateral(){ document.getElementById('menuLateral').style.left='0'; document.getElementById('overlayMenu').style.display='block'; }
-function fecharMenuLateral(){ document.getElementById('menuLateral').style.left='-280px'; document.getElementById('overlayMenu').style.display='none'; }
+// FORÇA A TELA A SUMIR - não depende do Firebase
+setTimeout(function(){ var t=document.getElementById('telaCarregamento'); if(t) t.style.display='none'; }, 1500);
+setInterval(function(){ var t=document.getElementById('telaCarregamento'); if(t) t.style.display='none'; }, 3000);
 </script>
 </body>
 </html>
