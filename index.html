@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=17">
+<link rel="stylesheet" href="style.css?v=18">
 <style>
 #novoLogin{position:fixed;inset:0;background:#0f0f0f;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;font-family:sans-serif}
 #novoLogin.mostrar{display:flex}
@@ -180,8 +180,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="script.js?v=17"></script>
-<script src="menu.js?v=17"></script>
+<script src="script.js?v=18"></script>
+<script src="menu.js?v=18"></script>
 <div id="novoLogin"><div class="card"><h2>Bem-vindo de Volta</h2><p class="sub">Entra para continuar</p><label>E-mail</label><div class="campo"><span>📧</span><input id="loginEmail" type="email" placeholder="Teu e-mail"></div><label>Palavra-passe</label><div class="campo"><span>🔒</span><input id="loginSenha" type="password" placeholder="Tua palavra-passe"><span onclick="var i=document.getElementById('loginSenha'); if(i.type==='password'){i.type='text'; this.innerText='🙈';} else {i.type='password'; this.innerText='👁️';}" style="cursor:pointer;margin-left:8px">👁️</span></div><button class="btnLogin" onclick="entrarNovoLogin()">ENTRAR</button><p class="esqueci" onclick="esqueciSenhaNovoLogin()">Esqueci a senha?</p><div class="criar">Não tens conta? <b onclick="criarContaAdminNovo()">Criar conta</b></div><p id="loginErro" style="color:#ff6b6b;font-size:13px;margin-top:10px"></p></div></div>
 <script>
 try{ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL); }catch(e){}
@@ -238,6 +238,23 @@ function irParaAbaAdmin(aba){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 window.mostrarAba=function(aba){ irParaAbaAdmin(aba); };
+// ===== V18 - CORRIGE [object Object] =====
+function textoItens(p){
+  var it = p.itens;
+  if(it===undefined || it===null || it==='') return p.resumo || '';
+  if(typeof it === 'string') return it;
+  if(Array.isArray(it)){
+    return it.map(function(x){
+      if(typeof x === 'string') return x;
+      if(x && typeof x === 'object') return (x.nome||x.name||x.produto||x.title||'Produto')+' x'+(x.qtd||x.quantidade||x.qty||x.quant||1);
+      return String(x);
+    }).join(', ');
+  }
+  if(typeof it === 'object'){
+    return (it.nome||it.name||it.produto||'Produto')+' x'+(it.qtd||it.quantidade||1);
+  }
+  return String(it);
+}
 function ordenarDocs(docs){
   return docs.slice().sort(function(a,b){
     var ta=a.data().criadoEm && a.data().criadoEm.toMillis ? a.data().criadoEm.toMillis() : 0;
@@ -248,7 +265,6 @@ function ordenarDocs(docs){
 function carregarNotificacoesAdmin(){
   var box=document.getElementById('listaNotificacoesAdmin'); if(!box) return;
   box.innerHTML='A carregar notificações...';
-  // V17: SEM orderBy - o orderBy é que fazia dar "Não foi possível carregar" por falta de índice no Firebase
   firebase.firestore().collection('pedidos').where('status','==','pendente').get().then(function(snap){
     if(snap.empty){ box.innerHTML='<div class="notif-card">✅ Nenhuma notificação nova.</div>'; return; }
     var html='';
@@ -256,13 +272,13 @@ function carregarNotificacoesAdmin(){
       var p=doc.data(); var id=doc.id;
       var refTxt = p.referenciaExpress ? '<br>🔑 Ref: '+p.referenciaExpress : '';
       var aviso = p.metodo==='Multicaixa Express' ? '<br><span style="background:#ff4444;color:#fff;padding:3px 8px;border-radius:6px;font-size:12px">⚠️ VERIFICAR NO EXTRATO ANTES DE ACEITAR</span>' : '';
-      html += '<div class="notif-card"><b>🔔 PEDIDO #'+id.slice(-6).toUpperCase()+'</b><br>'+(p.nome||p.email||'Cliente')+' - '+(p.total||0)+' Kz'+refTxt+aviso+'<br><span style="font-size:12px">'+(p.itens||p.resumo||'')+'</span><br><br><button class="btn" style="background:#00d26a;color:#fff" onclick="irParaAbaAdmin(\'ped\')">👉 VER NO PEDIDOS</button></div>';
+      html += '<div class="notif-card"><b>🔔 PEDIDO #'+id.slice(-6).toUpperCase()+'</b><br>'+(p.nome||p.email||'Cliente')+' - '+(p.total||0)+' Kz'+refTxt+aviso+'<br><span style="font-size:12px">'+textoItens(p)+'</span><br><br><button class="btn" style="background:#00d26a;color:#fff" onclick="irParaAbaAdmin(\'ped\')">👉 VER NO PEDIDOS</button></div>';
     });
     box.innerHTML=html;
   }).catch(function(e){ box.innerHTML='<div class="notif-card">Erro: '+e.message+'</div>'; console.log(e); });
 }
 
-// ===== MULTICAIXA EXPRESS - V17 - SEM orderBy, ANTI-MENTIRA =====
+// ===== MULTICAIXA EXPRESS - V18 =====
 var _timerExpress=null;
 var _segundosExpress=120;
 function mostrarDadosPagExpress(){
@@ -419,7 +435,6 @@ function dataPedido(p){
 }
 function carregarMeusPedidos(user){
   var box=document.getElementById('listaMeusPedidos'); if(!box) return; box.innerHTML='A carregar...';
-  // V17: SEM orderBy - era isso que dava "Não foi possível carregar"
   firebase.firestore().collection('pedidos').where('email','==',user.email).get().then(function(snap){
     if(snap.empty){ box.innerHTML='<p>Ainda não tens pedidos.</p>'; return; }
     var agora=Date.now(); var html=''; var temVisivel=false;
@@ -433,7 +448,7 @@ function carregarMeusPedidos(user){
       var statusTxt = status==='aceito'||status==='aceite' ? '✅ ACEITE' : (status==='recusado' ? '❌ RECUSADO' : (status==='cancelado' ? '🚫 CANCELADO' : '🟡 PENDENTE - A verificar pagamento'));
       var cor = status==='pendente' ? '#ffaa00' : (status==='recusado'||status==='cancelado' ? '#ff4444' : '#00d26a');
       var refTxt = p.referenciaExpress ? '<br>Ref: '+p.referenciaExpress : '';
-      html += '<div class="pedido-card" style="border-left:5px solid '+cor+'"><b>Pedido #'+id.slice(-6).toUpperCase()+'</b> <span class="badge-notif" style="background:'+cor+'">'+statusTxt+'</span><br><span style="font-size:12px">'+(p.itens||p.resumo||'')+'</span><br><b>Total: '+(p.total||0)+' Kz</b>'+refTxt+'<br><button class="btn" style="background:#25D366;color:#000;margin-top:8px" onclick="avisarWhatsApp(\''+id+'\')">📱 Avisar no WhatsApp</button></div>';
+      html += '<div class="pedido-card" style="border-left:5px solid '+cor+'"><b>Pedido #'+id.slice(-6).toUpperCase()+'</b> <span class="badge-notif" style="background:'+cor+'">'+statusTxt+'</span><br><span style="font-size:12px">'+textoItens(p)+'</span><br><b>Total: '+(p.total||0)+' Kz</b>'+refTxt+'<br><button class="btn" style="background:#25D366;color:#000;margin-top:8px" onclick="avisarWhatsApp(\''+id+'\')">📱 Avisar no WhatsApp</button></div>';
     });
     box.innerHTML = html || '<p>Nenhum pedido visível.</p>';
     if(!temVisivel) box.innerHTML='<p>Nenhum pedido visível.</p>';
