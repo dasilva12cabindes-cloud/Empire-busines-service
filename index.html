@@ -80,7 +80,28 @@ body.claro #telaDetalhe #detPreco{color:#B08D1A!important}
 body.claro #telaCarregamento{background:#F7F4EF!important;color:#1A1A1A!important}
 body.claro h1,body.claro h2,body.claro h3{color:#1A1A1A!important}
 body.claro #emailClienteTop{color:#7A746B!important}
-body.claro #loginBox{background:#F7F4EF!important;color:#1A1A1A!important}
+/* LOGIN ADMIN - IGUAL A FOTO 1 */
+#loginBox{background:#0a2a33!important;min-height:100vh;padding:22px!important;display:none}
+#loginBox h2{color:#fff!important;font-size:26px}
+#loginBox input{background:#FFFACD!important;border:2px solid transparent!important;border-radius:12px!important;padding:14px!important;font-size:16px!important;color:#111!important}
+#loginBox input:focus{border-color:#4A90E2!important;outline:0;background:#FFF9B0!important}
+#loginBox .btn{border-radius:12px!important;padding:14px!important}
+#loginBox .btn:first-of-type{background:#d4af37!important;color:#1A6AE1!important}
+#loginBox #loginMsg{color:#FF9AA0}
+/* LOGIN CLIENTE - IGUAL A FOTO 2 */
+#clienteModal .box{border-radius:20px 20px 0 0!important;padding:20px!important}
+.loginLabel{font-size:15px;font-weight:700;margin:14px 0 6px;display:block;color:#111}
+.loginLabel b{color:red}
+.loginInput{border:1.5px solid #ddd!important;border-radius:10px!important;padding:13px!important;font-size:16px!important;background:#fff!important}
+.loginInput:focus{border-color:#4A90E2!important;outline:0}
+.senhaWrap{position:relative}
+.senhaWrap input{padding-right:44px}
+.olho{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:0;font-size:18px;cursor:pointer;width:auto!important}
+.esqueceu{display:block;text-align:right;color:#1A6AE1;font-size:13px;font-weight:600;margin:8px 0 14px;cursor:pointer}
+.btnConecte{background:#8AB4F8!important;color:#fff!important;border-radius:10px!important}
+.divisor{display:flex;align-items:center;gap:10px;color:#999;font-size:13px;margin:16px 0}
+.divisor:before,.divisor:after{content:"";flex:1;height:1px;background:#ddd}
+.btnSocial{background:#fff!important;color:#111!important;border:1.5px solid #ddd!important;border-radius:10px!important;display:flex!important;align-items:center;justify-content:center;gap:8px;font-weight:700}
 </style>
 </head>
 <body>
@@ -112,13 +133,13 @@ body.claro #loginBox{background:#F7F4EF!important;color:#1A1A1A!important}
 <div class="secao"><b>⭐ Destaque</b><div id="produtosDestaque" style="margin-top:10px"></div></div>
 <div class="secao"><b>🛍️ Todos os Produtos <span id="qtdMostra"></span></b><div id="produtos" style="margin-top:10px"></div><p id="status" style="text-align:center">A carregar...</p></div>
 </div>
-<div id="loginBox" style="display:none;padding:20px">
+<div id="loginBox">
 <h2>🔐 Admin</h2>
-<input id="email" placeholder="E-mail admin">
+<input id="email" placeholder="E-mail admin" value="dasilva12cabindes@gmail.com">
 <input id="pass" type="password" placeholder="Senha">
 <p id="loginMsg"></p>
 <button class="btn" onclick="login()">ENTRAR</button>
-<button class="btn" onclick="mostrarLoja()" style="background:#eee">← Voltar</button>
+<button class="btn" onclick="mostrarLoja()" style="background:#fff!important;color:#1A6AE1!important">← Voltar</button>
 </div>
 <div id="adminPanel">
   <div class="menuTop"><div class="menuLogo">L</div><div><b style="font-size:16px">LISSANTE</b><br><span style="font-size:11px;letter-spacing:2px;color:#8a94a6">ADMIN • PAINEL</span></div><button class="menuFecha" onclick="mostrarLoja()">✕</button></div>
@@ -156,21 +177,33 @@ body.claro #loginBox{background:#F7F4EF!important;color:#1A1A1A!important}
   <div class="menuFoot">LISSANTE • Plataforma SaaS Angola</div>
 </div>
 <div id="clienteModal" class="modal"><div class="box">
-<h3>Entrar <button onclick="fecharLoginCliente()" style="float:right;border:0;background:none;font-size:20px">✕</button></h3>
+<h3 style="display:flex;justify-content:space-between;align-items:center;margin:0 0 6px">Entrar <button onclick="fecharLoginCliente()" style="border:0;background:none;font-size:22px;color:#999">✕</button></h3>
 <div id="telaLogin">
-<input id="cliEmail" placeholder="E-mail">
-<input id="cliSenha" type="password" placeholder="Senha">
-<button class="btn" onclick="entrarCliente()">ENTRAR</button>
-<button class="btn" onclick="entrarComGoogle()" style="background:#fff;border:1px solid #ddd">Continuar com Google</button>
-<p style="text-align:center">Não tem conta? <b onclick="mostrarTelaCriar()" style="cursor:pointer">Criar conta</b></p>
+<label class="loginLabel">E-mail <b>*</b></label>
+<input id="cliEmail" class="loginInput" placeholder="">
+<label class="loginLabel">Senha <b>*</b></label>
+<div class="senhaWrap">
+<input id="cliSenha" type="password" class="loginInput" placeholder="">
+<button class="olho" onclick="verSenhaCliente()">👁️</button>
+</div>
+<span class="esqueceu" onclick="esqueceuSenha()">Esqueceu sua senha?</span>
+<button class="btn btnConecte" onclick="entrarCliente()">Conecte-se</button>
+<div class="divisor">Or continue with</div>
+<button class="btn btnSocial" onclick="entrarComGoogle()"><span style="font-size:20px;font-weight:800"><span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span></span> Continue with Google</button>
+<button class="btn btnSocial" onclick="entrarComMeta()"><span style="color:#0082FB;font-size:20px">∞</span> Continue with Meta</button>
+<p style="text-align:center;font-size:14px;color:#555;margin-top:16px">Não tem uma conta? <b onclick="mostrarTelaCriar()" style="color:#1A6AE1;cursor:pointer">Inscrever-se</b></p>
 </div>
 <div id="telaCriar" style="display:none">
-<input id="cliNomeConta" placeholder="Teu nome">
-<input id="cliEmailCriar" placeholder="E-mail">
-<input id="cliSenhaCriar" type="password" placeholder="Cria senha">
-<input id="cliSenhaConfirmar" type="password" placeholder="Repete a senha">
-<button class="btn" onclick="criarContaCliente()">CRIAR CONTA</button>
-<p style="text-align:center" onclick="mostrarTelaLogin()">← Voltar</p>
+<label class="loginLabel">Teu nome <b>*</b></label>
+<input id="cliNomeConta" class="loginInput" placeholder="">
+<label class="loginLabel">E-mail <b>*</b></label>
+<input id="cliEmailCriar" class="loginInput" placeholder="">
+<label class="loginLabel">Cria senha <b>*</b></label>
+<input id="cliSenhaCriar" type="password" class="loginInput" placeholder="">
+<label class="loginLabel">Repete a senha <b>*</b></label>
+<input id="cliSenhaConfirmar" type="password" class="loginInput" placeholder="">
+<button class="btn btnConecte" onclick="criarContaCliente()" style="margin-top:14px">Criar conta</button>
+<p style="text-align:center;color:#1A6AE1;cursor:pointer" onclick="mostrarTelaLogin()">← Voltar</p>
 </div>
 <p id="msgCliente" style="color:red"></p>
 </div></div>
@@ -267,6 +300,9 @@ function abrirLoginCliente(){if(clienteEmail){alert('Já estás ligado: '+client
 function fecharLoginCliente(){$id('clienteModal').style.display='none'}
 function mostrarTelaLogin(){$id('telaLogin').style.display='block';$id('telaCriar').style.display='none'}
 function mostrarTelaCriar(){$id('telaLogin').style.display='none';$id('telaCriar').style.display='block'}
+function verSenhaCliente(){var i=$id('cliSenha');if(i)i.type=(i.type==='password'?'text':'password');}
+function entrarComMeta(){alert('Login com Meta em breve.\nPor agora usa o Google ou E-mail.');}
+function esqueceuSenha(){var e=prompt('Esqueceu a senha?\nEscreve o teu e-mail que enviamos o link:');if(e)alert('✅ Se '+e+' existir, enviámos o link de recuperação.');}
 function entrarCliente(){
   var email=($id('cliEmail').value||'').trim(), s=$id('cliSenha').value||'';
   if(!email||!s){$id('msgCliente').innerText='Preenche e-mail e senha';return}
