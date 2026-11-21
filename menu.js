@@ -1,5 +1,4 @@
 (function(){
-  // ===== CSS do menu (+ esconder e-mail e link no ecrã) =====
   var st=document.createElement('style');
   st.textContent=
   '#emailClienteTop,p:has(#linkLojaTexto),p:has(#linkLojaAdmin){display:none!important}'+
@@ -20,31 +19,12 @@
   '.menuPainel nav button{display:flex;align-items:center;gap:12px;width:100%;background:none;border:0;border-bottom:1px solid rgba(255,255,255,.07);color:#fff;padding:14px 18px;font-size:15px;font-weight:500;text-align:left;cursor:pointer}'+
   '.menuPainel nav button:active{background:rgba(255,255,255,.08)}';
   document.head.appendChild(st);
-
-  // ===== HTML do menu =====
   var cats=[['perfume','🌸','Perfumes'],['tenis','👟','Ténis'],['roupa','👕','Roupas'],['relogio','⌚','Relógios'],['acessorio','💍','Acessórios']];
   var catsHtml=cats.map(function(c,i){return '<button data-cat="'+c[0]+'" data-i="'+(i+1)+'"><span>'+c[1]+'</span>'+c[2]+'</button>';}).join('');
   var m=document.createElement('div');
   m.id='menuLateral';
-  m.innerHTML=
-    '<div id="menuFundo"></div>'+
-    '<aside class="menuPainel">'+
-      '<div class="menuTopo"><div class="menuLogo" id="menuLogo"></div><button class="menuX" data-acao="fechar">✕</button></div>'+
-      '<div class="menuUser" id="menuUser"></div>'+
-      '<nav>'+
-        '<button data-acao="inicio"><span>🏠</span>Início</button>'+
-        '<button data-acao="destaques"><span>⭐</span>Destaques</button>'+
-        '<div class="menuTitulo">Categorias</div>'+catsHtml+
-        '<div class="menuTitulo">Mais</div>'+
-        '<button data-acao="whats"><span>💬</span>Falar no WhatsApp</button>'+
-        '<button data-acao="copiar"><span>📋</span>Copiar link da loja</button>'+
-        '<button data-acao="partilhar"><span>💬</span>Partilhar no WhatsApp</button>'+
-        '<button data-acao="sobre"><span>👑</span>Sobre a loja</button>'+
-        '<button data-acao="conta" id="menuConta"></button>'+
-      '</nav>'+
-    '</aside>';
+  m.innerHTML='<div id="menuFundo"></div>'+'<aside class="menuPainel">'+'<div class="menuTopo"><div class="menuLogo" id="menuLogo"></div><button class="menuX" data-acao="fechar">✕</button></div>'+'<div class="menuUser" id="menuUser"></div>'+'<nav>'+'<button data-acao="inicio"><span>🏠</span>Início</button>'+'<button data-acao="destaques"><span>⭐</span>Destaques</button>'+'<div class="menuTitulo">Categorias</div>'+catsHtml+'<div class="menuTitulo">Mais</div>'+'<button data-acao="whats"><span>💬</span>Falar no WhatsApp</button>'+'<button data-acao="copiar"><span>📋</span>Copiar link da loja</button>'+'<button data-acao="partilhar"><span>💬</span>Partilhar no WhatsApp</button>'+'<button data-acao="sobre"><span>👑</span>Sobre a loja</button>'+'<button data-acao="conta" id="menuConta"></button>'+'</nav>'+'</aside>';
   document.body.appendChild(m);
-
   function abrir(){
     var logo=document.getElementById('logoTexto');
     document.getElementById('menuLogo').textContent=logo?logo.innerText:'EMPIRE';
@@ -54,12 +34,8 @@
     m.classList.add('aberto');
   }
   function fechar(){ m.classList.remove('aberto'); }
-  function irPara(el){
-    fechar(); mostrarLoja();
-    if(el) setTimeout(function(){ el.scrollIntoView({behavior:'smooth',block:'start'}); },80);
-  }
+  function irPara(el){ fechar(); mostrarLoja(); if(el) setTimeout(function(){ el.scrollIntoView({behavior:'smooth',block:'start'}); },80); }
   function secaoDe(id){ var e=document.getElementById(id); return e?e.closest('.secao'):null; }
-
   m.addEventListener('click',function(e){
     if(e.target.id==='menuFundo') return fechar();
     var b=e.target.closest('button'); if(!b) return;
@@ -72,36 +48,19 @@
     switch(b.dataset.acao){
       case 'fechar': fechar(); break;
       case 'inicio': fechar(); mostrarLoja(); break;
-      case 'destaques':
-        var d=document.getElementById('areaDestaque');
-        irPara(d&&d.style.display!=='none'?d:secaoDe('produtos')); break;
-      case 'whats':
-        var n=String((window.CFG&&CFG.whats)||'244972370499').replace(/\D/g,'');
-        fechar(); window.open('https://wa.me/'+n,'_blank'); break;
+      case 'destaques': var d=document.getElementById('areaDestaque'); irPara(d&&d.style.display!=='none'?d:secaoDe('produtos')); break;
+      case 'whats': var n=String((window.CFG&&CFG.whats)||'244972370499').replace(/\D/g,''); fechar(); window.open('https://wa.me/'+n,'_blank'); break;
       case 'copiar': fechar(); copiarLinkLoja(); break;
       case 'partilhar': fechar(); partilharWhatsAppLoja(); break;
       case 'sobre': irPara(secaoDe('sobreTitulo')); break;
-      case 'conta':
-        fechar();
-        abrirLoginCliente();
-        break;
+      case 'conta': fechar(); abrirLoginCliente(); break;
     }
   });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') fechar(); });
-
-  // ===== Conta: perfil quando ligado + título com o nome atual da loja =====
   var pm=document.createElement('div');
   pm.id='perfilModal'; pm.className='modal';
-  pm.innerHTML=
-    '<div class="modalBox" style="text-align:center">'+
-      '<div style="display:flex;justify-content:space-between;align-items:center"><h3 id="perfilTitulo"></h3><button id="perfilX" style="background:#ff4444;border:0;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer">X</button></div>'+
-      '<div id="perfilAvatar" style="width:70px;height:70px;background:var(--destaque,#d4af37);color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;margin:18px auto 10px"></div>'+
-      '<h3 id="perfilNome" style="font-size:20px"></h3>'+
-      '<p style="display:flex;justify-content:center;align-items:center;gap:8px;color:#00ff88;font-weight:700;margin:8px 0 18px"><span class="luz-verde"></span>Conectado</p>'+
-      '<button class="btn" id="perfilSair" style="background:rgba(0,0,0,.3);color:#fff;border:1px solid rgba(255,255,255,.14)">🚪 Sair da conta</button>'+
-    '</div>';
+  pm.innerHTML='<div class="modalBox" style="text-align:center">'+'<div style="display:flex;justify-content:space-between;align-items:center"><h3 id="perfilTitulo"></h3><button id="perfilX" style="background:#ff4444;border:0;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer">X</button></div>'+'<div id="perfilAvatar" style="width:70px;height:70px;background:var(--destaque,#d4af37);color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;margin:18px auto 10px"></div>'+'<h3 id="perfilNome" style="font-size:20px"></h3>'+'<p style="display:flex;justify-content:center;align-items:center;gap:8px;color:#00ff88;font-weight:700;margin:8px 0 18px"><span class="luz-verde"></span>Conectado</p>'+'<button class="btn" id="perfilSair" style="background:rgba(0,0,0,.3);color:#fff;border:1px solid rgba(255,255,255,.14)">🚪 Sair da conta</button>'+'</div>';
   document.body.appendChild(pm);
-
   function nomeLoja(){ return (window.LOJA&&window.LOJA.nomeLoja)||'Loja'; }
   function fecharPerfil(){ pm.style.display='none'; }
   function abrirPerfil(){
@@ -114,7 +73,6 @@
   document.getElementById('perfilX').onclick=fecharPerfil;
   pm.addEventListener('click',function(e){ if(e.target===pm) fecharPerfil(); });
   document.getElementById('perfilSair').onclick=function(){ fecharPerfil(); sairCliente(); };
-
   var loginOriginal=window.abrirLoginCliente;
   window.abrirLoginCliente=function(){
     if(window.clienteEmail){ abrirPerfil(); return; }
@@ -122,14 +80,7 @@
     var h=document.querySelector('#clienteModal h3');
     if(h) h.textContent='👤 Conta '+nomeLoja();
   };
-
-  // ===== Nome da loja automático (avisos, recibos, relatórios, WhatsApp, cards) =====
-  // Troca numa só passagem: nome, slogan, cidade e WhatsApp da loja.
-  // O número do recibo perde o prefixo: EMPIRE-AB12CD vira AB12CD.
-  function numFmt(){
-    var d=String((window.CFG&&window.CFG.whats)||'244972370499').replace(/\D/g,'');
-    return (d.length===12&&d.indexOf('244')===0) ? '+244 '+d.slice(3,6)+' '+d.slice(6,9)+' '+d.slice(9) : '+'+d;
-  }
+  function numFmt(){ var d=String((window.CFG&&window.CFG.whats)||'244972370499').replace(/\D/g,''); return (d.length===12&&d.indexOf('244')===0) ? '+244 '+d.slice(3,6)+' '+d.slice(6,9)+' '+d.slice(9) : '+'+d; }
   function cidadeLoja(){ return ((window.LOJA&&window.LOJA.cidade)||'').trim(); }
   function troca(t,enc){
     if(typeof t!=='string') return t;
@@ -145,8 +96,6 @@
   }
   function trocaNome(t){ return troca(t,false); }
   function trocaNomeUrl(u){ return troca(u,true); }
-
-  // Campo "Cidade" no Admin → Loja (guardado junto com os dados da loja)
   var cfgSlogan=document.getElementById('cfgSloganLoja');
   if(cfgSlogan){
     var inpCidade=document.createElement('input');
@@ -158,28 +107,16 @@
     window.salvarLoja=function(){ if(window.LOJA) window.LOJA.cidade=inpCidade.value.trim(); return salvarOriginal.apply(this,arguments); };
     inpCidade.value=(window.LOJA&&window.LOJA.cidade)||'';
   }
-
   var _prompt=window.prompt, _open=window.open;
   window.prompt=function(t,d){ return _prompt.call(window,trocaNome(t),d); };
-
-  // ----- Caixas de aviso da própria loja (sem "xxx.github.io diz") -----
   var cs=document.createElement('style');
-  cs.textContent=
-    '#caixaFundo{position:fixed;inset:0;background:rgba(0,20,28,.75);z-index:1300;display:none;align-items:center;justify-content:center;padding:20px}'+
-    '#caixaBox{background:var(--fundo,#04566b);border:1px solid var(--borda,rgba(255,255,255,.14));border-radius:20px;padding:22px;width:100%;max-width:340px;text-align:center}'+
-    '#caixaMsg{white-space:pre-line;font-size:15px;line-height:1.5;margin-bottom:18px;word-break:break-word}'+
-    '#caixaBtns{display:flex;gap:10px}'+
-    '#caixaBtns button{flex:1;border:0;border-radius:14px;padding:13px;font-weight:700;font-size:14px;cursor:pointer}'+
-    '#caixaOk{background:var(--destaque,#d4af37);color:#000}'+
-    '#caixaNao{background:rgba(0,0,0,.3);color:#fff}'+
-    '#toastLoja{position:fixed;left:50%;bottom:95px;transform:translateX(-50%);background:var(--destaque,#d4af37);color:#000;font-weight:700;padding:12px 20px;border-radius:30px;z-index:1300;max-width:90%;text-align:center;display:none;box-shadow:0 6px 20px rgba(0,0,0,.35)}';
+  cs.textContent='#caixaFundo{position:fixed;inset:0;background:rgba(0,20,28,.75);z-index:1300;display:none;align-items:center;justify-content:center;padding:20px}'+'#caixaBox{background:var(--fundo,#04566b);border:1px solid var(--borda,rgba(255,255,255,.14));border-radius:20px;padding:22px;width:100%;max-width:340px;text-align:center}'+'#caixaMsg{white-space:pre-line;font-size:15px;line-height:1.5;margin-bottom:18px;word-break:break-word}'+'#caixaBtns{display:flex;gap:10px}'+'#caixaBtns button{flex:1;border:0;border-radius:14px;padding:13px;font-weight:700;font-size:14px;cursor:pointer}'+'#caixaOk{background:var(--destaque,#d4af37);color:#000}'+'#caixaNao{background:rgba(0,0,0,.3);color:#fff}'+'#toastLoja{position:fixed;left:50%;bottom:95px;transform:translateX(-50%);background:var(--destaque,#d4af37);color:#000;font-weight:700;padding:12px 20px;border-radius:30px;z-index:1300;max-width:90%;text-align:center;display:none;box-shadow:0 6px 20px rgba(0,0,0,.35)}';
   document.head.appendChild(cs);
   var cx=document.createElement('div');
   cx.id='caixaFundo';
   cx.innerHTML='<div id="caixaBox"><div id="caixaMsg"></div><div id="caixaBtns"><button id="caixaNao">Cancelar</button><button id="caixaOk">OK</button></div></div>';
   document.body.appendChild(cx);
   var toast=document.createElement('div'); toast.id='toastLoja'; document.body.appendChild(toast);
-
   var fila=[], aberta=false, toastT;
   function proxima(){
     if(aberta||!fila.length) return;
@@ -193,18 +130,15 @@
     document.getElementById('caixaNao').onclick=function(){ fim(false); };
   }
   function caixa(msg,conf){ return new Promise(function(res){ fila.push({msg:String(msg),conf:conf,res:res}); proxima(); }); }
-
   window.alert=function(t){
     t=String(t);
-    if(/adicionado!/.test(t)){ // aviso curto do carrinho
+    if(/adicionado!/.test(t)){
       toast.textContent=trocaNome(t); toast.style.display='block';
       clearTimeout(toastT); toastT=setTimeout(function(){ toast.style.display='none'; },1800);
       return;
     }
     caixa(t,false);
   };
-
-  // Funções que perguntam "Tens a certeza?" passam a usar a caixa da loja
   function comConfirmacao(nome){
     var orig=window[nome]; if(typeof orig!=='function') return;
     window[nome]=function(){
@@ -222,7 +156,7 @@
   ['sairCliente','logout','diminuirQtd','removerItemCarrinho','recusarPedido','apagarPedido','apagar'].forEach(comConfirmacao);
   window.open=function(url,alvo,feat){
     var w=_open.call(window,trocaNomeUrl(url),alvo,feat);
-    if(w && url===''){ // janelas de recibo e relatório: depois de escritas, troca o nome no cabeçalho e no texto
+    if(w && url===''){
       setTimeout(function(){
         try{
           var d=w.document, tw=d.createTreeWalker(d.body,4), n;
@@ -233,7 +167,6 @@
     }
     return w;
   };
-
   function ajustaCards(){
     document.querySelectorAll('.card .info p').forEach(function(p){
       if(p.dataset.nomeOk) return;
@@ -246,11 +179,6 @@
     if(el) new MutationObserver(ajustaCards).observe(el,{childList:true});
   });
   ajustaCards();
-
-  // ===== Continuar ligado ao atualizar a página =====
-  // Antes, o site só mostrava a conta depois de ler o Firestore; com rede fraca isso falhava
-  // e parecia que a pessoa tinha saído. Agora a conta aparece logo que o Firebase a reconhece.
-  // (Isto só muda o que se vê; quem protege os dados são as Regras do Firestore.)
   var ADMIN_EMAIL='dasilva12cabindes@gmail.com';
   function marcaAdmin(){
     window.isAdmin=true; window.modoAdmin=true;
@@ -279,8 +207,6 @@
     if(u&&(u.email||'').toLowerCase()===ADMIN_EMAIL){ marcaAdmin(); mostrarAdmin(); return; }
     adminOriginal();
   };
-
-  // ===== Liga ao botão ☰ do topo =====
   var hamb=document.querySelector('.topo .iconBtn');
   if(hamb){ hamb.onclick=abrir; hamb.setAttribute('aria-label','Menu'); }
 })();
