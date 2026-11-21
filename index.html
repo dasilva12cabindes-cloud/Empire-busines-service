@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=11">
+<link rel="stylesheet" href="style.css?v=12">
 <style>
 #novoLogin{position:fixed;inset:0;background:#0f0f0f;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;font-family:sans-serif}
 #novoLogin.mostrar{display:flex}
@@ -44,7 +44,6 @@
 #overlayMenuAdmin.mostrar{display:block}
 .btnMenuAdmin{background:#176a7d!important;border:1px solid rgba(255,255,255,.14)!important;color:#fff!important;min-width:40px;height:40px;border-radius:14px;font-size:20px;cursor:pointer}
 .notif-card{background:#fff;color:#000;border-radius:12px;padding:12px;margin:8px 0}
-/* ABA PEDIDOS VERMELHA QUANDO TEM PEDIDO NOVO */
 .tab-alerta{ background:#ff4444!important; color:#fff!important; animation: pisca 1s infinite; }
 @keyframes pisca{ 50%{ opacity:.7; } }
 .btnMeusPedidos{ background:#d4af37!important; color:#000!important; font-weight:800; border:0; padding:10px 14px; border-radius:10px; cursor:pointer; margin-top:8px; }
@@ -96,7 +95,6 @@
     <p id="avisoCliente" class="small" style="display:none;color:#00ff88"> Estás ligado! Podes comprar.</p>
     <div id="areaLogado" style="display:none;align-items:center;gap:8px;color:#00ff7f;font-weight:700;margin-top:6px"><span class="luz-verde"></span> ✅ Estás ligado! Podes comprar.</div>
     <div id="areaClienteHeader" style="margin-top:10px"></div>
-    <!-- BOTÃO MEUS PEDIDOS DO CLIENTE - SEMPRE VISÍVEL -->
     <button class="btnMeusPedidos" onclick="abrirMeusPedidos()">📦 MEUS PEDIDOS <span id="badgeMeusPedidosTop" class="badge-notif" style="display:none">0</span></button>
     <div id="alertaStockAdmin" style="display:none;background:#ff4444;color:#fff;padding:10px;border-radius:10px;margin-top:10px;font-size:13px;font-weight:700"></div>
   </div>
@@ -175,15 +173,20 @@
 <div id="clienteModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>👤 Conta EMPIRE</h3><button onclick="fecharLoginCliente()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px;cursor:pointer">X</button></div><div style="display:flex;gap:8px;margin:12px 0"><button id="btnTabEntrar" class="btn" style="flex:1" onclick="mostrarTelaLogin()">Entrar</button><button id="btnTabCriar" class="btn" style="flex:1;background:rgba(0,0,0,.3);color:#fff;border:1px solid rgba(255,255,255,.14)" onclick="mostrarTelaCriar()">Criar Conta</button></div><div id="telaLogin"><input id="cliEmail" placeholder="E-mail"><div style="position:relative"><input id="cliSenha" type="password" placeholder="Senha"><button onclick="verSenha('cliSenha',this)" style="position:absolute;right:10px;top:14px;background:none;border:0">👁️</button></div><button class="btn" onclick="entrarCliente()">ENTRAR</button><p style="text-align:center;color:#d4af37;cursor:pointer;margin-top:8px" onclick="esqueceuSenha()">Esqueceu a senha?</p></div><div id="telaCriar" style="display:none"><input id="cliNomeConta" placeholder="Teu nome"><input id="cliEmailCriar" placeholder="E-mail"><input id="cliWhatsConta" placeholder="WhatsApp - 9xx xxx xxx"><input id="cliSenhaCriar" type="password" placeholder="Cria senha (mín 6)"><input id="cliSenhaConfirmar" type="password" placeholder="Repete a senha"><button class="btn" onclick="criarContaCliente()">CRIAR CONTA</button></div><div id="telaEsqueceu" style="display:none"><input id="cliEmailEsqueceu" placeholder="Teu e-mail"><button class="btn" onclick="enviarRecuperacao()">ENVIAR LINK</button><p style="text-align:center;color:#d4af37;cursor:pointer;margin-top:8px" onclick="mostrarTelaLogin()">← Voltar</p></div><p id="msgCliente" style="color:#ffb3b3;font-size:13px;margin-top:8px"></p></div></div>
 <div id="meusPedidosModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>📦 Meus Pedidos</h3><button onclick="fecharMeusPedidos()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p class="small">🟡 Pendente = à espera do Admin. ✅ Aceite / ❌ Recusado / 🚫 Cancelado = some após 24h. Pendente nunca some até o Admin decidir.</p><div id="listaMeusPedidos"></div></div></div>
 <div id="cartModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>🛒 Carrinho</h3><button onclick="fecharCarrinho()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><div id="cartItems"></div><h3 id="cartTotal">Total: 0 Kz</h3><button class="btn" onclick="abrirPagamento()">💳 PAGAR</button></div></div>
-<div id="pagModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>💳 Pagamento</h3><button onclick="fecharPagamento()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p id="pagCliente" class="small"></p><pre id="pagResumo" style="white-space:pre-wrap;background:rgba(0,0,0,.25);padding:10px;border-radius:12px;font-size:12px"></pre><input id="cliNome" placeholder="Teu nome"><input id="cliWhats" placeholder="WhatsApp"><input id="cliEmailPag" placeholder="E-mail para recibo (opcional)"><select id="metodoPag" onchange="mostrarDadosPag()"><option value="">Escolhe método...</option><option>Unitel Money</option><option>Multicaixa Express</option><option>PayPay</option><option>Transferência via IBAN</option></select><div id="infoPag" style="display:none;background:rgba(0,0,0,.25);padding:12px;border-radius:12px;white-space:pre-wrap;font-size:13px"></div><label style="font-size:13px">📎 Comprovativo (foto ou PDF)</label><input type="file" id="inputComp" accept="image/*,.pdf" onchange="lerComprovativo(event)"><div id="prevCompBox"></div><p id="compMsg" style="color:#ff8888;font-size:12px">⚠️ Ainda não subiste o comprovativo</p><button class="btn" onclick="confirmarPedido()">✅ CONFIRMAR PEDIDO</button><button class="btn" style="background:#333;color:#fff" onclick="recuarParaCarrinho()">← Voltar ao Carrinho</button></div></div>
+
+<!-- PAGAMENTO - COM CAMPO NÚMERO EXPRESS -->
+<div id="pagModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>💳 Pagamento</h3><button onclick="fecharPagamento()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p id="pagCliente" class="small"></p><pre id="pagResumo" style="white-space:pre-wrap;background:rgba(0,0,0,.25);padding:10px;border-radius:12px;font-size:12px"></pre><input id="cliNome" placeholder="Teu nome"><input id="cliWhats" placeholder="WhatsApp"><input id="cliEmailPag" placeholder="E-mail para recibo (opcional)"><select id="metodoPag" onchange="mostrarDadosPagExpress()"><option value="">Escolhe método...</option><option>Unitel Money</option><option>Multicaixa Express</option><option>PayPay</option><option>Transferência via IBAN</option></select>
+<div id="boxNumeroExpress" style="display:none;background:#fff3cd;padding:12px;border-radius:12px;margin:8px 0"><label style="font-size:13px;font-weight:800;color:#000">📱 Número Multicaixa Express</label><input id="numeroExpress" placeholder="Ex: 923 000 000" style="margin-top:6px"><p style="font-size:12px;color:#000;margin:4px 0">Mete o número que está ligado ao teu Express. Ao confirmar, vamos processar e abrir o teu Express já com o valor total.</p></div>
+<div id="infoPag" style="display:none;background:rgba(0,0,0,.25);padding:12px;border-radius:12px;white-space:pre-wrap;font-size:13px"></div><label style="font-size:13px">📎 Comprovativo (foto ou PDF)</label><input type="file" id="inputComp" accept="image/*,.pdf" onchange="lerComprovativo(event)"><div id="prevCompBox"></div><p id="compMsg" style="color:#ff8888;font-size:12px">⚠️ Ainda não subiste o comprovativo</p><button class="btn" onclick="confirmarPedidoExpress()">✅ CONFIRMAR PEDIDO</button><button class="btn" style="background:#333;color:#fff" onclick="recuarParaCarrinho()">← Voltar ao Carrinho</button></div></div>
+
 <div id="imgModal" class="modal" onclick="fecharImg()"><img id="imgGrande" style="max-width:95%;max-height:90vh;border-radius:12px"></div>
 <div class="barraBaixo"><button class="ativo" onclick="mostrarLoja()"><span>🏠</span>Loja</button><button onclick="verCarrinho()"><span>🛒</span>Carrinho</button><button onclick="abrirMeusPedidos()"><span>📦</span>Meus Pedidos</button><button onclick="abrirLoginCliente()"><span>👤</span>Conta</button></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="script.js?v=11"></script>
-<script src="menu.js?v=11"></script>
+<script src="script.js?v=12"></script>
+<script src="menu.js?v=12"></script>
 
 <div id="novoLogin"><div class="card"><h2>Bem-vindo de Volta</h2><p class="sub">Entra para continuar</p><label>E-mail</label><div class="campo"><span>📧</span><input id="loginEmail" type="email" placeholder="Teu e-mail"></div><label>Palavra-passe</label><div class="campo"><span>🔒</span><input id="loginSenha" type="password" placeholder="Tua palavra-passe"><span onclick="var i=document.getElementById('loginSenha'); if(i.type==='password'){i.type='text'; this.innerText='🙈';} else {i.type='password'; this.innerText='👁️';}" style="cursor:pointer;margin-left:8px">👁️</span></div><button class="btnLogin" onclick="entrarNovoLogin()">ENTRAR</button><p class="esqueci" onclick="esqueciSenhaNovoLogin()">Esqueci a senha?</p><div class="criar">Não tens conta? <b onclick="criarContaAdminNovo()">Criar conta</b></div><p id="loginErro" style="color:#ff6b6b;font-size:13px;margin-top:10px"></p></div></div>
 
@@ -197,8 +200,6 @@ function partilharWhatsAppLoja(){ var l=linkLimpo(); window.open('https://wa.me/
 
 function abrirMenuAdmin(){ document.getElementById('menuAdminLateral').classList.add('aberto'); document.getElementById('overlayMenuAdmin').classList.add('mostrar'); }
 function fecharMenuAdmin(){ document.getElementById('menuAdminLateral').classList.remove('aberto'); document.getElementById('overlayMenuAdmin').classList.remove('mostrar'); }
-
-// ===== ADMIN: ABA VERMELHA SÓ SUME QUANDO CARREGAS NELA =====
 function marcarAbaPedidosAlerta(qtd){
   var tab=document.getElementById('tabPed');
   var menuBtn=document.getElementById('mAdminPed');
@@ -217,7 +218,6 @@ function marcarAbaPedidosAlerta(qtd){
   }
 }
 function limparAlertaPedidosAdmin(){
-  // Só é chamada quando o Admin CARREGA na aba Pedidos / Notificação
   localStorage.setItem('empire_pedidos_vistos_em', Date.now());
   var tab=document.getElementById('tabPed');
   if(tab){ tab.classList.remove('tab-alerta'); }
@@ -226,7 +226,6 @@ function limparAlertaPedidosAdmin(){
   var badgeNotif=document.getElementById('badgeNotifAdminMenu'); if(badgeNotif) badgeNotif.style.display='none';
   var alerta=document.getElementById('alertaNovoPedido'); if(alerta) alerta.style.display='none';
 }
-
 function irParaAbaAdmin(aba){
   fecharMenuAdmin();
   if(aba==='ped' || aba==='notif'){ limparAlertaPedidosAdmin(); }
@@ -247,7 +246,6 @@ function irParaAbaAdmin(aba){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 window.mostrarAba=function(aba){ irParaAbaAdmin(aba); };
-
 function carregarNotificacoesAdmin(){
   var box=document.getElementById('listaNotificacoesAdmin'); if(!box) return;
   box.innerHTML='A carregar notificações...';
@@ -262,6 +260,83 @@ function carregarNotificacoesAdmin(){
   }).catch(function(){ box.innerHTML='<div class="notif-card">Não foi possível carregar. Carrega em ATUALIZAR.</div>'; });
 }
 
+// ===== MULTICAIXA EXPRESS - NOVO FLUXO COMPLETO =====
+var _timerExpress=null;
+var _segundosExpress=120;
+var _confirmarPedidoOriginal = window.confirmarPedido;
+function mostrarDadosPagExpress(){
+  var metodo=document.getElementById('metodoPag').value;
+  var box=document.getElementById('boxNumeroExpress');
+  if(box) box.style.display = (metodo==='Multicaixa Express') ? 'block' : 'none';
+  // Chama a função antiga se existir para mostrar dados de pagamento
+  if(typeof mostrarDadosPag==='function' && mostrarDadosPag!==mostrarDadosPagExpress){ try{ mostrarDadosPag(); }catch(e){} }
+  if(metodo==='Multicaixa Express'){
+    var info=document.getElementById('infoPag');
+    if(info){ info.style.display='block'; info.innerText='Multicaixa Express\nMete o teu número do Express abaixo.\nAo confirmar, vamos processar e tentar abrir o teu app Express já com o valor total.'; }
+  }
+}
+function confirmarPedidoExpress(){
+  var metodo=document.getElementById('metodoPag').value;
+  // Se NÃO for Express, segue o fluxo normal antigo
+  if(metodo!=='Multicaixa Express'){
+    if(_confirmarPedidoOriginal) return _confirmarPedidoOriginal();
+    if(typeof confirmarPedido==='function' && confirmarPedido!==confirmarPedidoExpress) return confirmarPedido();
+    return;
+  }
+  // É EXPRESS: pede número
+  var numeroEl=document.getElementById('numeroExpress');
+  var numero=(numeroEl && numeroEl.value.trim()) || (document.getElementById('cliWhats') && document.getElementById('cliWhats').value.trim()) || '';
+  if(!numero || numero.replace(/\D/g,'').length < 9){ alert('Mete o teu número do Multicaixa Express primeiro. Ex: 923 000 000'); if(numeroEl) numeroEl.focus(); return; }
+  // Guarda número para o pedido
+  window._numeroExpressCliente = numero;
+  var totalEl=document.getElementById('cartTotal');
+  var totalTxt= totalEl ? totalEl.innerText : '';
+  var totalNum = totalTxt.replace(/\D/g,'') || '0';
+  // Tenta abrir o app Express do cliente
+  try{ window.open('multicaixaexpress://', '_blank'); }catch(e){}
+  // Esconde modal de pagamento e mostra PROCESSANDO
+  var modal=document.getElementById('pagModal'); if(modal) modal.style.display='none';
+  var antigo=document.getElementById('processandoExpress'); if(antigo) antigo.remove();
+  var box=document.createElement('div');
+  box.id='processandoExpress';
+  box.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;';
+  box.innerHTML='<div style="background:#fff;color:#000;border-radius:16px;padding:24px;max-width:360px;width:100%;text-align:center">'
+    + '<h2>⏳ A PROCESSAR...</h2>'
+    + '<p>Enviamos o pedido para o teu <b>Multicaixa Express</b></p>'
+    + '<p>Número: <b>'+numero+'</b><br>Valor a pagar: <b>'+totalTxt+'</b></p>'
+    + '<p style="background:#fff3cd;padding:10px;border-radius:10px;text-align:left">1. Abre o teu app <b>Multicaixa Express</b><br>2. Aceita o pagamento de <b>'+totalTxt+'</b> para <b>EMPIRE</b><br>3. Mete o teu PIN e confirma</p>'
+    + '<h1 id="tempoExpress" style="font-size:48px;color:#ff4444;margin:10px 0">02:00</h1>'
+    + '<p>À espera da tua confirmação no Express...</p>'
+    + '<button onclick="pagamentoExpressConfirmado()" style="background:#00d26a;color:#fff;border:0;padding:12px;width:100%;border-radius:10px;font-weight:800;cursor:pointer">✅ JÁ PAGUEI NO EXPRESS</button>'
+    + '<button onclick="cancelarExpress()" style="background:#333;color:#fff;border:0;padding:12px;width:100%;border-radius:10px;margin-top:8px;cursor:pointer">❌ CANCELAR</button>'
+    + '</div>';
+  document.body.appendChild(box);
+  _segundosExpress=120;
+  clearInterval(_timerExpress);
+  _timerExpress=setInterval(function(){
+    _segundosExpress--;
+    var m=Math.floor(_segundosExpress/60); var s=_segundosExpress%60;
+    var el=document.getElementById('tempoExpress');
+    if(el) el.innerText=(m<10?'0'+m:m)+':'+(s<10?'0'+s:s);
+    if(_segundosExpress<=0){ clearInterval(_timerExpress); alert('Tempo esgotou. Tenta de novo ou escolhe outro método.'); cancelarExpress(); }
+  },1000);
+}
+function pagamentoExpressConfirmado(){
+  clearInterval(_timerExpress);
+  var box=document.getElementById('processandoExpress'); if(box) box.remove();
+  window._pagouExpress=true;
+  window._metodoPagamentoFinal='Multicaixa Express - Pago no Express: '+ (window._numeroExpressCliente||'');
+  // Cria o pedido no Firebase com a função antiga
+  if(_confirmarPedidoOriginal) _confirmarPedidoOriginal();
+  else if(typeof confirmarPedido==='function') { try{ confirmarPedido(); }catch(e){} }
+  setTimeout(function(){ alert('✅ PAGAMENTO FEITO COM SUCESSO!\nO Admin já recebeu o teu pedido e vai confirmar.\nVê em Meus Pedidos.'); }, 800);
+}
+function cancelarExpress(){
+  clearInterval(_timerExpress);
+  var box=document.getElementById('processandoExpress'); if(box) box.remove();
+  var modal=document.getElementById('pagModal'); if(modal) modal.style.display='flex';
+}
+
 // ===== SOM + ALERTA ADMIN =====
 var _primeiroLoadPedidos=true;
 var _adminListenerOn=false;
@@ -270,7 +345,6 @@ function iniciarListenerAdmin(){
   try{
     firebase.firestore().collection('pedidos').where('status','==','pendente').onSnapshot(function(snap){
       var qtd=snap.size;
-      // Não toca som no primeiro carregamento, só nos novos
       if(!_primeiroLoadPedidos){
         snap.docChanges().forEach(function(ch){
           if(ch.type==='added'){
@@ -282,43 +356,28 @@ function iniciarListenerAdmin(){
       }
       _primeiroLoadPedidos=false;
       if(qtd>0){ marcarAbaPedidosAlerta(qtd); }
-      else {
-        // Se não há pendentes, tira o vermelho - mas só se já viste
-        var vistos=localStorage.getItem('empire_pedidos_vistos_em');
-        if(vistos) marcarAbaPedidosAlerta(0);
-      }
+      else { var vistos=localStorage.getItem('empire_pedidos_vistos_em'); if(vistos) marcarAbaPedidosAlerta(0); }
     });
   }catch(e){}
 }
-
-// ===== ADMIN: APROVAR / RECUSAR / CANCELAR - CLIENTE RECEBE NOTIFICAÇÃO =====
 function enviarNotifCliente(uidCliente, emailCliente, pedidoId, tipo, titulo){
   return firebase.firestore().collection('notificacoes').add({paraUid:uidCliente||'', paraEmail:emailCliente||'', pedidoId:pedidoId, tipo:tipo, titulo:titulo, lida:false, criadoEm:firebase.firestore.FieldValue.serverTimestamp()});
 }
 function aceitarPedidoAdmin(id, emailCliente, uidCliente){
-  firebase.firestore().collection('pedidos').doc(id).update({status:'aceito', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
-    return enviarNotifCliente(uidCliente, emailCliente, id, 'aceito', 'Pedido Aceite ✅');
-  }).then(function(){ alert('Pedido aceite! Cliente já recebeu notificação ✅'); });
+  firebase.firestore().collection('pedidos').doc(id).update({status:'aceito', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){ return enviarNotifCliente(uidCliente, emailCliente, id, 'aceito', 'Pedido Aceite ✅'); }).then(function(){ alert('Pedido aceite! Cliente já recebeu notificação ✅'); });
 }
 function recusarPedidoAdmin(id, emailCliente, uidCliente){
-  firebase.firestore().collection('pedidos').doc(id).update({status:'recusado', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
-    return enviarNotifCliente(uidCliente, emailCliente, id, 'recusado', 'Pedido Recusado ❌');
-  }).then(function(){ alert('Pedido recusado! Cliente já recebeu notificação ❌'); });
+  firebase.firestore().collection('pedidos').doc(id).update({status:'recusado', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){ return enviarNotifCliente(uidCliente, emailCliente, id, 'recusado', 'Pedido Recusado ❌'); }).then(function(){ alert('Pedido recusado! Cliente já recebeu notificação ❌'); });
 }
 function cancelarPedidoAdmin(id, emailCliente, uidCliente){
   if(!confirm('Cancelar este pedido? O cliente vai receber notificação de cancelado.')) return;
-  firebase.firestore().collection('pedidos').doc(id).update({status:'cancelado', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
-    return enviarNotifCliente(uidCliente, emailCliente, id, 'cancelado', 'Pedido Cancelado 🚫');
-  }).then(function(){ alert('Pedido cancelado! Cliente já recebeu notificação 🚫'); });
+  firebase.firestore().collection('pedidos').doc(id).update({status:'cancelado', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){ return enviarNotifCliente(uidCliente, emailCliente, id, 'cancelado', 'Pedido Cancelado 🚫'); }).then(function(){ alert('Pedido cancelado! Cliente já recebeu notificação 🚫'); });
 }
-
-// ===== CLIENTE: MEUS PEDIDOS + REGRA 24H =====
 function abrirMeusPedidos(){
   var user=firebase.auth().currentUser;
   if(!user){ if(typeof abrirLoginCliente==='function') abrirLoginCliente(); else alert('Cria conta / entra para veres os teus pedidos.'); return; }
   var m=document.getElementById('meusPedidosModal'); if(m) m.style.display='flex';
   carregarMeusPedidos(user);
-  // Quando abre, zera o sino
   localStorage.setItem('empire_cliente_viu_notif_em_'+user.uid, Date.now());
   atualizarSinoCliente(user);
 }
@@ -339,25 +398,12 @@ function carregarMeusPedidos(user){
       var status=(p.status||'pendente').toLowerCase();
       var tempoDecisao=dataPedido(p);
       var passou24h = (agora - tempoDecisao) > 24*60*60*1000;
-      // REGRA: Pendente NUNCA apaga até Admin decidir. Decidido (aceito/recusado/cancelado) some após 24h da decisão
-      if(status==='pendente'){
-        // sempre mostra
-      } else if(status==='aceito'||status==='aceite'||status==='recusado'||status==='cancelado'){
-        if(passou24h) return; // some após 24h
-      } else {
-        if(passou24h) return;
-      }
+      if(status==='pendente'){ } else if(status==='aceito'||status==='aceite'||status==='recusado'||status==='cancelado'){ if(passou24h) return; } else { if(passou24h) return; }
       temVisivel=true;
       var statusTxt = status==='aceito'||status==='aceite' ? '✅ PEDIDO ACEITE - Podes levantar / pagar' : (status==='recusado' ? '❌ PEDIDO RECUSADO' : (status==='cancelado' ? '🚫 PEDIDO CANCELADO' : '🟡 PENDENTE - À espera do Admin'));
       var cor = status==='pendente' ? '#ffaa00' : (status==='recusado'||status==='cancelado' ? '#ff4444' : '#00d26a');
       var falta='';
-      if(status!=='pendente'){
-        var restam=24*60*60*1000 - (agora-tempoDecisao);
-        var horas=Math.floor(restam/3600000);
-        falta='<br><span style="font-size:11px;color:#888">Esta notificação some em '+horas+'h</span>';
-      } else {
-        falta='<br><span style="font-size:11px;color:#ffaa00">Esta notificação NUNCA some até o Admin aprovar / recusar / cancelar</span>';
-      }
+      if(status!=='pendente'){ var restam=24*60*60*1000 - (agora-tempoDecisao); var horas=Math.floor(restam/3600000); falta='<br><span style="font-size:11px;color:#888">Esta notificação some em '+horas+'h</span>'; } else { falta='<br><span style="font-size:11px;color:#ffaa00">Esta notificação NUNCA some até o Admin aprovar / recusar / cancelar</span>'; }
       html += '<div class="pedido-card" style="border-left:5px solid '+cor+'"><b>Pedido #'+id.slice(-6).toUpperCase()+'</b> <span class="badge-notif" style="background:'+cor+'">'+statusTxt+'</span><br><span style="font-size:12px">'+(p.itens||p.resumo||'')+'</span><br><b>Total: '+(p.total||0)+' Kz</b>'+falta+'<br><button class="btn" style="background:#25D366;color:#000;margin-top:8px" onclick="avisarWhatsApp(\''+id+'\')">📱 Avisar no WhatsApp</button></div>';
     });
     box.innerHTML = html || '<p>Nenhum pedido visível. Pedidos decididos há mais de 24h já sumiram. Pendentes nunca somem até decisão.</p>';
@@ -371,17 +417,16 @@ function atualizarSinoCliente(user){
     var agora=Date.now(); var n=0;
     snap.forEach(function(doc){
       var p=doc.data(); var status=(p.status||'pendente').toLowerCase();
-      if(status==='pendente') return; // pendente não é notificação de decisão, já está em Meus Pedidos
+      if(status==='pendente') return;
       var tempo=dataPedido(p);
-      if((agora-tempo) > 24*60*60*1000) return; // após 24h some
-      if(tempo <= viu) return; // já viu
+      if((agora-tempo) > 24*60*60*1000) return;
+      if(tempo <= viu) return;
       n++;
     });
     var b=document.getElementById('sinoCount'); if(b){ b.innerText=n; b.style.display=n>0?'flex':'none'; }
     var b2=document.getElementById('badgePedidosMenu'); if(b2){ b2.innerText=n; b2.style.display=n>0?'inline-block':'none'; }
     var b3=document.getElementById('badgeNotifMenu'); if(b3){ b3.innerText=n; b3.style.display=n>0?'inline-block':'none'; }
     var b4=document.getElementById('badgeMeusPedidosTop'); if(b4){ b4.innerText=n; b4.style.display=n>0?'inline-block':'none'; }
-    // Também toca som se chegou notificação nova de decisão
     if(n>0 && window._ultimoSinoCliente!==n){ tocarSomNotif(); window._ultimoSinoCliente=n; }
   });
 }
@@ -393,7 +438,6 @@ function avisarWhatsApp(id){
 function marcarNotifsLidas(uid){
   firebase.firestore().collection('notificacoes').where('paraUid','==',uid).where('lida','==',false).get().then(function(s){ s.forEach(function(d){ d.ref.update({lida:true}); }); });
 }
-
 window.addEventListener('load', ()=>{
   var p = new URLSearchParams(window.location.search);
   if(p.get('admin')==='1'){
@@ -481,7 +525,6 @@ var _ultimosPedidosCliente = {};
 firebase.auth().onAuthStateChanged(function(user){
   if(!user) return;
   try{
-    // Sino do cliente: só notificações de decisão (aceito/recusado/cancelado) dentro de 24h
     firebase.firestore().collection('pedidos').where('email','==',user.email).onSnapshot(function(){ atualizarSinoCliente(user); });
     firebase.firestore().collection('notificacoes').where('paraUid','==',user.uid).where('lida','==',false).onSnapshot(function(snap){
       snap.docChanges().forEach(function(ch){ if(ch.type==='added' && !_ultimosPedidosCliente[ch.doc.id]){ tocarSomNotif(); _ultimosPedidosCliente[ch.doc.id]=1; } });
