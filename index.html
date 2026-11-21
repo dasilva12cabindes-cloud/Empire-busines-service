@@ -2,11 +2,13 @@
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>LISSANTE</title>
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#0a2a33;color:#fff;margin:0;padding-bottom:80px}
+html{-webkit-text-size-adjust:100%;touch-action:manipulation}
+body{background:#0a2a33;color:#fff;margin:0;padding-bottom:80px;touch-action:manipulation}
+button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .topo{position:sticky;top:0;background:#0a2a33;padding:10px;display:flex;gap:10px;align-items:center;z-index:10}
 .topo button{background:none;border:0;color:#fff;font-size:22px}
 .logo{font-weight:800;font-size:22px;cursor:pointer}
@@ -27,11 +29,11 @@ body{background:#0a2a33;color:#fff;margin:0;padding-bottom:80px}
 .barra button{background:none;border:0;color:#fff;font-size:11px}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;align-items:flex-end;justify-content:center}
 .modal .box{background:#fff;color:#111;width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:16px;max-height:90vh;overflow-y:auto}
-input,select,textarea{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd;border-radius:10px}
+input,select,textarea{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd;border-radius:10px;font-size:16px!important}
+input:focus,select:focus,textarea:focus{font-size:16px!important;zoom:1}
 .btn{width:100%;background:#d4af37;border:0;padding:14px;border-radius:12px;font-weight:800;margin:6px 0;cursor:pointer}
 #telaDetalhe{display:none;position:fixed;inset:0;background:#0a2a33;z-index:9999;overflow-y:auto}
 #telaCarregamento{position:fixed;inset:0;background:#0a2a33;z-index:99999;display:flex;align-items:center;justify-content:center}
-/* ESTILO DA FOTO - MENU + ADMIN */
 #menuNovo,#adminPanel{background:#0b1220!important;color:#fff!important}
 #menuNovo{position:fixed;top:0;left:0;width:300px;max-width:85%;height:100%;z-index:100001;padding:16px;overflow-y:auto;display:none}
 #adminPanel{padding:16px!important;min-height:100vh;display:none}
@@ -49,7 +51,36 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd
 .menuFoot{text-align:center;font-size:11px;color:#6b7688;margin-top:18px}
 .boxAdmin{background:#1a2233;border-radius:14px;padding:14px;margin-top:10px}
 .boxAdmin h3{color:#fff!important}
-.boxAdmin input,.boxAdmin select{background:#0b1220!important;color:#fff!important;border:1px solid rgba(255,255,255,.15)!important}
+.boxAdmin input,.boxAdmin select{background:#0b1220!important;color:#fff!important;border:1px solid rgba(255,255,255,.15)!important;font-size:16px!important}
+body.claro{background:#F7F4EF!important;color:#1A1A1A!important}
+body.claro .topo{background:#FFFBF5!important;border-bottom:1px solid #EDE6DA!important}
+body.claro .topo button,body.claro .topo .logo{color:#1A1A1A!important}
+body.claro .pesquisa{background:#fff!important;border:1px solid #EDE6DA!important;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+body.claro .pesquisa input{color:#1A1A1A!important}
+body.claro .pesquisa input::placeholder{color:#A39E96!important}
+body.claro .cats .cat{color:#5A554D!important}
+body.claro .cats .cat div{background:#fff!important;border:1px solid #EDE6DA!important;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+body.claro .banner{background:#FFF3D6!important;color:#1A1A1A!important;border:1px solid #F0DFAF!important}
+body.claro .banner b{color:#1A1A1A!important}
+body.claro .banner span{background:#C9A227!important;color:#fff!important}
+body.claro .secao{background:#fff!important;color:#1A1A1A!important;border:1px solid #EDE6DA!important;box-shadow:0 2px 10px rgba(0,0,0,.03)}
+body.claro .card{background:#fff!important;border:1px solid #EDE6DA!important;color:#1A1A1A!important;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+body.claro .card b{color:#1A1A1A!important}
+body.claro .card p{color:#B08D1A!important}
+body.claro .card button{background:#C9A227!important;color:#fff!important}
+body.claro .btn{background:#C9A227!important;color:#fff!important}
+body.claro .barra{background:#FFFBF5!important;border-top:1px solid #EDE6DA!important}
+body.claro .barra button{color:#5A554D!important}
+body.claro #telaDetalhe{background:#F7F4EF!important;color:#1A1A1A!important}
+body.claro #telaDetalhe p{color:#5A554D!important}
+body.claro #telaDetalhe #detTopoNome,body.claro #telaDetalhe h2{color:#1A1A1A!important}
+body.claro #telaDetalhe>div:first-child{background:#FFFBF5!important;border-bottom:1px solid #EDE6DA!important}
+body.claro #telaDetalhe>div:first-child button{color:#1A1A1A!important}
+body.claro #telaDetalhe #detPreco{color:#B08D1A!important}
+body.claro #telaCarregamento{background:#F7F4EF!important;color:#1A1A1A!important}
+body.claro h1,body.claro h2,body.claro h3{color:#1A1A1A!important}
+body.claro #emailClienteTop{color:#7A746B!important}
+body.claro #loginBox{background:#F7F4EF!important;color:#1A1A1A!important}
 </style>
 </head>
 <body>
@@ -88,7 +119,6 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd
 <button class="btn" onclick="login()">ENTRAR</button>
 <button class="btn" onclick="mostrarLoja()" style="background:#eee">← Voltar</button>
 </div>
-<!-- ADMIN NO ESTILO DA FOTO -->
 <div id="adminPanel">
   <div class="menuTop"><div class="menuLogo">L</div><div><b style="font-size:16px">LISSANTE</b><br><span style="font-size:11px;letter-spacing:2px;color:#8a94a6">ADMIN • PAINEL</span></div><button class="menuFecha" onclick="mostrarLoja()">✕</button></div>
   <p id="adminEmailTxt" style="font-size:12px;color:#9aa5b8;padding:0 6px"></p>
@@ -179,10 +209,9 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd
 <button class="btn" onclick="detComprarAgora()" style="background:#25D366;color:#fff">💳 COMPRAR AGORA</button>
 </div>
 </div>
-<!-- MENU CLIENTE NO MESMO ESTILO DA FOTO -->
 <div id="menuNovo">
   <div class="menuTop"><div class="menuLogo">L</div><div><b style="font-size:16px">LISSANTE</b><br><span style="font-size:11px;letter-spacing:2px;color:#8a94a6">FASHION</span></div><button class="menuFecha" onclick="fecharMenu()">✕</button></div>
-  <div class="menuItem ativo" onclick="fecharMenu();mostrarLoja()"><div class="menuIco" style="background:#ff5a5a">🏠</div><div style="flex:1"><b>Início</b><span>Página principal e destaques</span></div><span class="menuBadge" style="background:#ff5a5a;color:#fff">Ativo</span></div>
+  <div class="menuItem" onclick="fecharMenu();mostrarLoja()"><div class="menuIco" style="background:#ff5a5a">🏠</div><div style="flex:1"><b>Início</b><span>Página principal e destaques</span></div><span class="menuBadge" style="background:#ff5a5a;color:#fff">Ativo</span></div>
   <div class="menuItem" onclick="fecharMenu();mostrarLoja();setFiltro('todos')"><div class="menuIco" style="background:#2a3448">⊞</div><div style="flex:1"><b>Catálogo Completo</b><span>Todos os artigos e filtros</span></div><span class="menuSeta">›</span></div>
   <div class="menuItem" onclick="fecharMenu();abrirMeusPedidos()"><div class="menuIco" style="background:#2a3448">📦</div><div style="flex:1"><b>Meus Pedidos</b><span>Acompanhar os teus pedidos</span></div><span class="menuSeta">›</span></div>
   <div class="menuItem" onclick="fecharMenu();abrirSobreLoja()"><div class="menuIco" style="background:#2a3448">ⓘ</div><div style="flex:1"><b>Sobre a Loja</b><span>História, endereço e contactos</span></div><span class="menuSeta">›</span></div>
@@ -252,21 +281,21 @@ function entrarCliente(){
   var email=($id('cliEmail').value||'').trim(), s=$id('cliSenha').value||'';
   if(!email||!s){$id('msgCliente').innerText='Preenche e-mail e senha';return}
   if(temFirebase()){
-    firebase.auth().signInWithEmailAndPassword(email,s).then(function(){clienteEmail=email;localStorage.setItem('lc_email',email);fecharLoginCliente();atualizarHeader();mostrarLoja()}).catch(function(){$id('msgCliente').innerText='E-mail ou senha errada'});
-  }else{clienteEmail=email;localStorage.setItem('lc_email',email);fecharLoginCliente();atualizarHeader();mostrarLoja()}
+    firebase.auth().signInWithEmailAndPassword(email,s).then(function(){clienteEmail=email;localStorage.setItem('lc_email',email);fecharLoginCliente();atualizarHeader()}).catch(function(){$id('msgCliente').innerText='E-mail ou senha errada'});
+  }else{clienteEmail=email;localStorage.setItem('lc_email',email);fecharLoginCliente();atualizarHeader()}
 }
 function criarContaCliente(){
   var nome=$id('cliNomeConta').value.trim(), email=($id('cliEmailCriar').value||'').trim(), s1=$id('cliSenhaCriar').value, s2=$id('cliSenhaConfirmar').value;
   if(!nome||!email||!s1){$id('msgCliente').innerText='Preenche tudo';return}
   if(s1!==s2){$id('msgCliente').innerText='Senhas diferentes';return}
   if(temFirebase()){
-    firebase.auth().createUserWithEmailAndPassword(email,s1).then(function(){clienteEmail=email;clienteNome=nome;localStorage.setItem('lc_email',email);localStorage.setItem('lc_nome',nome);fecharLoginCliente();atualizarHeader();alert('✅ Conta criada!');mostrarLoja()}).catch(function(e){$id('msgCliente').innerText=e.message});
-  }else{clienteEmail=email;clienteNome=nome;localStorage.setItem('lc_email',email);localStorage.setItem('lc_nome',nome);fecharLoginCliente();atualizarHeader();alert('✅ Conta criada!');mostrarLoja()}
+    firebase.auth().createUserWithEmailAndPassword(email,s1).then(function(){clienteEmail=email;clienteNome=nome;localStorage.setItem('lc_email',email);localStorage.setItem('lc_nome',nome);fecharLoginCliente();atualizarHeader();alert('✅ Conta criada!')}).catch(function(e){$id('msgCliente').innerText=e.message});
+  }else{clienteEmail=email;clienteNome=nome;localStorage.setItem('lc_email',email);localStorage.setItem('lc_nome',nome);fecharLoginCliente();atualizarHeader();alert('✅ Conta criada!')}
 }
 function entrarComGoogle(){
   if(temFirebase()){
     var p=new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(p).then(function(u){clienteEmail=u.user.email;localStorage.setItem('lc_email',clienteEmail);fecharLoginCliente();atualizarHeader();mostrarLoja()}).catch(function(e){alert(e.message)});
+    firebase.auth().signInWithPopup(p).then(function(u){clienteEmail=u.user.email;localStorage.setItem('lc_email',clienteEmail);fecharLoginCliente();atualizarHeader()}).catch(function(e){alert(e.message)});
   }else alert('Ativa o Google no Firebase para usar este botão.');
 }
 function atualizarHeader(){
@@ -286,7 +315,7 @@ function renderProdutos(){
 }
 function carregarProdutos(){
   if(temFirebase()){
-    firebase.firestore().collection('produtos').onSnapshot(function(s){todosProdutos=s.docs.map(function(d){return{id:d.id,data:d.data()}});renderProdutos()},function(){carregarDemo()});
+    firebase.firestore().collection('produtos').onSnapshot(function(s){todosProdutos=s.docs.map(function(d){return{id:d.id,data:d.data()}});renderProdutos()},[STRIPPED]
   }else carregarDemo();
 }
 function carregarDemo(){
@@ -388,7 +417,7 @@ function abrirAssistenteIA(){
   else if(q.indexOf('roupa')>-1)setFiltro('roupa');
   else if(q.indexOf('relogio')>-1||q.indexOf('relógio')>-1)setFiltro('relogio');
   else setFiltro('todos');
-  mostrarLoja();alert('🤖 Mostrei os melhores para: '+p);
+  alert('🤖 Mostrei os melhores para: '+p);
 }
 function abrirAssistenteIAAdmin(){
   var p=prompt('🤖 Assistente Admin\n1 - Ideia de preço\n2 - Ideia de descrição\n3 - Qual produto vende mais?');
@@ -408,7 +437,6 @@ function abrirLookEstilista(){
   else if(c==='2'){setFiltro('perfume');alert('✨ Look Festa: Perfume + Relógio')}
   else if(c==='3'){setFiltro('roupa');alert('💼 Look Trabalho: Roupa + Relógio')}
   else return;
-  mostrarLoja();
 }
 function partilharLojaMenu(){
   var l=location.origin+location.pathname;
@@ -422,14 +450,12 @@ function ativarAlertas(){
   }else alert('Ativa no WhatsApp da loja.');
 }
 function adicionarEcrãPrincipal(){alert('📱 Android: Menu Chrome > Adicionar ao ecrã principal\n\niPhone: Partilhar > Adicionar ao Ecrã Principal')}
-var _temaClaro=false;
 function trocarTema(){
-  _temaClaro=!_temaClaro;
-  document.body.style.background=_temaClaro?'#f5f5f5':'#0a2a33';
-  document.body.style.color=_temaClaro?'#111':'#fff';
-  document.querySelectorAll('.secao').forEach(function(s){s.style.background=_temaClaro?'#fff':'#14383d';s.style.color=_temaClaro?'#111':'#fff'});
-  alert(_temaClaro?'☀️ Tema Claro ativado':'🌙 Tema Escuro ativado');
+  var claro=document.body.classList.toggle('claro');
+  localStorage.setItem('lc_tema',claro?'claro':'escuro');
+  alert(claro?'☀️ Tema Claro Suave ativado':'🌙 Tema Escuro ativado');
 }
+if(localStorage.getItem('lc_tema')==='claro') document.body.classList.add('claro');
 function corParaHex(c){var m={preto:'#111',branco:'#fff',azul:'#0a7cff',vermelho:'#ff4444',verde:'#00d26a',amarelo:'#ffcc00',rosa:'#ff8fab',cinza:'#888',bege:'#f5e6c8',laranja:'#ff7a00',roxo:'#8b5cf6'};return m[(c||'').toLowerCase()]||'#ddd'}
 var _det=null,_detCor='',_detTam='',_detQtd=1;
 function abrirDetalheProduto(id){
