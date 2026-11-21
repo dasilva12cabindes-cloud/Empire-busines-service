@@ -440,3 +440,47 @@ window.addEventListener('load', function(){
     var t=document.getElementById('telaCarregamento'); if(t) t.style.display='none';
   }, 1000);
 });
+// ===== LINKS UNIVERSAL + ADMIN =====
+const ADMIN_KEY = "empire2026"; // <- tua senha secreta do link, podes mudar
+
+function getLinkLoja(){
+  return window.location.origin + window.location.pathname;
+}
+function getLinkAdmin(){
+  return getLinkLoja() + "?admin=" + ADMIN_KEY;
+}
+
+// Atualiza os links em todo o lado
+function atualizarLinks(){
+  var linkLoja = getLinkLoja();
+  var linkAdmin = getLinkAdmin();
+  var lt = document.getElementById('linkLojaTexto');
+  if(lt) lt.innerText = linkLoja;
+  var la = document.getElementById('linkLojaAdmin');
+  if(la) la.innerText = linkAdmin; // Admin mostra o link SECRETO
+}
+
+// Copiar Loja - Universal
+function copiarLinkLoja(){
+  navigator.clipboard.writeText(getLinkLoja());
+  alert("Link da Loja copiado! ✅\n" + getLinkLoja());
+}
+// Copiar Admin - Específico
+function copiarLinkAdmin(){
+  navigator.clipboard.writeText(getLinkAdmin());
+  alert("Link SECRETO do Admin copiado! 🤫\nNão partilhes!\n" + getLinkAdmin());
+}
+
+// Se abrir com ?admin=... abre logo o login Admin
+window.addEventListener('load', ()=>{
+  const p = new URLSearchParams(window.location.search);
+  if(p.get('admin') === ADMIN_KEY){
+    // Abre painel admin
+    if(typeof abrirPainelAdmin === 'function') abrirPainelAdmin();
+    else {
+      var btn = document.getElementById('btnAdmin');
+      if(btn) btn.click();
+    }
+  }
+  atualizarLinks();
+});
