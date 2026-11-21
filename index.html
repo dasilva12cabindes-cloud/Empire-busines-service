@@ -266,33 +266,36 @@
 <script>
 // ===== CORREÇÕES + STOCK + NOTIFICAÇÕES =====
 try{ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL); }catch(e){}
+// ===== LINK UNIVERSAL + LINK ADMIN FIXO =====
 function linkLimpo(){ return window.location.origin + window.location.pathname; }
-const ADMIN_KEY = "empire2026";
-function getLinkAdmin(){ return linkLimpo() + "?admin=" + ADMIN_KEY; }
+function getLinkAdmin(){ return linkLimpo() + "?admin=1"; }
 
 function copiarLinkLoja(){
   var l=linkLimpo();
   if(navigator.clipboard) navigator.clipboard.writeText(l);
-  var el=document.getElementById('linkLojaTexto'); if(el) el.innerText=l;
-  alert('Link da Loja copiado! ✅ Universal\n'+l);
+  alert('Link da Loja copiado! ✅ Universal\nCada cliente entra com a sua conta.\n'+l);
 }
 function copiarLinkAdmin(){
   var l=getLinkAdmin();
   if(navigator.clipboard) navigator.clipboard.writeText(l);
-  var el=document.getElementById('linkLojaAdmin'); if(el) el.innerText=l;
-  alert('Link SECRETO do Admin copiado! 🤫\nNão partilhes!\n'+l);
+  alert('Link ADMIN copiado! 🔐\nAbre direto na tela Admin com e-mail fixo.\nSó falta a palavra-passe.\n'+l);
 }
 function partilharWhatsAppLoja(){ var l=linkLimpo(); window.open('https://wa.me/?text='+encodeURIComponent('Visita a minha loja EMPIRE: '+l),'_blank'); }
 
-// Se abrir com ?admin=... abre logo Admin
-(function(){
-  var p=new URLSearchParams(window.location.search);
-  if(p.get('admin')===ADMIN_KEY){
-    setTimeout(()=>{ var b=document.getElementById('btnAdmin'); if(b) b.click(); }, 500);
+// Se abrir com ?admin=1 -> vai direto tela Admin, e-mail fixo
+window.addEventListener('load', ()=>{
+  var p = new URLSearchParams(window.location.search);
+  if(p.get('admin')==='1'){
+    var b=document.getElementById('btnAdmin'); if(b) b.click();
+    setTimeout(()=>{
+      var email=document.getElementById('adminEmail');
+      if(email){ email.value='admin@empire.com'; email.readOnly=true; }
+      var senha=document.getElementById('adminSenha');
+      if(senha){ senha.value=''; senha.focus(); }
+    }, 600);
   }
-})();
-function abrirMenuLateral(){ document.getElementById('menuLateral').classList.add('aberto'); document.getElementById('overlayMenu').classList.add('mostrar'); }
-function fecharMenuLateral(){ document.getElementById('menuLateral').classList.remove('aberto'); document.getElementById('overlayMenu').classList.remove('mostrar'); }
+});
+{ document.getElementById('menuLateral').classList.remove('aberto'); document.getElementById('overlayMenu').classList.remove('mostrar'); }
 function tocarSomNotif(){ try{ var a=new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg'); a.play(); }catch(e){} }
 // --- LOGIN ADMIN SEM CAIR ---
 function entrarNovoLogin(){
