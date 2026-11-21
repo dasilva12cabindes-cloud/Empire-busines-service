@@ -93,3 +93,5 @@ p:has(#linkLojaAdmin){display:none!important}
 #caixaFundo{display:none!important}
 #caixaFundo[style*="flex"]{display:flex!important}
 #imgModal{background:rgba(0,0,0,.9)}
+#imgModal{background:rgba(255,255,255,.95)!important}
+#imgModal img{background:#fff!important;padding:12px;border-radius:14px;max-width:95vw;max-height:85vh;box-shadow:0 10px 40px rgba(0,0,0,.3)}
