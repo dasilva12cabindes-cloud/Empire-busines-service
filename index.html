@@ -85,6 +85,7 @@ body.claro #loginBox{background:#F7F4EF!important;color:#1A1A1A!important}
 </head>
 <body>
 <div id="telaCarregamento">A carregar...</div>
+<script>setTimeout(function(){var t=document.getElementById('telaCarregamento');if(t)t.style.display='none'},2000);</script>
 <div id="areaLoja">
 <div class="topo">
 <button onclick="abrirMenu()">☰</button>
@@ -240,19 +241,13 @@ body.claro #loginBox{background:#F7F4EF!important;color:#1A1A1A!important}
 <button onclick="abrirWhatsAppLoja()">💬<br>Whatsapp</button>
 <button onclick="abrirLoginCliente()">👤<br><span id="barraContaTxt">Conta</span></button>
 </div>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script>
-var firebaseConfig={apiKey:"COLA_AQUI",authDomain:"COLA_AQUI",projectId:"COLA_AQUI",appId:"COLA_AQUI"};
-try{ if(firebaseConfig.apiKey!=="COLA_AQUI" && typeof firebase!=="undefined" && !firebase.apps.length) firebase.initializeApp(firebaseConfig); }catch(e){}
-</script>
 <script>
 var _cats=document.querySelector('.cats'); if(_cats) _cats.id='catsCirculares';
-var todosProdutos=[], carrinho=JSON.parse(localStorage.getItem('lc_carrinho')||'[]');
+var todosProdutos=[], carrinho=[];
+try{carrinho=JSON.parse(localStorage.getItem('lc_carrinho')||'[]')}catch(e){carrinho=[]}
 var clienteEmail=localStorage.getItem('lc_email')||'', clienteNome=localStorage.getItem('lc_nome')||'', filtroAtual='todos', _fotosTemp=[];
 function $id(i){return document.getElementById(i)}
-function temFirebase(){ return (typeof firebase!=="undefined" && firebase.apps && firebase.apps.length>0); }
+function temFirebase(){ return false; }
 function esconderTudo(){['areaLoja','loginBox','adminPanel'].forEach(function(i){var e=$id(i);if(e)e.style.display='none'});['clienteModal','meusPedidosModal','cartModal','pagModal','telaDetalhe'].forEach(function(i){var e=$id(i);if(e)e.style.display='none'});fecharMenu();}
 function mostrarLoja(){esconderTudo();$id('areaLoja').style.display='block';document.body.style.overflow='';window.scrollTo(0,0)}
 function abrirMenu(){var m=$id('menuNovo');if(m)m.style.display='block';var o=$id('overlaySimples');if(o)o.style.display='block'}
@@ -261,16 +256,11 @@ function abrirLoginAdmin(){esconderTudo();$id('loginBox').style.display='block'}
 function login(){
   var email=($id('email').value||'').trim().toLowerCase(), pass=$id('pass').value||'';
   if(!email||!pass){$id('loginMsg').innerText='Preenche e-mail e senha';return}
-  if(temFirebase()){
-    firebase.auth().signInWithEmailAndPassword(email,pass).then(function(u){
-      if(u.user.email.toLowerCase()==='dasilva12cabindes@gmail.com') mostrarAdmin(u.user.email);
-      else{$id('loginMsg').innerText='Só o dono entra';firebase.auth().signOut()}
-    }).catch(function(){$id('loginMsg').innerText='E-mail ou senha errada'});
-  } else if(email==='dasilva12cabindes@gmail.com') mostrarAdmin(email);
+  if(email==='dasilva12cabindes@gmail.com') mostrarAdmin(email);
   else $id('loginMsg').innerText='Só o dono entra';
 }
 function mostrarAdmin(email){esconderTudo();$id('adminPanel').style.display='block';$id('adminEmailTxt').innerText=email;renderProdutosAdmin();carregarPedidosAdmin();renderClientesAdmin()}
-function logout(){try{if(temFirebase())firebase.auth().signOut()}catch(e){}localStorage.removeItem('lc_email');clienteEmail='';mostrarLoja()}
+function logout(){localStorage.removeItem('lc_email');clienteEmail='';mostrarLoja()}
 function irParaAbaAdmin(aba){['prod','ped','cli'].forEach(function(a){var el=$id('aba'+a.charAt(0).toUpperCase()+a.slice(1));if(el)el.style.display=(a===aba)?'block':'none'});if(aba==='ped')carregarPedidosAdmin();if(aba==='prod')renderProdutosAdmin();if(aba==='cli')renderClientesAdmin()}
 function marcarAdmin(el){document.querySelectorAll('#adminPanel .menuItem').forEach(function(i){i.classList.remove('ativo')});if(el)el.classList.add('ativo')}
 function abrirLoginCliente(){if(clienteEmail){alert('Já estás ligado: '+clienteEmail);return}$id('clienteModal').style.display='flex';mostrarTelaLogin()}
@@ -280,24 +270,15 @@ function mostrarTelaCriar(){$id('telaLogin').style.display='none';$id('telaCriar
 function entrarCliente(){
   var email=($id('cliEmail').value||'').trim(), s=$id('cliSenha').value||'';
   if(!email||!s){$id('msgCliente').innerText='Preenche e-mail e senha';return}
-  if(temFirebase()){
-    firebase.auth().signInWithEmailAndPassword(email,s).then(function(){clienteEmail=email;localStorage.setItem('lc_email',email);fecharLoginCliente();atualizarHeader()}).catch(function(){$id('msgCliente').innerText='E-mail ou senha errada'});
-  }else{clienteEmail=email;localStorage.setItem('lc_email',email);fecharLoginCliente();atualizarHeader()}
+  clienteEmail=email;localStorage.setItem('lc_email',email);fecharLoginCliente();atualizarHeader();
 }
 function criarContaCliente(){
   var nome=$id('cliNomeConta').value.trim(), email=($id('cliEmailCriar').value||'').trim(), s1=$id('cliSenhaCriar').value, s2=$id('cliSenhaConfirmar').value;
   if(!nome||!email||!s1){$id('msgCliente').innerText='Preenche tudo';return}
   if(s1!==s2){$id('msgCliente').innerText='Senhas diferentes';return}
-  if(temFirebase()){
-    firebase.auth().createUserWithEmailAndPassword(email,s1).then(function(){clienteEmail=email;clienteNome=nome;localStorage.setItem('lc_email',email);localStorage.setItem('lc_nome',nome);fecharLoginCliente();atualizarHeader();alert('✅ Conta criada!')}).catch(function(e){$id('msgCliente').innerText=e.message});
-  }else{clienteEmail=email;clienteNome=nome;localStorage.setItem('lc_email',email);localStorage.setItem('lc_nome',nome);fecharLoginCliente();atualizarHeader();alert('✅ Conta criada!')}
+  clienteEmail=email;clienteNome=nome;localStorage.setItem('lc_email',email);localStorage.setItem('lc_nome',nome);fecharLoginCliente();atualizarHeader();alert('✅ Conta criada!');
 }
-function entrarComGoogle(){
-  if(temFirebase()){
-    var p=new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(p).then(function(u){clienteEmail=u.user.email;localStorage.setItem('lc_email',clienteEmail);fecharLoginCliente();atualizarHeader()}).catch(function(e){alert(e.message)});
-  }else alert('Ativa o Google no Firebase para usar este botão.');
-}
+function entrarComGoogle(){alert('Ativa o Google no Firebase para usar este botão.')}
 function atualizarHeader(){
   if(clienteEmail){$id('nomeClienteTop').innerText=clienteNome||clienteEmail.split('@')[0];$id('emailClienteTop').innerText=clienteEmail;$id('barraContaTxt').innerText='Conta'}
   else{$id('nomeClienteTop').innerText='Visitante!';$id('emailClienteTop').innerText='Cria conta antes de comprar'}
@@ -306,18 +287,18 @@ function setFiltro(c){filtroAtual=c;renderProdutos()}
 function renderProdutos(){
   var q=($id('pesquisa').value||'').toLowerCase();
   var lista=todosProdutos.filter(function(o){return (filtroAtual==='todos'||o.data.categoria===filtroAtual) && (!q||(o.data.nome||'').toLowerCase().indexOf(q)>-1)});
-  function card(o){var d=o.data,foto=(d.fotos&&d.fotos[0])||d.foto||'https://via.placeholder.com/300';return '<div class="card" onclick="abrirDetalheProduto(\''+o.id+'\')"><img src="'+foto+'"><div><b>'+(d.nome||'')+'</b><p style="color:#d4af37;font-weight:800">'+Number(d.preco||0).toLocaleString('pt-AO')+' Kz</p><button onclick="event.stopPropagation();abrirDetalheProduto(\''+o.id+'\')">VER</button></div></div>'}
+  function card(o){
+    var d=o.data;
+    var foto=(d.fotos&&d.fotos[0])||d.foto||'https://via.placeholder.com/300';
+    return '<div class="card" onclick="abrirDetalheProduto(\''+o.id+'\')"><img src="'+foto+'"><div><b>'+(d.nome||'')+'</b><p style="color:#d4af37;font-weight:800">'+Number(d.preco||0).toLocaleString('pt-AO')+' Kz</p><button onclick="event.stopPropagation();abrirDetalheProduto(\''+o.id+'\')">VER</button></div></div>';
+  }
   $id('produtos').innerHTML=lista.map(card).join('')||'<p>Nenhum produto</p>';
   var dest=lista.filter(function(o){return o.data.destaque});
   $id('produtosDestaque').innerHTML=(dest.length?dest:lista.slice(0,4)).map(card).join('');
   $id('qtdMostra').innerText='('+lista.length+')';
   $id('status').innerText='✅ '+lista.length+' produtos';
 }
-function carregarProdutos(){
-  if(temFirebase()){
-    firebase.firestore().collection('produtos').onSnapshot(function(s){todosProdutos=s.docs.map(function(d){return{id:d.id,data:d.data()}});renderProdutos()},[STRIPPED]
-  }else carregarDemo();
-}
+function carregarProdutos(){ carregarDemo(); }
 function carregarDemo(){
   todosProdutos=[
     {id:'demo1',data:{nome:'Perfume LISSANTE Gold',preco:15000,desc:'Perfume elegante, longa duração.',categoria:'perfume',estoque:20,cores:'Preto, Branco',tamanhos:'',foto:'https://images.unsplash.com/photo-1541643600914-78b084683601?w=600',destaque:true}},
@@ -343,7 +324,8 @@ function fecharCarrinho(){$id('cartModal').style.display='none'}
 function abrirMeusPedidos(){
   if(!clienteEmail){abrirLoginCliente();return}
   $id('meusPedidosModal').style.display='flex';
-  var ped=JSON.parse(localStorage.getItem('lc_pedidos')||'[]').filter(function(p){return p.email===clienteEmail});
+  var ped=[];
+  try{ped=JSON.parse(localStorage.getItem('lc_pedidos')||'[]').filter(function(p){return p.email===clienteEmail})}catch(e){ped=[]}
   $id('listaMeusPedidos').innerHTML=ped.length?ped.map(function(p){return '<div style="background:#f5f5f5;padding:10px;margin:6px;border-radius:10px"><b>#'+p.id+'</b><br>'+p.itens+'<br>Total: '+p.total+' Kz - '+p.status+'</div>'}).join(''):'<p>Nenhum pedido ainda.</p>';
 }
 function fecharMeusPedidos(){$id('meusPedidosModal').style.display='none'}
@@ -361,8 +343,9 @@ function confirmarPedido(){
   if(!carrinho.length)return;
   var tot=carrinho.reduce(function(a,c){return a+c.preco*c.qtd},0);
   var ped={id:Date.now().toString().slice(-6),email:clienteEmail,nome:$id('cliNome').value||clienteNome||clienteEmail,itens:carrinho.map(function(c){return c.nome+' x'+c.qtd}).join(', '),total:tot,status:'pendente'};
-  var todos=JSON.parse(localStorage.getItem('lc_pedidos')||'[]');todos.push(ped);localStorage.setItem('lc_pedidos',JSON.stringify(todos));
-  if(temFirebase()){firebase.firestore().collection('pedidos').add({nome:ped.nome,email:ped.email,clienteEmail:ped.email,itens:carrinho,total:tot,status:'pendente',criadoEm:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(){})}
+  var todos=[];
+  try{todos=JSON.parse(localStorage.getItem('lc_pedidos')||'[]')}catch(e){todos=[]}
+  todos.push(ped);localStorage.setItem('lc_pedidos',JSON.stringify(todos));
   carrinho=[];localStorage.setItem('lc_carrinho','[]');atualizarCarrinho();fecharPagamento();alert('✅ Pedido criado!');
 }
 function mostrarProcessamento(){
@@ -380,8 +363,7 @@ function salvarProduto(){
   var nome=$id('nome').value.trim(), preco=Number($id('preco').value||0);
   if(!nome||!preco){alert('Mete nome e preço');return}
   var d={nome:nome,preco:preco,desc:$id('desc').value||'',categoria:$id('categoria').value,cores:$id('prodCores').value||'',tamanhos:$id('prodTamanhos').value||'',estoque:Number($id('estoque').value||0),destaque:$id('chkDestaque').checked,fotos:_fotosTemp.length?_fotosTemp:['https://via.placeholder.com/300?text='+encodeURIComponent(nome)]};
-  if(temFirebase()){firebase.firestore().collection('produtos').add(d).then(function(){alert('✅ Salvo no Firebase!');limparForm()}).catch(function(e){alert(e.message)})}
-  else{todosProdutos.push({id:'p'+Date.now(),data:d});renderProdutos();renderProdutosAdmin();alert('✅ Adicionado! (modo demo)');limparForm()}
+  todosProdutos.push({id:'p'+Date.now(),data:d});renderProdutos();renderProdutosAdmin();alert('✅ Adicionado! (modo demo)');limparForm();
 }
 function limparForm(){['nome','preco','desc','prodCores','prodTamanhos','estoque'].forEach(function(i){$id(i).value=''});$id('chkDestaque').checked=false;_fotosTemp=[];$id('previewFotos').innerHTML=''}
 function renderProdutosAdmin(){
@@ -389,17 +371,19 @@ function renderProdutosAdmin(){
 }
 function apagarProduto(id){
   if(!confirm('Apagar?'))return;
-  if(temFirebase()){firebase.firestore().collection('produtos').doc(id).delete().then(function(){alert('Apagado')})}
-  else{todosProdutos=todosProdutos.filter(function(x){return x.id!==id});renderProdutos();renderProdutosAdmin()}
+  todosProdutos=todosProdutos.filter(function(x){return x.id!==id});renderProdutos();renderProdutosAdmin();
 }
 function carregarPedidosAdmin(){
-  var ped=JSON.parse(localStorage.getItem('lc_pedidos')||'[]');
+  var ped=[];
+  try{ped=JSON.parse(localStorage.getItem('lc_pedidos')||'[]')}catch(e){ped=[]}
   $id('pedCount').innerText=ped.length;
   $id('listaPedidos').innerHTML=ped.length?ped.map(function(p,i){return '<div style="background:#0b1220;padding:10px;margin:6px;border-radius:10px;color:#fff"><b>#'+p.id+'</b> '+p.nome+' - '+p.total+' Kz<br>'+p.itens+'<br>'+p.status+' <button onclick="confirmarPedidoAdmin('+i+')">✅ CONFIRMAR</button></div>'}).join(''):'<p>Sem pedidos</p>';
 }
-function confirmarPedidoAdmin(i){var t=JSON.parse(localStorage.getItem('lc_pedidos')||'[]');t[i].status='confirmado';localStorage.setItem('lc_pedidos',JSON.stringify(t));carregarPedidosAdmin();alert('✅ Confirmado!')}
+function confirmarPedidoAdmin(i){var t=[];try{t=JSON.parse(localStorage.getItem('lc_pedidos')||'[]')}catch(e){t=[]}t[i].status='confirmado';localStorage.setItem('lc_pedidos',JSON.stringify(t));carregarPedidosAdmin();alert('✅ Confirmado!')}
 function renderClientesAdmin(){
-  var ped=JSON.parse(localStorage.getItem('lc_pedidos')||'[]'), em={};
+  var ped=[];
+  try{ped=JSON.parse(localStorage.getItem('lc_pedidos')||'[]')}catch(e){ped=[]}
+  var em={};
   ped.forEach(function(p){em[p.email]=(em[p.email]||0)+1});
   if(clienteEmail)em[clienteEmail]=em[clienteEmail]||0;
   var lista=Object.keys(em);$id('cliCount').innerText=lista.length;
@@ -426,7 +410,8 @@ function abrirAssistenteIAAdmin(){
   else if(p==='3'){var t=todosProdutos[0];alert(t?'🏆 Destaque: '+t.data.nome:'Ainda não tens produtos.');}
 }
 function abrirRelatorioAdmin(){
-  var ped=JSON.parse(localStorage.getItem('lc_pedidos')||'[]');
+  var ped=[];
+  try{ped=JSON.parse(localStorage.getItem('lc_pedidos')||'[]')}catch(e){ped=[]}
   var total=ped.reduce(function(a,x){return a+Number(x.total||0)},0);
   alert('📊 RELATÓRIO LISSANTE\n\nPedidos: '+ped.length+'\nTotal vendido: '+total.toLocaleString('pt-AO')+' Kz');
   irParaAbaAdmin('ped');
