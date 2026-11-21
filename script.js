@@ -210,7 +210,35 @@ function recusarPedido(id){ if(!confirm("Recusar este pedido?")) return; db.coll
 function apagarPedido(id){ if(!confirm("Apagar este pedido?")) return; db.collection("pedidos").doc(id).delete(); }
 
 // ===== ADMIN - CLIENTES =====
-function renderClientes(){ var div=document.getElementById('listaClientes'); if(!div) return; setTexto('cliCount',todosClientes.length); if(!todosClientes.length){ div.innerHTML='<p class="small">Sem clientes.</p>'; return; } div.innerHTML=todosClientes.map(function(o){ var d=o.data; return '<div class="item"><div class="itemInfo"><b style="color:#fff">'+esc(d.nome||'Cliente')+'</b><span style="color:#fff!important">'+esc(d.email||'')+' • '+esc(d.whats||'')+'</span></div></div>'; }).join(''); }
+function tempoAtras(ts){
+  if(!ts) return '🔴 Nunca entrou';
+  var t = ts.toDate ? ts.toDate().getTime() : (ts.seconds ? ts.seconds*1000 : new Date(ts).getTime());
+  var diff = Date.now() - t;
+  var min = Math.floor(diff/60000);
+  if(min < 3) return '🟢 Online agora';
+  if(min < 60) return '🟡 Há '+min+' min';
+  var h = Math.floor(min/60);
+  if(h < 24) return '🟡 Há '+h+' h';
+  var d = Math.floor(h/24);
+  return '🔴 Sem entrar há '+d+' dia(s)';
+}
+function renderClientes(){
+  var div=document.getElementById('listaClientes'); if(!div) return;
+  setTexto('cliCount', todosClientes.length);
+  if(!todosClientes.length){ div.innerHTML='<p class="small">Sem clientes.</p>'; return; }
+  div.innerHTML=todosClientes.map(function(o,i){
+    var d=o.data;
+    return '<div class="item"><div class="itemInfo"><b style="color:#fff">'+esc(d.nome||'Cliente')+'</b><span style="color:#fff!important">'+esc(d.email||'')+' • '+esc(d.whats||'')+'</span><span style="color:#ffe066;font-size:12px">'+tempoAtras(d.ultimoAcesso)+'</span></div><button onclick="verCliente('+i+')" style="background:#ffb703;color:#000;border:0;padding:8px 12px;border-radius:8px;font-weight:700">Ver detalhes</button></div>';
+  }).join('');
+}
+function verCliente(i){
+  var d=todosClientes[i].data;
+  var m=document.getElementById('clienteModal'); if(!m) return;
+  var ts=d.ultimoAcesso;
+  var ult=ts ? (ts.toDate ? ts.toDate().toLocaleString('pt-AO') : new Date(ts.seconds*1000).toLocaleString('pt-AO')) : 'Nunca';
+  m.innerHTML='<div class="modalBox"><h3>'+esc(d.nome||'Cliente')+'</h3><p>Email: '+esc(d.email||'')+'</p><p>WhatsApp: '+esc(d.whats||'')+'</p><p>Último acesso: '+ult+'</p><p>Status: '+tempoAtras(d.ultimoAcesso)+'</p><button onclick="document.getElementById(\'clienteModal\').style.display=\'none\'" style="background:#ffb703;border:0;padding:10px;border-radius:8px;font-weight:700;width:100%">Fechar</button></div>';
+  m.style.display='flex';
+}
 
 // ===== RELATÓRIO =====
 function verHoje(){ var inp=document.getElementById('dataRel'); if(inp) inp.value=dataDeHoje(); atualizarRelatorio(dataDeHoje()); }
