@@ -111,6 +111,10 @@ body.claro #emailClienteTop{color:#7A746B!important}
 .checkCard p{font-size:13px;color:#666;margin:6px 0 0;line-height:1.6}
 .resumoBox{background:#F8F8F8;border-radius:12px;padding:12px;font-size:13px;line-height:1.7;margin:10px 0;white-space:pre-wrap;color:#111}
 .btnWhats{background:#fff!important;border:1.5px solid #ddd!important;color:#111!important}
+#telaAdminAba{display:none;position:fixed;inset:0;background:#0b1220;z-index:200000;overflow-y:auto}
+#telaAdminAba .topoAdmin{position:sticky;top:0;background:#0b1220;padding:12px;display:flex;gap:10px;align-items:center;border-bottom:1px solid rgba(255,255,255,.1)}
+#telaAdminAba .topoAdmin button{background:rgba(255,255,255,.1);border:0;color:#fff;width:40px;height:40px;border-radius:50%;font-size:20px;cursor:pointer}
+#telaAdminAba .boxAdmin{display:block!important;margin:12px}
 </style>
 </head>
 <body>
@@ -164,26 +168,16 @@ body.claro #emailClienteTop{color:#7A746B!important}
   <div class="menuSec">APARÊNCIA & ACESSO</div>
   <div class="menuItem" onclick="adicionarEcrãPrincipal()"><div class="menuIco" style="background:#0f3d2e;border:1px solid #00d26a">📱</div><div style="flex:1"><b style="color:#00e676">Adicionar ao Ecrã Principal</b><span>Atalho com logótipo oficial</span></div><span class="menuBadge" style="background:#0f3d2e;color:#00e676;border:1px solid #00e676">APP</span></div>
   <div class="menuItem" onclick="trocarTema()"><div class="menuIco" style="background:#3a2a00;border:1px solid #d4af37">☀️</div><div style="flex:1"><b>Tema Claro (Modo Branco)</b><span>Mudar para interface clara</span></div><span class="menuBadge" style="background:#3a2a00;color:#ffcc00;border:1px solid #ffcc00">☀️ Claro</span></div>
-  <div id="abaProd" class="boxAdmin">
-    <h3>Adicionar Produto</h3>
-    <input id="nome" placeholder="Nome">
-    <input id="preco" type="number" placeholder="Preço em Kz">
-    <input id="desc" placeholder="Descrição">
-    <select id="categoria"><option value="perfume">Perfume</option><option value="tenis">Ténis</option><option value="roupa">Roupa</option><option value="relogio">Relógio</option><option value="acessorio">Acessório</option></select>
-    <input id="prodCores" placeholder="Cores - ex: Preto, Branco">
-    <input id="prodTamanhos" placeholder="Tamanhos - ex: S, M, L">
-    <input id="estoque" type="number" placeholder="Stock">
-    <label style="color:#fff"><input type="checkbox" id="chkDestaque" style="width:auto"> ⭐ Destaque</label>
-    <input type="file" accept="image/*" onchange="lerFotos(event)">
-    <div id="previewFotos"></div>
-    <button class="btn" onclick="salvarProduto()">+ ADICIONAR</button>
-    <div id="produtosAdmin"></div>
-  </div>
-  <div id="abaPed" class="boxAdmin" style="display:none"><h3>🧾 Pedidos</h3><div id="listaPedidos"></div></div>
-  <div id="abaCli" class="boxAdmin" style="display:none"><h3>👥 Clientes</h3><div id="listaClientes"></div></div>
   <div class="menuItem" onclick="mostrarLoja()" style="background:#d4af37"><div class="menuIco" style="background:#000">🏠</div><div style="flex:1"><b style="color:#000">Ver Loja</b><span style="color:#333">Voltar como cliente</span></div><span class="menuSeta" style="color:#000">›</span></div>
   <div class="menuItem" onclick="logout()" style="background:#3a0d0d;border:1px solid #ff4444"><div class="menuIco" style="background:#ff4444">🚪</div><div style="flex:1"><b>Sair do Admin</b><span>Terminar sessão</span></div><span class="menuSeta">›</span></div>
   <div class="menuFoot">LISSANTE • Plataforma SaaS Angola</div>
+</div>
+<div id="telaAdminAba">
+<div class="topoAdmin">
+<button onclick="voltarAdminAba()">←</button>
+<b id="telaAdminTitulo" style="color:#fff;font-size:18px">Produtos</b>
+</div>
+<div id="telaAdminCorpo"></div>
 </div>
 <div id="clienteModal" class="modal"><div class="box">
 <h3 style="display:flex;justify-content:space-between;align-items:center;margin:0 0 6px">Entrar <button onclick="fecharLoginCliente()" style="border:0;background:none;font-size:22px;color:#999">✕</button></h3>
@@ -319,6 +313,23 @@ body.claro #emailClienteTop{color:#7A746B!important}
 <button onclick="abrirWhatsAppLoja()">💬<br>Whatsapp</button>
 <button onclick="abrirLoginCliente()">👤<br><span id="barraContaTxt">Conta</span></button>
 </div>
+<div id="abaProd" class="boxAdmin" style="display:none">
+    <h3>Adicionar Produto</h3>
+    <input id="nome" placeholder="Nome">
+    <input id="preco" type="number" placeholder="Preço em Kz">
+    <input id="desc" placeholder="Descrição">
+    <select id="categoria"><option value="perfume">Perfume</option><option value="tenis">Ténis</option><option value="roupa">Roupa</option><option value="relogio">Relógio</option><option value="acessorio">Acessório</option></select>
+    <input id="prodCores" placeholder="Cores - ex: Preto, Branco">
+    <input id="prodTamanhos" placeholder="Tamanhos - ex: S, M, L">
+    <input id="estoque" type="number" placeholder="Stock">
+    <label style="color:#fff"><input type="checkbox" id="chkDestaque" style="width:auto"> ⭐ Destaque</label>
+    <input type="file" accept="image/*" onchange="lerFotos(event)">
+    <div id="previewFotos"></div>
+    <button class="btn" onclick="salvarProduto()">+ ADICIONAR</button>
+    <div id="produtosAdmin"></div>
+</div>
+<div id="abaPed" class="boxAdmin" style="display:none"><h3>🧾 Pedidos</h3><div id="listaPedidos"></div></div>
+<div id="abaCli" class="boxAdmin" style="display:none"><h3>👥 Clientes</h3><div id="listaClientes"></div></div>
 <script>
 var _cats=document.querySelector('.cats'); if(_cats) _cats.id='catsCirculares';
 var todosProdutos=[], carrinho=[];
@@ -326,7 +337,7 @@ try{carrinho=JSON.parse(localStorage.getItem('lc_carrinho')||'[]')}catch(e){carr
 var clienteEmail=localStorage.getItem('lc_email')||'', clienteNome=localStorage.getItem('lc_nome')||'', filtroAtual='todos', _fotosTemp=[];
 function $id(i){return document.getElementById(i)}
 function temFirebase(){ return false; }
-function esconderTudo(){['areaLoja','loginBox','adminPanel'].forEach(function(i){var e=$id(i);if(e)e.style.display='none'});['clienteModal','meusPedidosModal','cartModal','pagModal','telaDetalhe'].forEach(function(i){var e=$id(i);if(e)e.style.display='none'});fecharMenu();}
+function esconderTudo(){['areaLoja','loginBox','adminPanel','telaAdminAba'].forEach(function(i){var e=$id(i);if(e)e.style.display='none'});['clienteModal','meusPedidosModal','cartModal','pagModal','telaDetalhe'].forEach(function(i){var e=$id(i);if(e)e.style.display='none'});fecharMenu();}
 function mostrarLoja(){esconderTudo();$id('areaLoja').style.display='block';document.body.style.overflow='';window.scrollTo(0,0)}
 function abrirMenu(){var m=$id('menuNovo');if(m)m.style.display='block';var o=$id('overlaySimples');if(o)o.style.display='block'}
 function fecharMenu(){var m=$id('menuNovo');if(m)m.style.display='none';var s=$id('menuSimples');if(s)s.style.display='none';var o=$id('overlaySimples');if(o)o.style.display='none'}
@@ -339,7 +350,20 @@ function login(){
 }
 function mostrarAdmin(email){esconderTudo();$id('adminPanel').style.display='block';$id('adminEmailTxt').innerText=email;renderProdutosAdmin();carregarPedidosAdmin();renderClientesAdmin()}
 function logout(){localStorage.removeItem('lc_email');clienteEmail='';mostrarLoja()}
-function irParaAbaAdmin(aba){['prod','ped','cli'].forEach(function(a){var el=$id('aba'+a.charAt(0).toUpperCase()+a.slice(1));if(el)el.style.display=(a===aba)?'block':'none'});if(aba==='ped')carregarPedidosAdmin();if(aba==='prod')renderProdutosAdmin();if(aba==='cli')renderClientesAdmin()}
+function irParaAbaAdmin(aba){
+  var mapa={prod:'abaProd',ped:'abaPed',cli:'abaCli'};
+  var tit={prod:'📦 Produtos - Adicionar',ped:'🧾 Pedidos - Confirmar',cli:'👥 Clientes - Quem comprou'};
+  var el=$id(mapa[aba]); if(!el) return;
+  if(aba==='ped') carregarPedidosAdmin();
+  if(aba==='prod') renderProdutosAdmin();
+  if(aba==='cli') renderClientesAdmin();
+  el.style.display='block';
+  $id('telaAdminCorpo').appendChild(el);
+  $id('telaAdminTitulo').innerText=tit[aba];
+  $id('telaAdminAba').style.display='block';
+  $id('telaAdminAba').scrollTop=0;
+}
+function voltarAdminAba(){ $id('telaAdminAba').style.display='none'; }
 function marcarAdmin(el){document.querySelectorAll('#adminPanel .menuItem').forEach(function(i){i.classList.remove('ativo')});if(el)el.classList.add('ativo')}
 function abrirLoginCliente(){if(clienteEmail){alert('Já estás ligado: '+clienteEmail);return}$id('clienteModal').style.display='flex';mostrarTelaLogin()}
 function fecharLoginCliente(){$id('clienteModal').style.display='none'}
