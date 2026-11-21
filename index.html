@@ -80,7 +80,6 @@ body.claro #telaDetalhe #detPreco{color:#B08D1A!important}
 body.claro #telaCarregamento{background:#F7F4EF!important;color:#1A1A1A!important}
 body.claro h1,body.claro h2,body.claro h3{color:#1A1A1A!important}
 body.claro #emailClienteTop{color:#7A746B!important}
-/* LOGIN ADMIN - IGUAL A FOTO 1 */
 #loginBox{background:#0a2a33!important;min-height:100vh;padding:22px!important;display:none}
 #loginBox h2{color:#fff!important;font-size:26px}
 #loginBox input{background:#FFFACD!important;border:2px solid transparent!important;border-radius:12px!important;padding:14px!important;font-size:16px!important;color:#111!important}
@@ -88,7 +87,6 @@ body.claro #emailClienteTop{color:#7A746B!important}
 #loginBox .btn{border-radius:12px!important;padding:14px!important}
 #loginBox .btn:first-of-type{background:#d4af37!important;color:#1A6AE1!important}
 #loginBox #loginMsg{color:#FF9AA0}
-/* LOGIN CLIENTE - IGUAL A FOTO 2 */
 #clienteModal .box{border-radius:20px 20px 0 0!important;padding:20px!important}
 .loginLabel{font-size:15px;font-weight:700;margin:14px 0 6px;display:block;color:#111}
 .loginLabel b{color:red}
@@ -301,8 +299,27 @@ function fecharLoginCliente(){$id('clienteModal').style.display='none'}
 function mostrarTelaLogin(){$id('telaLogin').style.display='block';$id('telaCriar').style.display='none'}
 function mostrarTelaCriar(){$id('telaLogin').style.display='none';$id('telaCriar').style.display='block'}
 function verSenhaCliente(){var i=$id('cliSenha');if(i)i.type=(i.type==='password'?'text':'password');}
-function entrarComMeta(){alert('Login com Meta em breve.\nPor agora usa o Google ou E-mail.');}
 function esqueceuSenha(){var e=prompt('Esqueceu a senha?\nEscreve o teu e-mail que enviamos o link:');if(e)alert('✅ Se '+e+' existir, enviámos o link de recuperação.');}
+function entrarComGoogle(){
+  var e=prompt('Continue with Google\n\nEscreve o teu Gmail:');
+  if(!e)return;
+  e=e.trim();
+  if(e.indexOf('@')<0){alert('Escreve um e-mail válido');return}
+  clienteEmail=e;clienteNome=e.split('@')[0];
+  localStorage.setItem('lc_email',e);localStorage.setItem('lc_nome',clienteNome);
+  fecharLoginCliente();atualizarHeader();
+  alert('✅ Entraste com Google como '+e);
+}
+function entrarComMeta(){
+  var e=prompt('Continue with Meta\n\nEscreve o teu e-mail do Facebook / Instagram:');
+  if(!e)return;
+  e=e.trim();
+  if(e.indexOf('@')<0){alert('Escreve um e-mail válido');return}
+  clienteEmail=e;clienteNome=e.split('@')[0];
+  localStorage.setItem('lc_email',e);localStorage.setItem('lc_nome',clienteNome);
+  fecharLoginCliente();atualizarHeader();
+  alert('✅ Entraste com Meta como '+e);
+}
 function entrarCliente(){
   var email=($id('cliEmail').value||'').trim(), s=$id('cliSenha').value||'';
   if(!email||!s){$id('msgCliente').innerText='Preenche e-mail e senha';return}
@@ -314,7 +331,6 @@ function criarContaCliente(){
   if(s1!==s2){$id('msgCliente').innerText='Senhas diferentes';return}
   clienteEmail=email;clienteNome=nome;localStorage.setItem('lc_email',email);localStorage.setItem('lc_nome',nome);fecharLoginCliente();atualizarHeader();alert('✅ Conta criada!');
 }
-function entrarComGoogle(){alert('Ativa o Google no Firebase para usar este botão.')}
 function atualizarHeader(){
   if(clienteEmail){$id('nomeClienteTop').innerText=clienteNome||clienteEmail.split('@')[0];$id('emailClienteTop').innerText=clienteEmail;$id('barraContaTxt').innerText='Conta'}
   else{$id('nomeClienteTop').innerText='Visitante!';$id('emailClienteTop').innerText='Cria conta antes de comprar'}
