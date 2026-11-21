@@ -1,3 +1,4 @@
+
 :root{--fundo:#04566b;--fundo-escuro:#034556;--card:#176a7d;--campo:rgba(0,0,0,.22);--borda:rgba(255,255,255,.14);--destaque:#d4af37;--texto:#fff;--suave:#ffffff;--ok:#00ff88;--erro:#ff4444;--raio:20px}
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat',Arial,sans-serif}
 body{background:var(--fundo);color:#fff;padding-bottom:80px;overflow-x:hidden}
@@ -97,3 +98,18 @@ p:has(#linkLojaAdmin){display:none!important}
 #imgModal img{background:#fff!important;padding:12px;border-radius:14px;max-width:95vw;max-height:85vh;box-shadow:0 10px 40px rgba(0,0,0,.3)}
 #imgModal{background:#fff!important}
 #imgModal img{background:#fff!important;opacity:1!important;max-width:96vw;max-height:88vh;padding:10px}
+.corneta-loader{
+  font-size: 48px;
+  display: inline-block;
+  animation: girarCorneta 1s linear infinite;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+}
+@keyframes girarCorneta{
+  from{ transform: rotate(0deg); }
+  to{ transform: rotate(360deg); }
+}
+.carregando-box{
+  text-align: center;
+  padding: 15px;
+  color: #fff;
+}
