@@ -241,7 +241,7 @@ function entrarNovoLogin(){
   document.getElementById('loginErro').innerText='A entrar...';
   firebase.auth().signInWithEmailAndPassword(email,senha).then(function(){
     document.getElementById('novoLogin').classList.remove('mostrar');
-    window.location.href = window.location.pathname;
+    window.location.href = window.location.pathname + '?admin=1';
   }).catch(function(e){document.getElementById('loginErro').innerText='E-mail ou senha errada';});
 }
 mostrarLoginAdmin=function(){
