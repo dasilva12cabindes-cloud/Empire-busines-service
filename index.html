@@ -4,24 +4,63 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#034556">
-<title>EMPIRE  - Loja Oficial</title>
+<title>EMPIRE - Loja Oficial</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=8">
+<link rel="stylesheet" href="style.css?v=9">
+<style>
+#novoLogin{position:fixed;inset:0;background:#0f0f0f;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;font-family:sans-serif}
+#novoLogin.mostrar{display:flex}
+#novoLogin .card{background:#232323;width:100%;max-width:380px;padding:35px 28px 28px;border-radius:14px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+#novoLogin h2{color:#fff;font-size:30px;margin:0}
+#novoLogin p.sub{color:#888;font-size:13px;margin:8px 0 28px}
+#novoLogin label{display:block;text-align:left;color:#fff;font-size:13px;font-weight:700;margin:0 0 8px 8px}
+#novoLogin .campo{background:#3a3f47;border-radius:30px;display:flex;align-items:center;padding:11px 15px;margin-bottom:20px}
+#novoLogin .campo span{margin-right:8px}
+#novoLogin input{background:transparent;border:0;outline:0;color:#fff;width:100%;font-size:15px}
+#novoLogin input::placeholder{color:#999}
+#novoLogin .btnLogin{background:#00d26a;color:#fff;border:0;width:180px;padding:11px;border-radius:5px;font-size:16px;font-weight:700;margin:5px auto 18px;display:block;cursor:pointer}
+#novoLogin .criar{color:#777;font-size:13px}
+#novoLogin .criar b{color:#2b6cb0;cursor:pointer}
+#novoLogin .faixa{position:fixed;left:0;right:0;bottom:0;height:70px;background:#e65a4a}
+/* SINO + STOCK + PEDIDOS */
+#sinoBtn{position:relative}
+#sinoCount{position:absolute;top:-6px;right:-6px;background:#ff4444;color:#fff;font-size:11px;min-width:18px;height:18px;border-radius:50%;display:none;align-items:center;justify-content:center;padding:0 4px}
+.stock-baixo{background:#ff4444!important;color:#fff!important}
+.stock-aviso{background:#ffaa00!important;color:#000!important}
+.stock-ok{background:#00d26a!important;color:#fff!important}
+.pedido-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:12px;margin:10px 0}
+.badge-notif{background:#ff4444;color:#fff;font-size:11px;padding:2px 8px;border-radius:20px}
+#menuLateral{position:fixed;top:0;left:-280px;width:260px;height:100%;background:#0a2a33;z-index:100000;transition:.3s;padding:20px;box-shadow:5px 0 20px rgba(0,0,0,.5)}
+#menuLateral.aberto{left:0}
+#menuLateral button{width:100%;text-align:left;background:rgba(255,255,255,.08);border:0;color:#fff;padding:12px;border-radius:10px;margin:6px 0;cursor:pointer;font-size:14px}
+#overlayMenu{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99999;display:none}
+#overlayMenu.mostrar{display:block}
+</style>
 </head>
 <body>
-  <div id="telaCarregamento">
-  <div class="barras-loader"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-  <p>A carregar...</p>
-</div>
+<div id="telaCarregamento"><div class="barras-loader"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><p>A carregar...</p></div>
 <div id="debugBox" style="display:none;background:#ff4444;color:#fff;padding:10px;margin:10px;border-radius:10px"></div>
+
+<!-- MENU 3 BARRAS -->
+<div id="overlayMenu" onclick="fecharMenuLateral()"></div>
+<div id="menuLateral">
+  <h3 style="color:#fff">☰ Menu</h3>
+  <button onclick="fecharMenuLateral();mostrarLoja()">🏠 Loja</button>
+  <button onclick="fecharMenuLateral();verCarrinho()">🛒 Carrinho</button>
+  <button onclick="fecharMenuLateral();abrirLoginCliente()">👤 Minha Conta</button>
+  <button onclick="fecharMenuLateral();abrirMeusPedidos()">📦 Meus Pedidos <span id="badgePedidosMenu" class="badge-notif" style="display:none">0</span></button>
+  <button onclick="fecharMenuLateral();abrirLoginCliente()">🔔 Notificações <span id="badgeNotifMenu" class="badge-notif" style="display:none">0</span></button>
+  <button onclick="fecharMenuLateral();mostrarLoja()" style="background:#333">← Fechar</button>
+</div>
 
 <div id="areaLoja">
   <div class="topo">
-    <button class="iconBtn" onclick="mostrarLoja()">☰</button>
+    <button class="iconBtn" onclick="abrirMenuLateral()">☰</button>
     <div class="logo" id="logoTexto" onclick="mostrarLoja()">Processando<span>....🤳</span></div>
     <div style="flex:1"></div>
+    <button class="iconBtn" id="sinoBtn" onclick="abrirMeusPedidos()">🔔 <span id="sinoCount">0</span></button>
     <button class="iconBtn" onclick="document.getElementById('pesquisa').focus()">🔍</button>
     <button class="iconBtn" id="cart" onclick="verCarrinho()">🛒 <span id="cartCount">0</span></button>
   </div>
@@ -34,6 +73,7 @@
     <p id="avisoCliente" class="small" style="display:none;color:#00ff88"> Estás ligado! Podes comprar.</p>
     <div id="areaLogado" style="display:none;align-items:center;gap:8px;color:#00ff7f;font-weight:700;margin-top:6px"><span class="luz-verde"></span> ✅ Estás ligado! Podes comprar.</div>
     <div id="areaClienteHeader" style="margin-top:10px"></div>
+    <div id="alertaStockAdmin" style="display:none;background:#ff4444;color:#fff;padding:10px;border-radius:10px;margin-top:10px;font-size:13px;font-weight:700"></div>
   </div>
 
   <div class="pesquisaBox">
@@ -92,9 +132,12 @@
 <div id="adminPanel" style="display:none;padding:15px">
   <div style="display:flex;justify-content:space-between;align-items:center"><h2>⚙️ Painel Admin</h2><button class="btnSair" onclick="logout()">Sair</button></div>
   <p class="small">Link da loja: <span id="linkLojaAdmin"></span></p>
+  <div id="alertaStockPainel" style="display:none;background:#ff4444;color:#fff;padding:12px;border-radius:10px;margin:10px 0;font-weight:700"></div>
+  <div id="alertaNovoPedido" style="display:none;background:#00d26a;color:#fff;padding:12px;border-radius:10px;margin:10px 0;font-weight:700"></div>
   <div class="filtros">
     <button id="tabProd" class="ativo" onclick="mostrarAba('prod')">📦 Produtos</button>
     <button id="tabPed" onclick="mostrarAba('ped')">🧾 Pedidos (<span id="pedCount">0</span>)</button>
+    <button id="tabStock" onclick="mostrarAba('stock')">📦 Stock</button>
     <button id="tabRel" onclick="mostrarAba('rel')">📊 Relatório</button>
     <button id="tabLoja" onclick="mostrarAba('loja')">🏪 Loja</button>
     <button id="tabPag" onclick="mostrarAba('pag')">💳 Pagamentos</button>
@@ -107,6 +150,10 @@
     <input id="preco" type="number" placeholder="Preço em Kz">
     <input id="desc" placeholder="Descrição">
     <select id="categoria"><option value="perfume">Perfume</option><option value="tenis">Ténis</option><option value="roupa">Roupa</option><option value="relogio">Relógio</option><option value="acessorio">Acessório</option><option value="outro">Outro</option></select>
+    <h4 style="margin:12px 0 6px">📦 STOCK</h4>
+    <input id="estoque" type="number" placeholder="Stock Atual - ex: 20">
+    <input id="estoqueMin" type="number" placeholder="Stock Mínimo - ex: 5 (alerta quando chegar aqui)">
+    <input id="estoqueMax" type="number" placeholder="Stock Máximo - ex: 100">
     <label style="display:flex;gap:8px;align-items:center;margin:8px 0"><input type="checkbox" id="chkDestaque"> ⭐ Colocar em Destaque</label>
     <input type="file" accept="image/*" multiple onchange="lerFotos(event)">
     <div id="previewFotos" style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0"></div>
@@ -116,7 +163,13 @@
     <div id="produtosAdmin"></div>
   </div>
 
-  <div id="abaPed" style="display:none"><h3>Pedidos</h3><div id="listaPedidos"></div></div>
+  <div id="abaStock" style="display:none">
+    <h3>📦 Controlo de Stock</h3>
+    <p class="small">🟢 Bom &nbsp; 🟡 Perto do mínimo &nbsp; 🔴 Stock Baixo &nbsp; ⚫ Esgotado</p>
+    <div id="listaStockAdmin"></div>
+  </div>
+
+  <div id="abaPed" style="display:none"><h3>Pedidos</h3><p class="small">Aceite = cliente recebe sino + som. Recusado = cliente também recebe. Pedido aceite sem pagamento some para o cliente após 24h, mas fica aqui para ti até apagares.</p><div id="listaPedidos"></div></div>
 
   <div id="abaRel" style="display:none">
     <h3>📊 Relatório</h3>
@@ -167,6 +220,11 @@
   </div>
 </div>
 
+<!-- MEUS PEDIDOS - CLIENTE -->
+<div id="meusPedidosModal" class="modal">
+  <div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>📦 Meus Pedidos</h3><button onclick="fecharMeusPedidos()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p class="small">Aqui vês se o teu pedido foi aceite ou recusado.</p><div id="listaMeusPedidos"></div></div>
+</div>
+
 <div id="cartModal" class="modal">
   <div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>🛒 Carrinho</h3><button onclick="fecharCarrinho()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><div id="cartItems"></div><h3 id="cartTotal">Total: 0 Kz</h3><button class="btn" onclick="abrirPagamento()">💳 PAGAR</button></div>
 </div>
@@ -186,31 +244,10 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="script.js?v=6"></script>
-<script src="menu.js?v=6"></script>
-<script>
-if(location.search.includes('admin=1')){
-  setTimeout(function(){
-    if(typeof mostrarLoginAdmin==='function') mostrarLoginAdmin();
-  }, 1200);
-}
-</script>
-<style>
-#novoLogin{position:fixed;inset:0;background:#0f0f0f;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;font-family:sans-serif}
-#novoLogin.mostrar{display:flex}
-#novoLogin .card{background:#232323;width:100%;max-width:380px;padding:35px 28px 28px;border-radius:14px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6)}
-#novoLogin h2{color:#fff;font-size:30px;margin:0}
-#novoLogin p.sub{color:#888;font-size:13px;margin:8px 0 28px}
-#novoLogin label{display:block;text-align:left;color:#fff;font-size:13px;font-weight:700;margin:0 0 8px 8px}
-#novoLogin .campo{background:#3a3f47;border-radius:30px;display:flex;align-items:center;padding:11px 15px;margin-bottom:20px}
-#novoLogin .campo span{margin-right:8px}
-#novoLogin input{background:transparent;border:0;outline:0;color:#fff;width:100%;font-size:15px}
-#novoLogin input::placeholder{color:#999}
-#novoLogin .btnLogin{background:#00d26a;color:#fff;border:0;width:180px;padding:11px;border-radius:5px;font-size:16px;font-weight:700;margin:5px auto 18px;display:block}
-#novoLogin .criar{color:#777;font-size:13px}
-#novoLogin .criar b{color:#2b6cb0}
-#novoLogin .faixa{position:fixed;left:0;right:0;bottom:0;height:70px;background:#e65a4a}
-</style>
+<script src="script.js?v=9"></script>
+<script src="menu.js?v=9"></script>
+
+<!-- LOGIN ADMIN NOVO -->
 <div id="novoLogin">
   <div class="card">
     <h2>Bem-vindo de Volta</h2>
@@ -218,42 +255,162 @@ if(location.search.includes('admin=1')){
     <label>E-mail</label>
     <div class="campo"><span>📧</span><input id="loginEmail" type="email" placeholder="Teu e-mail"></div>
     <label>Palavra-passe</label>
-    <div class="campo"><span>🔒</span><input id="loginSenha" type="password" placeholder="Tua palavra-passe"><span id="olhoSenha" onclick="var i=document.getElementById('loginSenha'); if(i.type==='password'){i.type='text'; this.innerText='🙈';} else {i.type='password'; this.innerText='👁️';}" style="cursor:pointer;margin-left:8px">👁️</span></div>
+    <div class="campo"><span>🔒</span><input id="loginSenha" type="password" placeholder="Tua palavra-passe"><span onclick="var i=document.getElementById('loginSenha'); if(i.type==='password'){i.type='text'; this.innerText='🙈';} else {i.type='password'; this.innerText='👁️';}" style="cursor:pointer;margin-left:8px">👁️</span></div>
     <button class="btnLogin" onclick="entrarNovoLogin()">ENTRAR</button>
     <div class="criar">Não tens conta? <b onclick="document.getElementById('novoLogin').classList.remove('mostrar')">Criar conta</b></div>
     <p id="loginErro" style="color:#ff6b6b;font-size:13px;margin-top:10px"></p>
   </div>
   <div class="faixa"></div>
 </div>
-    <label>Password</label>
-    <div class="campo"><span></span><input id="loginSenha" type="password" placeholder="Password"></div>
-    <button class="btnLogin" onclick="entrarNovoLogin()">Login</button>
-    <div class="criar">Don't have an account ? <b onclick="document.getElementById('novoLogin').classList.remove('mostrar')">Create an account</b></div>
-    <p id="loginErro" style="color:#ff6b6b;font-size:13px;margin-top:10px"></p>
-  </div>
-  <div class="faixa"></div>
-</div>
+
 <script>
+// ===== CORREÇÕES + STOCK + NOTIFICAÇÕES =====
+try{ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL); }catch(e){}
+function linkLimpo(){ return window.location.origin + window.location.pathname; }
+function copiarLinkLoja(){ var l=linkLimpo(); if(navigator.clipboard) navigator.clipboard.writeText(l); var el=document.getElementById('linkLojaTexto'); if(el) el.innerText=l; alert('Link copiado: '+l); }
+function partilharWhatsAppLoja(){ var l=linkLimpo(); window.open('https://wa.me/?text='+encodeURIComponent('Visita a minha loja EMPIRE: '+l),'_blank'); }
+function abrirMenuLateral(){ document.getElementById('menuLateral').classList.add('aberto'); document.getElementById('overlayMenu').classList.add('mostrar'); }
+function fecharMenuLateral(){ document.getElementById('menuLateral').classList.remove('aberto'); document.getElementById('overlayMenu').classList.remove('mostrar'); }
+function tocarSomNotif(){ try{ var a=new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg'); a.play(); }catch(e){} }
+// --- LOGIN ADMIN SEM CAIR ---
 function entrarNovoLogin(){
   var email=document.getElementById('loginEmail').value.trim();
   var senha=document.getElementById('loginSenha').value;
   if(!email||!senha){document.getElementById('loginErro').innerText='Preenche e-mail e senha';return;}
   document.getElementById('loginErro').innerText='A entrar...';
-  firebase.auth().signInWithEmailAndPassword(email,senha).then(function(){
+  firebase.auth().signInWithEmailAndPassword(email,senha).then(function(cred){
+    // Grava lastSeen para o Admin não dizer "Nunca entrou"
+    try{ firebase.firestore().collection('users').doc(cred.user.uid).set({lastSeen:firebase.firestore.FieldValue.serverTimestamp(), online:true, email:email},{merge:true}); }catch(e){}
     document.getElementById('novoLogin').classList.remove('mostrar');
     window.location.href = window.location.pathname + '?admin=1';
   }).catch(function(e){document.getElementById('loginErro').innerText='E-mail ou senha errada';});
 }
 mostrarLoginAdmin=function(){
-  var user = firebase.auth().currentUser;
-  if(user){
-    document.getElementById('novoLogin').classList.remove('mostrar');
-    if(typeof mostrarAdmin==='function') mostrarAdmin();
-    else if(document.getElementById('adminPanel')) document.getElementById('adminPanel').style.display='block';
-    return;
-  }
-  document.getElementById('novoLogin').classList.add('mostrar');
+  firebase.auth().onAuthStateChanged(function(user){
+    if(user){
+      try{ firebase.firestore().collection('users').doc(user.uid).set({lastSeen:firebase.firestore.FieldValue.serverTimestamp(), online:true, email:user.email},{merge:true}); }catch(e){}
+      document.getElementById('novoLogin').classList.remove('mostrar');
+      if(typeof mostrarAdmin==='function') mostrarAdmin();
+      else if(document.getElementById('adminPanel')) document.getElementById('adminPanel').style.display='block';
+      iniciarListenerAdmin();
+    } else {
+      document.getElementById('novoLogin').classList.add('mostrar');
+    }
+  });
 };
-</script>
-</body>
-</html>
+if(location.search.includes('admin=1')){ setTimeout(function(){ if(typeof mostrarLoginAdmin==='function') mostrarLoginAdmin(); }, 800); }
+// Ignora ?user= / ?uid= partilhado - link universal
+if(location.search.includes('user=')||location.search.includes('uid=')){ window.location.href = window.location.pathname; }
+
+// --- STOCK ---
+function statusStock(p){
+  var atual=Number(p.estoque||p.stock||0), min=Number(p.estoqueMin||p.stockMin||5), max=Number(p.estoqueMax||p.stockMax||100);
+  if(atual<=0) return {txt:'⚫ ESGOTADO', cls:'stock-baixo'};
+  if(atual<=min) return {txt:'🔴 STOCK BAIXO', cls:'stock-baixo'};
+  if(atual<=min+3) return {txt:'🟡 ATENÇÃO', cls:'stock-aviso'};
+  return {txt:'🟢 BOM', cls:'stock-ok'};
+}
+function atualizarListaStock(){
+  var box=document.getElementById('listaStockAdmin'); if(!box||!window.produtosCache) return;
+  var baixos=window.produtosCache.filter(function(p){ return Number(p.estoque||p.stock||0) <= Number(p.estoqueMin||5); });
+  var alerta=document.getElementById('alertaStockPainel');
+  if(baixos.length>0 && alerta){ alerta.style.display='block'; alerta.innerText='🔔 '+baixos.length+' produto(s) com STOCK BAIXO: '+baixos.map(function(p){return p.nome}).join(', '); }
+  else if(alerta) alerta.style.display='none';
+  var top=document.getElementById('alertaStockAdmin');
+  if(baixos.length>0 && top && document.getElementById('adminPanel').style.display!=='none'){ top.style.display='block'; top.innerText='🔔 '+baixos.length+' produto(s) com stock baixo! Vai a Stock.'; }
+  box.innerHTML = window.produtosCache.map(function(p){
+    var s=statusStock(p); var atual=Number(p.estoque||p.stock||0);
+    return '<div class="pedido-card"><b>'+p.nome+'</b><br>Stock: <b>'+atual+'</b> | Mín: '+(p.estoqueMin||5)+' | Máx: '+(p.estoqueMax||100)+' <span style="padding:2px 8px;border-radius:20px" class="'+s.cls+'">'+s.txt+'</span><br><button class="btn" style="margin-top:8px" onclick="editarStock(\''+p.id+'\')">✏️ EDITAR STOCK</button></div>';
+  }).join('') || '<p>Nenhum produto.</p>';
+}
+function editarStock(id){
+  var p=(window.produtosCache||[]).find(function(x){return x.id===id}); if(!p) return;
+  var novo=prompt('Stock atual de '+p.nome, p.estoque||p.stock||0); if(novo===null) return;
+  var min=prompt('Stock MÍNIMO', p.estoqueMin||5); if(min===null) return;
+  var max=prompt('Stock MÁXIMO', p.estoqueMax||100); if(max===null) return;
+  firebase.firestore().collection('produtos').doc(id).update({estoque:Number(novo), estoqueMin:Number(min), estoqueMax:Number(max)}).then(function(){ alert('Stock atualizado!'); });
+}
+// Guarda stock quando salvar produto - intercepta salvarProduto se existir
+var _salvarOriginal = window.salvarProduto;
+window.salvarProduto = function(){
+  var est=document.getElementById('estoque'); if(est) window._novoEstoque={estoque:Number(est.value||0), estoqueMin:Number(document.getElementById('estoqueMin').value||5), estoqueMax:Number(document.getElementById('estoqueMax').value||100)};
+  if(_salvarOriginal) return _salvarOriginal.apply(this, arguments);
+};
+
+// --- PEDIDOS + NOTIFICAÇÕES ---
+var _ultimosPedidosCliente = {};
+function abrirMeusPedidos(){
+  var user=firebase.auth().currentUser;
+  if(!user){ if(typeof abrirLoginCliente==='function') abrirLoginCliente(); else alert('Cria conta / entra para veres os teus pedidos.'); return; }
+  var m=document.getElementById('meusPedidosModal'); if(m) m.style.display='flex';
+  carregarMeusPedidos(user);
+  marcarNotifsLidas(user.uid);
+}
+function fecharMeusPedidos(){ var m=document.getElementById('meusPedidosModal'); if(m) m.style.display='none'; }
+function carregarMeusPedidos(user){
+  var box=document.getElementById('listaMeusPedidos'); if(!box) return; box.innerHTML='A carregar...';
+  firebase.firestore().collection('pedidos').where('email','==',user.email).orderBy('criadoEm','desc').get().then(function(snap){
+    if(snap.empty){ box.innerHTML='<p>Ainda não tens pedidos.</p>'; return; }
+    var agora=Date.now(); var html='';
+    snap.forEach(function(doc){
+      var p=doc.data(); var id=doc.id;
+      // Regra 24h: aceite + não pago + >24h => esconde SÓ para o cliente
+      var criado=p.criadoEm && p.criadoEm.toMillis ? p.criadoEm.toMillis() : (p.criadoEm||agora);
+      if((p.status==='aceito'||p.status==='aceite') && !p.pago && (agora-criado > 24*60*60*1000)){ return; }
+      var statusTxt = p.status==='aceito'||p.status==='aceite' ? '✅ PEDIDO ACEITE' : (p.status==='recusado' ? '❌ PEDIDO RECUSADO' : '🟡 À ESPERA DE APROVAÇÃO');
+      var whatsNum = (document.getElementById('cfgWhats') && document.getElementById('cfgWhats').value) || '';
+      html += '<div class="pedido-card"><b>Pedido #'+id.slice(-6).toUpperCase()+'</b> <span class="badge-notif">'+statusTxt+'</span><br><span style="font-size:12px">'+(p.itens||p.resumo||'')+'</span><br><b>Total: '+(p.total||0)+' Kz</b><br><button class="btn" style="background:#25D366;color:#000;margin-top:8px" onclick="avisarWhatsApp(\''+id+'\')">📱 Avisar no WhatsApp que já fiz o pedido</button></div>';
+    });
+    box.innerHTML = html || '<p>Nenhum pedido visível. Pedidos aceites sem pagamento após 24h são removidos da tua vista.</p>';
+  }).catch(function(){ box.innerHTML='<p>Não foi possível carregar. Tenta de novo.</p>'; });
+}
+function avisarWhatsApp(id){
+  var num = (document.getElementById('cfgWhats') && document.getElementById('cfgWhats').value) || '244900000000';
+  var msg='Olá Empire Business, fiz o pedido nº '+id.slice(-6).toUpperCase()+' e estou à espera de aprovação. Podes confirmar?';
+  window.open('https://wa.me/'+num.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+}
+function marcarNotifsLidas(uid){
+  firebase.firestore().collection('notificacoes').where('paraUid','==',uid).where('lida','==',false).get().then(function(s){ s.forEach(function(d){ d.ref.update({lida:true}); }); });
+  var b=document.getElementById('sinoCount'); if(b){ b.style.display='none'; b.innerText='0'; }
+  var b2=document.getElementById('badgePedidosMenu'); if(b2) b2.style.display='none';
+}
+// Listener cliente: sino + som quando admin aceita/recusa
+firebase.auth().onAuthStateChanged(function(user){
+  if(!user) return;
+  try{
+    firebase.firestore().collection('notificacoes').where('paraUid','==',user.uid).where('lida','==',false).onSnapshot(function(snap){
+      var n=snap.size; var b=document.getElementById('sinoCount');
+      if(b){ b.innerText=n; b.style.display = n>0 ? 'flex':'none'; }
+      var b2=document.getElementById('badgePedidosMenu'); if(b2){ b2.innerText=n; b2.style.display = n>0 ? 'inline-block':'none'; }
+      snap.docChanges().forEach(function(ch){
+        if(ch.type==='added' && !_ultimosPedidosCliente[ch.doc.id]){ tocarSomNotif(); _ultimosPedidosCliente[ch.doc.id]=1; }
+      });
+    });
+    // Atualiza lastSeen sempre que entra
+    firebase.firestore().collection('users').doc(user.uid).set({lastSeen:firebase.firestore.FieldValue.serverTimestamp(), online:true, email:user.email},{merge:true});
+  }catch(e){}
+});
+// Listener admin: novo pedido
+var _adminListenerOn=false;
+function iniciarListenerAdmin(){
+  if(_adminListenerOn) return; _adminListenerOn=true;
+  try{
+    firebase.firestore().collection('pedidos').where('status','==','pendente').onSnapshot(function(snap){
+      snap.docChanges().forEach(function(ch){
+        if(ch.type==='added'){
+          var box=document.getElementById('alertaNovoPedido');
+          if(box){ box.style.display='block'; box.innerText='🔔 NOVO PEDIDO! '+ (ch.doc.data().nome||ch.doc.data().email||'Cliente') +' - Vai a Pedidos para aceitar/recusar.'; tocarSomNotif(); }
+        }
+      });
+    });
+  }catch(e){}
+}
+// Funções que o Admin usa para aceitar/recusar - chama estas no teu script.js se já tens botões, ou usa no painel
+function aceitarPedidoAdmin(id, emailCliente, uidCliente){
+  firebase.firestore().collection('pedidos').doc(id).update({status:'aceito', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
+    return firebase.firestore().collection('notificacoes').add({paraUid:uidCliente||'', paraEmail:emailCliente||'', pedidoId:id, tipo:'aceito', titulo:'Pedido Aceite ✅', lida:false, criadoEm:firebase.firestore.FieldValue.serverTimestamp()});
+  }).then(function(){ alert('Pedido aceite! Cliente já recebeu sino + som.'); });
+}
+function recusarPedidoAdmin(id, emailCliente, uidCliente){
+  firebase.firestore().collection('pedidos').doc(id).update({status:'recusado', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
+    return firebase.firestore().collection('notificacoes').add({paraUid:uidCliente||'', paraEmail:emailCliente||'', pedidoId:id, tipo:'recusado', titulo:'Pedido Recus
