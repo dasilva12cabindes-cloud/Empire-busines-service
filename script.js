@@ -193,9 +193,9 @@ function gerarRelatorioMensal(){
 function atualizarSaudacaoELuz(){
   var hora = new Date().getHours();
   var saud = "Boa noite,";
-  if(hora >= 5 && hora < 12) saud = "Bom dia,";
+  if(hora >= 0 && hora < 12) saud = "Bom dia,";
   else if(hora >= 12 && hora < 18) saud = "Boa tarde,";
-  else if(hora >= 18 && hora < 23) saud = "Boa noite,";
+  else saud = "Boa noite,";
 
   var txt = document.getElementById('textoSaudacao');
   if(txt) txt.innerText = saud;
