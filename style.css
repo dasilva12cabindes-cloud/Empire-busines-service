@@ -1,4 +1,4 @@
-:root{--fundo:#04566b;--fundo-escuro:#034556;--card:#176a7d;--campo:rgba(0,0,0,.22);--borda:rgba(255,255,255,.14);--destaque:#d4af37;--texto:#fff;--suave:#ffffff;--ok:#00ff88;--erro:#ff4444;--raio:20px}
+:root{--fundo:#0a2a33;--fundo-escuro:#0a2a33;--card:#14383d;--campo:rgba(0,0,0,.22);--borda:rgba(255,255,255,.14);--destaque:#d4af37;--texto:#fff;--suave:#ffffff;--ok:#00ff88;--erro:#ff4444;--raio:20px}
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat',Arial,sans-serif}
 body{background:var(--fundo);color:#fff;padding-bottom:80px;overflow-x:hidden}
 .luz-verde{width:12px;height:12px;background:#0f0;border-radius:50%;display:inline-block;box-shadow:0 0 12px #0f0;animation:piscar 1s infinite}
@@ -64,7 +64,7 @@ input[type=checkbox]{width:auto}
 .qtdBtn.mais{background:var(--ok);color:#000}
 .qtdNum{font-weight:800;min-width:18px;text-align:center;color:#fff}
 .pedidoCard,.relItem{background:var(--card);border:1px solid var(--borda);border-radius:14px;padding:12px;margin:8px 0;display:flex;gap:10px}
-.pedidoCard{display:block;padding:16px;background:#176a7d!important}
+.pedidoCard{display:block;padding:16px;background:#14383d!important}
 .pedidoCard b{font-size:16px;color:#fff!important}
 .pedidoCard p{color:#fff!important;font-weight:600}
 .pedidoCard .btn{padding:14px;font-size:15px}
@@ -87,87 +87,23 @@ input[type=checkbox]{width:auto}
 #emailClienteTop{display:none!important}
 p:has(#linkLojaTexto){display:none!important}
 p:has(#linkLojaAdmin){display:none!important}
-/* MATA OVERLAY PRESO */
 #menuFundo{opacity:0!important;pointer-events:none!important}
 #menuLateral.aberto #menuFundo{opacity:1!important;pointer-events:auto!important}
 #caixaFundo{display:none!important}
 #caixaFundo[style*="flex"]{display:flex!important}
-#imgModal{background:rgba(0,0,0,.9)}
-#imgModal{background:rgba(255,255,255,.95)!important}
-#imgModal img{background:#fff!important;padding:12px;border-radius:14px;max-width:95vw;max-height:85vh;box-shadow:0 10px 40px rgba(0,0,0,.3)}
 #imgModal{background:#fff!important}
-#imgModal img{background:#fff!important;opacity:1!important;max-width:96vw;max-height:88vh;padding:10px}
-.corneta-loader{
-  font-size: 48px;
-  display: inline-block;
-  animation: girarCorneta 1s linear infinite;
-  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
-}
-@keyframes girarCorneta{
-  from{ transform: rotate(0deg); }
-  to{ transform: rotate(360deg); }
-}
-.carregando-box{
-  text-align: center;
-  padding: 15px;
-  color: #fff;
-}
-.corneta-loader{
-  font-size: 48px;
-  display: inline-block;
-  animation: girarCorneta 1s linear infinite;
-}
-@keyframes girarCorneta{
-  from{ transform: rotate(0deg); }
-  to{ transform: rotate(360deg); }
-}
-#telaCarregamento{
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.45);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-#telaCarregamento p{
-  color: #fff;
-  font-size: 14px;
-  margin-top: 12px;
-}
-/* PAUS IGUAIS A BANAR COMO BANDEIRA */
-.barras-loader{
-  display: flex;
-  gap: 5px;
-  align-items: center;
-  justify-content: center;
-  height: 40px;
-}
-.barras-loader span{
-  width: 7px;
-  height: 35px;
-  background: #ffb703;
-  border-radius: 3px;
-  display: block;
-  animation: banarBandeira 1s infinite;
-}
-.barras-loader span:nth-child(1){ animation-delay: 0s; }
-.barras-loader span:nth-child(2){ animation-delay: 0.1s; }
-.barras-loader span:nth-child(3){ animation-delay: 0.2s; }
-.barras-loader span:nth-child(4){ animation-delay: 0.3s; }
-.barras-loader span:nth-child(5){ animation-delay: 0.4s; }
-.barras-loader span:nth-child(6){ animation-delay: 0.5s; }
-.barras-loader span:nth-child(7){ animation-delay: 0.6s; }
-
-@keyframes banarBandeira{
-  0%{ transform: translateY(0); }
-  25%{ transform: translateY(-10px); }
-  50%{ transform: translateY(0); }
-  75%{ transform: translateY(8px); }
-  100%{ transform: translateY(0); }
-}
-/* ===== CORREÇÃO: TIRA A BARRA VERMELHA DO LOGIN ===== */
+#imgModal img{background:#fff!important;padding:12px;border-radius:14px;max-width:95vw;max-height:85vh;box-shadow:0 10px 40px rgba(0,0,0,.3);opacity:1!important}
+#telaCarregamento{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.45);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
+#telaCarregamento p{color:#fff;font-size:14px;margin-top:12px}
+.barras-loader{display:flex;gap:5px;align-items:center;justify-content:center;height:40px}
+.barras-loader span{width:7px;height:35px;background:#ffb703;border-radius:3px;display:block;animation:banarBandeira 1s infinite}
+.barras-loader span:nth-child(1){animation-delay:0s}
+.barras-loader span:nth-child(2){animation-delay:.1s}
+.barras-loader span:nth-child(3){animation-delay:.2s}
+.barras-loader span:nth-child(4){animation-delay:.3s}
+.barras-loader span:nth-child(5){animation-delay:.4s}
+.barras-loader span:nth-child(6){animation-delay:.5s}
+.barras-loader span:nth-child(7){animation-delay:.6s}
+@keyframes banarBandeira{0%{transform:translateY(0)}25%{transform:translateY(-10px)}50%{transform:translateY(0)}75%{transform:translateY(8px)}100%{transform:translateY(0)}}
 #novoLogin .faixa{display:none!important}
 .faixa{display:none!important}
