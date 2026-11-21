@@ -8,10 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <div id="debugBox" style="display:none;background:#ff4444;color:#fff;padding:10px;margin:10px;border-radius:10px"></div>
+
 <div id="areaLoja">
   <div class="topo">
     <button class="iconBtn" onclick="mostrarLoja()">☰</button>
@@ -21,18 +23,22 @@
     <button class="iconBtn" id="cart" onclick="verCarrinho()">🛒 <span id="cartCount">0</span></button>
   </div>
   <div style="display:none"><span id="logoSlogan"></span><span id="logoImgBox"></span><img id="bannerImg" style="display:none"><span id="cartCountTop">0</span></div>
+
   <div class="saudacao">
     <h1><span id="textoSaudacao">Boa noite,</span><br><span id="nomeClienteTop">Visitante!</span></h1>
-    <p id="emailClienteTop">Cria conta antes de comprar</p>
+    <p id="emailClienteTop">Cria conta antes de comprar 👑</p>
     <p id="avisoVisitante" class="small">Podes visitar à vontade.</p>
+    <p id="avisoCliente" class="small" style="display:none;color:#00ff88"> Estás ligado! Podes comprar.</p>
     <div id="areaLogado" style="display:none;align-items:center;gap:8px;color:#00ff7f;font-weight:700;margin-top:6px"><span class="luz-verde"></span> ✅ Estás ligado! Podes comprar.</div>
     <div id="areaClienteHeader" style="margin-top:10px"></div>
   </div>
+
   <div class="pesquisaBox">
     <span>🔍</span>
     <input id="pesquisa" placeholder="Pesquisa produto... ex: Perfume, Ténis" oninput="filtrar()">
     <span onclick="filtrar()" style="cursor:pointer">➤</span>
   </div>
+
   <div class="acoes filtros">
     <button class="ativo" onclick="setFiltro('todos',this)">🏠 Todos</button>
     <button onclick="setFiltro('perfume',this)">🌸 Perfumes</button>
@@ -41,18 +47,21 @@
     <button onclick="setFiltro('relogio',this)">⌚ Relógios</button>
     <button onclick="setFiltro('acessorio',this)">💍 Acessórios</button>
   </div>
+
   <div class="secao" id="areaDestaque">
     <div class="secaoTop"><b>⭐ Produtos em Destaque</b><a href="#" onclick="setFiltro('todos',document.querySelector('.filtros button'));return false">Ver tudo</a></div>
     <div id="produtosDestaque"></div>
   </div>
+
   <div class="secao">
     <div class="secaoTop"><b>🛍️ Todos os Produtos</b><span id="qtdMostra" style="color:#b9d6dd;font-size:12px"></span></div>
     <div id="produtos"></div>
     <p id="status" style="color:#b9d6dd;font-size:12px;margin-top:10px;text-align:center">A carregar...</p>
     <p style="display:none"><span id="statProd">0</span></p>
   </div>
+
   <div class="secao">
-    <div class="secaoTop"><b>Sobre Nós</b></div>
+    <div class="secaoTop"><b>👑 Sobre a EMPIRE</b></div>
     <h3 id="sobreTitulo" style="font-size:14px"></h3>
     <p id="bannerTitulo" style="display:none"></p><p id="bannerSub" style="display:none"></p>
     <p id="sobreTexto" style="color:#d6e8ec;font-size:13px;line-height:1.5;margin-top:6px"></p>
@@ -66,6 +75,7 @@
     <button class="btn" style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.14);color:#fff" onclick="btnAdminClick()">⚙️ Admin</button>
   </div>
 </div>
+
 <div id="loginBox" style="display:none;padding:20px">
   <h2>🔐 Entrar - Admin</h2>
   <p class="small">Só o dono da loja entra aqui.</p>
@@ -76,6 +86,7 @@
   <button class="btn" style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.14);color:#fff" onclick="esqueciSenhaAdmin()">Esqueci a senha</button>
   <button class="btn" style="background:#333;color:#fff" onclick="mostrarLoja()">← Voltar para Loja</button>
 </div>
+
 <div id="adminPanel" style="display:none;padding:15px">
   <div style="display:flex;justify-content:space-between;align-items:center"><h2>⚙️ Painel Admin</h2><button class="btnSair" onclick="logout()">Sair</button></div>
   <p class="small">Link da loja: <span id="linkLojaAdmin"></span></p>
@@ -87,11 +98,11 @@
     <button id="tabPag" onclick="mostrarAba('pag')">💳 Pagamentos</button>
     <button id="tabCli" onclick="mostrarAba('cli')">👥 Clientes (<span id="cliCount">0</span>)</button>
   </div>
+
   <div id="abaProd">
     <h3 id="adminTitle">Adicionar Produto</h3>
     <input id="nome" placeholder="Nome do produto - ex: Relógio Casio">
     <input id="preco" type="number" placeholder="Preço em Kz">
-    <input id="stock" type="number" placeholder="Quantidade em stock">
     <input id="desc" placeholder="Descrição">
     <select id="categoria"><option value="perfume">Perfume</option><option value="tenis">Ténis</option><option value="roupa">Roupa</option><option value="relogio">Relógio</option><option value="acessorio">Acessório</option><option value="outro">Outro</option></select>
     <label style="display:flex;gap:8px;align-items:center;margin:8px 0"><input type="checkbox" id="chkDestaque"> ⭐ Colocar em Destaque</label>
@@ -102,7 +113,9 @@
     <button class="btn" id="btnCancelar" style="display:none;background:#333;color:#fff" onclick="cancelarEdicao()">Cancelar Edição</button>
     <div id="produtosAdmin"></div>
   </div>
+
   <div id="abaPed" style="display:none"><h3>Pedidos</h3><div id="listaPedidos"></div></div>
+
   <div id="abaRel" style="display:none">
     <h3>📊 Relatório</h3>
     <button class="btn" onclick="gerarRelatorioMensal()">🖨️ GERAR RELATÓRIO DO MÊS EM PAPEL</button>
@@ -113,6 +126,7 @@
     <h4>Vendas do dia</h4><div id="listaRel"></div>
     <h4>Mais vendidos</h4><div id="listaTop"></div>
   </div>
+
   <div id="abaLoja" style="display:none">
     <h3>🏪 Personalizar Loja</h3>
     <input id="cfgNomeLoja" placeholder="Nome da loja"><input id="cfgSloganLoja" placeholder="Slogan"><input id="cfgBannerTitulo" placeholder="Título do banner"><input id="cfgBannerSub" placeholder="Subtítulo"><input id="cfgSobreTitulo" placeholder="Título Sobre"><textarea id="cfgSobreTexto" placeholder="Texto Sobre"></textarea><input id="cfgVisao" placeholder="Visão"><input id="cfgMissao" placeholder="Missão"><input id="cfgSobreExtra" placeholder="Info extra"><input id="cfgFooter" placeholder="Rodapé">
@@ -120,14 +134,17 @@
     <label>Banner</label><input type="file" id="inputBanner" accept="image/*" onchange="lerBanner(event)"><img id="prevBanner" style="display:none;width:100%;border-radius:10px"><button class="btn" style="background:#333;color:#fff" onclick="removerBanner()">Remover Banner</button>
     <button class="btn" onclick="salvarLoja()">💾 SALVAR LOJA</button>
   </div>
+
   <div id="abaPag" style="display:none">
     <h3>💳 Pagamentos</h3>
     <input id="cfgExpress" placeholder="Número Express"><input id="cfgNomeExpress" placeholder="Nome Express"><input id="cfgUnitel" placeholder="Número Unitel Money"><input id="cfgNomeUnitel" placeholder="Nome Unitel"><input id="cfgPaypay" placeholder="Número PayPay"><input id="cfgNomePaypay" placeholder="Nome PayPay"><input id="cfgIban" placeholder="IBAN"><input id="cfgBanco" placeholder="Banco"><input id="cfgNomeBanco" placeholder="Nome Banco"><input id="cfgWhats" placeholder="WhatsApp da loja - 244...">
     <button class="btn" onclick="salvarConfigPag()">💾 SALVAR PAGAMENTOS</button>
   </div>
+
   <div id="abaCli" style="display:none"><h3>👥 Clientes</h3><div id="listaClientes"></div></div>
   <button class="btn" style="background:#333;color:#fff" onclick="mostrarLoja()">← Voltar para Loja</button>
 </div>
+
 <div id="clienteModal" class="modal">
   <div class="modalBox">
     <div style="display:flex;justify-content:space-between"><h3>👤 Conta EMPIRE</h3><button onclick="fecharLoginCliente()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px;cursor:pointer">X</button></div>
@@ -147,22 +164,27 @@
     <p id="msgCliente" style="color:#ffb3b3;font-size:13px;margin-top:8px"></p>
   </div>
 </div>
+
 <div id="cartModal" class="modal">
   <div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>🛒 Carrinho</h3><button onclick="fecharCarrinho()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><div id="cartItems"></div><h3 id="cartTotal">Total: 0 Kz</h3><button class="btn" onclick="abrirPagamento()">💳 PAGAR</button></div>
 </div>
+
 <div id="pagModal" class="modal">
   <div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>💳 Pagamento</h3><button onclick="fecharPagamento()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p id="pagCliente" class="small"></p><pre id="pagResumo" style="white-space:pre-wrap;background:rgba(0,0,0,.25);padding:10px;border-radius:12px;font-size:12px"></pre><input id="cliNome" placeholder="Teu nome"><input id="cliWhats" placeholder="WhatsApp"><input id="cliEmailPag" placeholder="E-mail para recibo (opcional)"><select id="metodoPag" onchange="mostrarDadosPag()"><option value="">Escolhe método...</option><option>Unitel Money</option><option>Multicaixa Express</option><option>PayPay</option><option>Transferência via IBAN</option></select><div id="infoPag" style="display:none;background:rgba(0,0,0,.25);padding:12px;border-radius:12px;white-space:pre-wrap;font-size:13px"></div><label style="font-size:13px">📎 Comprovativo (foto ou PDF)</label><input type="file" id="inputComp" accept="image/*,.pdf" onchange="lerComprovativo(event)"><div id="prevCompBox"></div><p id="compMsg" style="color:#ff8888;font-size:12px">⚠️ Ainda não subiste o comprovativo</p><button class="btn" onclick="confirmarPedido()">✅ CONFIRMAR PEDIDO</button><button class="btn" style="background:#333;color:#fff" onclick="recuarParaCarrinho()">← Voltar ao Carrinho</button></div>
 </div>
+
 <div id="imgModal" class="modal" onclick="fecharImg()"><img id="imgGrande" style="max-width:95%;max-height:90vh;border-radius:12px"></div>
+
 <div class="barraBaixo">
   <button class="ativo" onclick="mostrarLoja()"><span>🏠</span>Loja</button>
   <button onclick="verCarrinho()"><span>🛒</span>Carrinho</button>
   <button onclick="abrirLoginCliente()"><span>👤</span>Conta</button>
 </div>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="script.js?v=5"></script>
-<script src="menu.js?v=5"></script>
+<script src="script.js"></script>
+<script src="menu.js"></script>
 </body>
 </html>
