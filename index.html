@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=15">
+<link rel="stylesheet" href="style.css?v=17">
 <style>
 #novoLogin{position:fixed;inset:0;background:#0f0f0f;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;font-family:sans-serif}
 #novoLogin.mostrar{display:flex}
@@ -159,8 +159,8 @@
     <div id="produtosAdmin"></div>
   </div>
   <div id="abaStock" style="display:none"><h3>📦 Controlo de Stock</h3><p class="small">🟢 Bom &nbsp; 🟡 Perto do mínimo &nbsp; 🔴 Stock Baixo &nbsp; ⚫ Esgotado</p><div id="listaStockAdmin"></div></div>
-  <div id="abaPed" style="display:none"><h3>🧾 Pedidos</h3><p class="small">Quando cai pedido, esta aba fica vermelha e toca som. Só some quando carregas aqui. Aceita / Recusa / Cancela.</p><div id="listaPedidos"></div></div>
-  <div id="abaNotif" style="display:none"><h3>🔔 Notificação do Pedido</h3><p class="small">Só pedidos pendentes / novos.</p><button class="btn" style="background:#00d26a;color:#fff" onclick="carregarNotificacoesAdmin()">🔄 ATUALIZAR</button><div id="listaNotificacoesAdmin"><p>A carregar...</p></div></div>
+  <div id="abaPed" style="display:none"><h3>🧾 Pedidos</h3><p class="small">⚠️ Verifica no teu Express antes de aceitar.</p><div id="listaPedidos"></div></div>
+  <div id="abaNotif" style="display:none"><h3>🔔 Notificação do Pedido</h3><p class="small">Só pedidos pendentes.</p><button class="btn" style="background:#00d26a;color:#fff" onclick="carregarNotificacoesAdmin()">🔄 ATUALIZAR</button><div id="listaNotificacoesAdmin"><p>A carregar...</p></div></div>
   <div id="abaRel" style="display:none"><h3>📊 Relatório</h3><button class="btn" onclick="gerarRelatorioMensal()">🖨️ GERAR RELATÓRIO DO MÊS EM PAPEL</button><input type="date" id="dataRel"><div style="display:flex;gap:8px"><button class="btn" id="btnHoje" onclick="verHoje()">📅 HOJE</button><button class="btn" id="btnOntem" onclick="verOntem()">📅 ONTEM</button></div><p id="dataSelecionadaMsg" class="small"></p><div class="secao"><p>Total do dia: <b id="relTotal">0 Kz</b> | Vendas: <b id="relQtd">0</b> | Pendentes: <b id="relPend">0</b> | Recusados: <b id="relRec">0</b></p><p>Total geral: <b id="relTotalGeral">0 Kz</b> | Total vendas: <b id="relQtdGeral">0</b></p></div><h4>Vendas do dia</h4><div id="listaRel"></div><h4>Mais vendidos</h4><div id="listaTop"></div></div>
   <div id="abaLoja" style="display:none"><h3>🏪 Personalizar Loja</h3><input id="cfgNomeLoja" placeholder="Nome da loja"><input id="cfgSloganLoja" placeholder="Slogan"><input id="cfgBannerTitulo" placeholder="Título do banner"><input id="cfgBannerSub" placeholder="Subtítulo"><input id="cfgSobreTitulo" placeholder="Título Sobre"><textarea id="cfgSobreTexto" placeholder="Texto Sobre"></textarea><input id="cfgVisao" placeholder="Visão"><input id="cfgMissao" placeholder="Missão"><input id="cfgSobreExtra" placeholder="Info extra"><input id="cfgFooter" placeholder="Rodapé"><label>Logo</label><input type="file" id="inputLogo" accept="image/*" onchange="lerLogo(event)"><img id="prevLogo" style="display:none;width:100px;border-radius:10px"><button class="btn" style="background:#333;color:#fff" onclick="removerLogo()">Remover Logo</button><label>Banner</label><input type="file" id="inputBanner" accept="image/*" onchange="lerBanner(event)"><img id="prevBanner" style="display:none;width:100%;border-radius:10px"><button class="btn" style="background:#333;color:#fff" onclick="removerBanner()">Remover Banner</button><button class="btn" onclick="salvarLoja()">💾 SALVAR LOJA</button></div>
   <div id="abaPag" style="display:none"><h3>💳 Pagamentos</h3><input id="cfgExpress" placeholder="Número Express"><input id="cfgNomeExpress" placeholder="Nome Express"><input id="cfgUnitel" placeholder="Número Unitel Money"><input id="cfgNomeUnitel" placeholder="Nome Unitel"><input id="cfgPaypay" placeholder="Número PayPay"><input id="cfgNomePaypay" placeholder="Nome PayPay"><input id="cfgIban" placeholder="IBAN"><input id="cfgBanco" placeholder="Banco"><input id="cfgNomeBanco" placeholder="Nome Banco"><input id="cfgWhats" placeholder="WhatsApp da loja - 244..."><button class="btn" onclick="salvarConfigPag()">💾 SALVAR PAGAMENTOS</button></div>
@@ -168,7 +168,7 @@
   <button class="btn" style="background:#333;color:#fff" onclick="mostrarLoja()">← Voltar para Loja</button>
 </div>
 <div id="clienteModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>👤 Conta EMPIRE</h3><button onclick="fecharLoginCliente()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px;cursor:pointer">X</button></div><div style="display:flex;gap:8px;margin:12px 0"><button id="btnTabEntrar" class="btn" style="flex:1" onclick="mostrarTelaLogin()">Entrar</button><button id="btnTabCriar" class="btn" style="flex:1;background:rgba(0,0,0,.3);color:#fff;border:1px solid rgba(255,255,255,.14)" onclick="mostrarTelaCriar()">Criar Conta</button></div><div id="telaLogin"><input id="cliEmail" placeholder="E-mail"><div style="position:relative"><input id="cliSenha" type="password" placeholder="Senha"><button onclick="verSenha('cliSenha',this)" style="position:absolute;right:10px;top:14px;background:none;border:0">👁️</button></div><button class="btn" onclick="entrarCliente()">ENTRAR</button><p style="text-align:center;color:#d4af37;cursor:pointer;margin-top:8px" onclick="esqueceuSenha()">Esqueceu a senha?</p></div><div id="telaCriar" style="display:none"><input id="cliNomeConta" placeholder="Teu nome"><input id="cliEmailCriar" placeholder="E-mail"><input id="cliWhatsConta" placeholder="WhatsApp - 9xx xxx xxx"><input id="cliSenhaCriar" type="password" placeholder="Cria senha (mín 6)"><input id="cliSenhaConfirmar" type="password" placeholder="Repete a senha"><button class="btn" onclick="criarContaCliente()">CRIAR CONTA</button></div><div id="telaEsqueceu" style="display:none"><input id="cliEmailEsqueceu" placeholder="Teu e-mail"><button class="btn" onclick="enviarRecuperacao()">ENVIAR LINK</button><p style="text-align:center;color:#d4af37;cursor:pointer;margin-top:8px" onclick="mostrarTelaLogin()">← Voltar</p></div><p id="msgCliente" style="color:#ffb3b3;font-size:13px;margin-top:8px"></p></div></div>
-<div id="meusPedidosModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>📦 Meus Pedidos</h3><button onclick="fecharMeusPedidos()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p class="small">🟡 Pendente = à espera do Admin. ✅ Aceite / ❌ Recusado / 🚫 Cancelado = some após 24h. Pendente nunca some até o Admin decidir.</p><div id="listaMeusPedidos"></div></div></div>
+<div id="meusPedidosModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>📦 Meus Pedidos</h3><button onclick="fecharMeusPedidos()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p class="small">🟡 Pendente = à espera do Admin.</p><div id="listaMeusPedidos"></div></div></div>
 <div id="cartModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>🛒 Carrinho</h3><button onclick="fecharCarrinho()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><div id="cartItems"></div><h3 id="cartTotal">Total: 0 Kz</h3><button class="btn" onclick="abrirPagamento()">💳 PAGAR</button></div></div>
 <div id="pagModal" class="modal"><div class="modalBox"><div style="display:flex;justify-content:space-between"><h3>💳 Pagamento</h3><button onclick="fecharPagamento()" style="background:#ff4444;border:0;color:#fff;padding:6px 12px;border-radius:20px">X</button></div><p id="pagCliente" class="small"></p><pre id="pagResumo" style="white-space:pre-wrap;background:rgba(0,0,0,.25);padding:10px;border-radius:12px;font-size:12px"></pre><input id="cliNome" placeholder="Teu nome"><input id="cliWhats" placeholder="WhatsApp"><input id="cliEmailPag" placeholder="E-mail para recibo (opcional)"><select id="metodoPag" onchange="mostrarDadosPagExpress()"><option value="">Escolhe método...</option><option>Unitel Money</option><option>Multicaixa Express</option><option>PayPay</option><option>Transferência via IBAN</option></select>
 <div id="boxNumeroExpress" style="display:none;background:#fff3cd;padding:12px;border-radius:12px;margin:8px 0"><label style="font-size:13px;font-weight:800;color:#000">📱 O TEU número Multicaixa Express</label><input id="numeroExpress" placeholder="Ex: 923 000 000" style="margin-top:6px"><p style="font-size:12px;color:#000;margin:4px 0">Mete o número que está ligado ao TEU Express. Não é o número da loja.</p></div>
@@ -180,8 +180,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="script.js?v=15"></script>
-<script src="menu.js?v=15"></script>
+<script src="script.js?v=17"></script>
+<script src="menu.js?v=17"></script>
 <div id="novoLogin"><div class="card"><h2>Bem-vindo de Volta</h2><p class="sub">Entra para continuar</p><label>E-mail</label><div class="campo"><span>📧</span><input id="loginEmail" type="email" placeholder="Teu e-mail"></div><label>Palavra-passe</label><div class="campo"><span>🔒</span><input id="loginSenha" type="password" placeholder="Tua palavra-passe"><span onclick="var i=document.getElementById('loginSenha'); if(i.type==='password'){i.type='text'; this.innerText='🙈';} else {i.type='password'; this.innerText='👁️';}" style="cursor:pointer;margin-left:8px">👁️</span></div><button class="btnLogin" onclick="entrarNovoLogin()">ENTRAR</button><p class="esqueci" onclick="esqueciSenhaNovoLogin()">Esqueci a senha?</p><div class="criar">Não tens conta? <b onclick="criarContaAdminNovo()">Criar conta</b></div><p id="loginErro" style="color:#ff6b6b;font-size:13px;margin-top:10px"></p></div></div>
 <script>
 try{ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL); }catch(e){}
@@ -238,21 +238,31 @@ function irParaAbaAdmin(aba){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 window.mostrarAba=function(aba){ irParaAbaAdmin(aba); };
+function ordenarDocs(docs){
+  return docs.slice().sort(function(a,b){
+    var ta=a.data().criadoEm && a.data().criadoEm.toMillis ? a.data().criadoEm.toMillis() : 0;
+    var tb=b.data().criadoEm && b.data().criadoEm.toMillis ? b.data().criadoEm.toMillis() : 0;
+    return tb-ta;
+  });
+}
 function carregarNotificacoesAdmin(){
   var box=document.getElementById('listaNotificacoesAdmin'); if(!box) return;
   box.innerHTML='A carregar notificações...';
-  firebase.firestore().collection('pedidos').where('status','==','pendente').orderBy('criadoEm','desc').get().then(function(snap){
-    if(snap.empty){ box.innerHTML='<div class="notif-card">✅ Nenhuma notificação nova.<br>Quando um cliente fizer pedido, aparece aqui.</div>'; return; }
+  // V17: SEM orderBy - o orderBy é que fazia dar "Não foi possível carregar" por falta de índice no Firebase
+  firebase.firestore().collection('pedidos').where('status','==','pendente').get().then(function(snap){
+    if(snap.empty){ box.innerHTML='<div class="notif-card">✅ Nenhuma notificação nova.</div>'; return; }
     var html='';
-    snap.forEach(function(doc){
+    ordenarDocs(snap.docs).forEach(function(doc){
       var p=doc.data(); var id=doc.id;
-      html += '<div class="notif-card"><b>🔔 NOVO PEDIDO #'+id.slice(-6).toUpperCase()+'</b><br>Cliente: '+(p.nome||p.email||'Cliente')+'<br>Total: '+(p.total||0)+' Kz<br><span style="font-size:12px">'+(p.itens||p.resumo||'')+'</span><br><br><button class="btn" style="background:#00d26a;color:#fff" onclick="irParaAbaAdmin(\'ped\')">👉 VER E ACEITAR NO PEDIDOS</button></div>';
+      var refTxt = p.referenciaExpress ? '<br>🔑 Ref: '+p.referenciaExpress : '';
+      var aviso = p.metodo==='Multicaixa Express' ? '<br><span style="background:#ff4444;color:#fff;padding:3px 8px;border-radius:6px;font-size:12px">⚠️ VERIFICAR NO EXTRATO ANTES DE ACEITAR</span>' : '';
+      html += '<div class="notif-card"><b>🔔 PEDIDO #'+id.slice(-6).toUpperCase()+'</b><br>'+(p.nome||p.email||'Cliente')+' - '+(p.total||0)+' Kz'+refTxt+aviso+'<br><span style="font-size:12px">'+(p.itens||p.resumo||'')+'</span><br><br><button class="btn" style="background:#00d26a;color:#fff" onclick="irParaAbaAdmin(\'ped\')">👉 VER NO PEDIDOS</button></div>';
     });
     box.innerHTML=html;
-  }).catch(function(){ box.innerHTML='<div class="notif-card">Não foi possível carregar. Carrega em ATUALIZAR.</div>'; });
+  }).catch(function(e){ box.innerHTML='<div class="notif-card">Erro: '+e.message+'</div>'; console.log(e); });
 }
 
-// ===== MULTICAIXA EXPRESS - V15 CORRIGIDO - SEM BOTÃO ABRIR APP, SEM TOTAL DUPLICADO =====
+// ===== MULTICAIXA EXPRESS - V17 - SEM orderBy, ANTI-MENTIRA =====
 var _timerExpress=null;
 var _segundosExpress=120;
 function mostrarDadosPagExpress(){
@@ -267,7 +277,7 @@ function mostrarDadosPagExpress(){
     var nomeLoja=(document.getElementById('cfgNomeExpress') && document.getElementById('cfgNomeExpress').value) || 'COSME BENTO';
     if(info){ info.style.display='block'; info.innerText='💳 Vais pagar PARA:\nMulticaixa Express\nNúmero da LOJA: '+numLoja+'\nNome: '+nomeLoja+'\n\nO TEU número metes na caixa amarela acima.'; }
     if(boxComp) boxComp.style.display='none';
-    if(compMsg) compMsg.innerText='✅ No Express não precisa comprovativo.';
+    if(compMsg) compMsg.innerText='✅ No Express não precisa comprovativo, mas precisa da REFERÊNCIA.';
     var w=document.getElementById('cliWhats');
     var n=document.getElementById('numeroExpress');
     if(w && n && w.value && !n.value) n.value=w.value;
@@ -278,7 +288,6 @@ function mostrarDadosPagExpress(){
     if(typeof mostrarDadosPag==='function' && mostrarDadosPag!==mostrarDadosPagExpress){ try{ mostrarDadosPag(); }catch(e){} }
   }
 }
-// APAGADO abrirExpressManual() - era ele que causava "Algo correu mal. Não foi possível abrir a aplicação."
 function confirmarPedidoExpress(){
   var metodo=document.getElementById('metodoPag').value;
   if(metodo!=='Multicaixa Express'){
@@ -291,8 +300,8 @@ function confirmarPedidoExpress(){
   window._numeroExpressCliente=numero;
   window._nomeClienteExpress=(document.getElementById('cliNome') && document.getElementById('cliNome').value) || '';
   var totalEl=document.getElementById('cartTotal');
-  // CORRIGIDO: tira o "Total:" duplicado - agora fica só "22 500 Kz"
   var totalTxt= totalEl ? totalEl.innerText.replace('Total:','').trim() : '';
+  window._totalExpressTxt = totalTxt;
   var modal=document.getElementById('pagModal'); if(modal) modal.style.display='none';
   var antigo=document.getElementById('processandoExpress'); if(antigo) antigo.remove();
   var box=document.createElement('div');
@@ -302,10 +311,9 @@ function confirmarPedidoExpress(){
     + '<h2>⏳ A PROCESSAR...</h2>'
     + '<p>Pedido criado para <b>Multicaixa Express</b></p>'
     + '<p>Teu número: <b>'+numero+'</b><br>Valor a pagar: <b>'+totalTxt+'</b></p>'
-    + '<p style="background:#fff3cd;padding:10px;border-radius:10px;text-align:left">1. Sai daqui e abre tu mesmo o teu app <b>Multicaixa Express</b><br>2. Faz transferência / pagamento de <b>'+totalTxt+'</b> para <b>942788931 - COSME BENTO</b><br>3. Mete o teu PIN e confirma<br>4. Volta aqui e carrega em JÁ PAGUEI</p>'
+    + '<p style="background:#fff3cd;padding:10px;border-radius:10px;text-align:left">1. Sai daqui e abre tu mesmo o teu app <b>Multicaixa Express</b><br>2. Faz transferência de <b>'+totalTxt+'</b> para <b>942788931 - COSME BENTO</b><br>3. Mete o teu PIN e confirma<br>4. <b>Guarda a REFERÊNCIA</b> do recibo<br>5. Volta aqui e carrega em baixo</p>'
     + '<h1 id="tempoExpress" style="font-size:48px;color:#ff4444;margin:10px 0">02:00</h1>'
-    + '<p>À espera da tua confirmação...</p>'
-    + '<button onclick="pagamentoExpressConfirmado()" style="background:#00d26a;color:#fff;border:0;padding:12px;width:100%;border-radius:10px;font-weight:800;cursor:pointer">✅ JÁ PAGUEI NO EXPRESS</button>'
+    + '<button onclick="pagamentoExpressConfirmado()" style="background:#00d26a;color:#fff;border:0;padding:12px;width:100%;border-radius:10px;font-weight:800;cursor:pointer">✅ JÁ FIZ A TRANSFERÊNCIA - ENVIAR PARA VERIFICAÇÃO</button>'
     + '<button onclick="cancelarExpress()" style="background:#333;color:#fff;border:0;padding:12px;width:100%;border-radius:10px;margin-top:8px;cursor:pointer">❌ CANCELAR</button>'
     + '</div>';
   document.body.appendChild(box);
@@ -320,9 +328,12 @@ function confirmarPedidoExpress(){
   },1000);
 }
 function pagamentoExpressConfirmado(){
+  var ref = prompt('Mete a REFERÊNCIA da transferência do Express.\nEstá no recibo do teu Express.\nSem isso o Admin não consegue confirmar.');
+  if(!ref || !ref.trim()){ alert('Precisas meter a REFERÊNCIA.'); return; }
+  window._refExpress = ref.trim();
   clearInterval(_timerExpress);
   var box=document.getElementById('processandoExpress'); if(box) box.remove();
-  window._pagouExpress=true;
+  window._pagouExpress=false;
   var user=firebase.auth().currentUser;
   var nome=(document.getElementById('cliNome') && document.getElementById('cliNome').value) || (user && user.email) || 'Cliente';
   var whats=(document.getElementById('cliWhats') && document.getElementById('cliWhats').value) || '';
@@ -336,17 +347,18 @@ function pagamentoExpressConfirmado(){
   if(!itens) itens=resumo || 'Pedido via Multicaixa Express';
   firebase.firestore().collection('pedidos').add({
     nome:nome, whats:whats, email:emailPag, metodo:'Multicaixa Express', numeroExpress: window._numeroExpressCliente||'',
+    referenciaExpress: window._refExpress || '',
     total: totalNum, itens: itens, resumo: itens,
-    status:'pendente', pagoExpress:true, comprovativo:'Express - sem comprovativo',
+    status:'pendente', pagoExpress:false, pagamentoVerificado:false,
+    comprovativo:'Express - a verificar - Ref: '+(window._refExpress||''),
     uid: user ? user.uid : '', criadoEm: firebase.firestore.FieldValue.serverTimestamp(), atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
   }).then(function(){
-    alert('✅ PAGAMENTO FEITO COM SUCESSO!\nO Admin já recebeu o teu pedido e vai confirmar.\nVê em Meus Pedidos.');
-    try{ if(window.carrinho) window.carrinho=[]; if(typeof atualizarCarrinho==='function') atualizarCarrinho(); if(typeof verCarrinho==='function'){ var cm=document.getElementById('cartModal'); if(cm) cm.style.display='none'; } }catch(e){}
+    alert('✅ PEDIDO ENVIADO PARA VERIFICAÇÃO!\nRef: '+window._refExpress+'\nO Admin vai verificar no extrato.');
+    try{ if(window.carrinho) window.carrinho=[]; if(typeof atualizarCarrinho==='function') atualizarCarrinho(); }catch(e){}
     var pm=document.getElementById('pagModal'); if(pm) pm.style.display='none';
     if(user) setTimeout(function(){ abrirMeusPedidos(); }, 600);
   }).catch(function(e){
-    alert('A criar pedido... se falhar, tenta de novo.');
-    if(typeof confirmarPedido==='function') { try{ confirmarPedido(); }catch(err){} }
+    alert('Erro a criar pedido: '+e.message);
   });
 }
 function cancelarExpress(){
@@ -366,7 +378,7 @@ function iniciarListenerAdmin(){
           if(ch.type==='added'){
             tocarSomNotif();
             var box=document.getElementById('alertaNovoPedido');
-            if(box){ box.style.display='block'; box.innerText='🔔 NOVO PEDIDO! '+(ch.doc.data().nome||ch.doc.data().email||'Cliente')+' - Vai a Pedidos para aceitar/recusar/cancelar.'; }
+            if(box){ box.style.display='block'; box.innerText='🔔 NOVO PEDIDO! '+(ch.doc.data().nome||ch.doc.data().email||'Cliente')+' - VERIFICA NO EXTRATO! Ref: '+(ch.doc.data().referenciaExpress||'sem ref'); }
           }
         });
       }
@@ -380,14 +392,15 @@ function enviarNotifCliente(uidCliente, emailCliente, pedidoId, tipo, titulo){
   return firebase.firestore().collection('notificacoes').add({paraUid:uidCliente||'', paraEmail:emailCliente||'', pedidoId:pedidoId, tipo:tipo, titulo:titulo, lida:false, criadoEm:firebase.firestore.FieldValue.serverTimestamp()});
 }
 function aceitarPedidoAdmin(id, emailCliente, uidCliente){
-  firebase.firestore().collection('pedidos').doc(id).update({status:'aceito', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){ return enviarNotifCliente(uidCliente, emailCliente, id, 'aceito', 'Pedido Aceite ✅'); }).then(function(){ alert('Pedido aceite! Cliente já recebeu notificação ✅'); });
+  if(!confirm('⚠️ JÁ VERIFICASTE NO TEU EXPRESS se o dinheiro entrou mesmo?\nCarrega OK só se o dinheiro JÁ ENTROU.')) return;
+  firebase.firestore().collection('pedidos').doc(id).update({status:'aceito', pagamentoVerificado:true, atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){ return enviarNotifCliente(uidCliente, emailCliente, id, 'aceito', 'Pedido Aceite ✅'); }).then(function(){ alert('Pedido aceite!'); });
 }
 function recusarPedidoAdmin(id, emailCliente, uidCliente){
-  firebase.firestore().collection('pedidos').doc(id).update({status:'recusado', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){ return enviarNotifCliente(uidCliente, emailCliente, id, 'recusado', 'Pedido Recusado ❌'); }).then(function(){ alert('Pedido recusado! Cliente já recebeu notificação ❌'); });
+  firebase.firestore().collection('pedidos').doc(id).update({status:'recusado', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){ return enviarNotifCliente(uidCliente, emailCliente, id, 'recusado', 'Pedido Recusado ❌'); }).then(function(){ alert('Pedido recusado!'); });
 }
 function cancelarPedidoAdmin(id, emailCliente, uidCliente){
-  if(!confirm('Cancelar este pedido? O cliente vai receber notificação de cancelado.')) return;
-  firebase.firestore().collection('pedidos').doc(id).update({status:'cancelado', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){ return enviarNotifCliente(uidCliente, emailCliente, id, 'cancelado', 'Pedido Cancelado 🚫'); }).then(function(){ alert('Pedido cancelado! Cliente já recebeu notificação 🚫'); });
+  if(!confirm('Cancelar este pedido?')) return;
+  firebase.firestore().collection('pedidos').doc(id).update({status:'cancelado', atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){ return enviarNotifCliente(uidCliente, emailCliente, id, 'cancelado', 'Pedido Cancelado 🚫'); }).then(function(){ alert('Pedido cancelado!'); });
 }
 function abrirMeusPedidos(){
   var user=firebase.auth().currentUser;
@@ -406,25 +419,25 @@ function dataPedido(p){
 }
 function carregarMeusPedidos(user){
   var box=document.getElementById('listaMeusPedidos'); if(!box) return; box.innerHTML='A carregar...';
-  firebase.firestore().collection('pedidos').where('email','==',user.email).orderBy('criadoEm','desc').get().then(function(snap){
+  // V17: SEM orderBy - era isso que dava "Não foi possível carregar"
+  firebase.firestore().collection('pedidos').where('email','==',user.email).get().then(function(snap){
     if(snap.empty){ box.innerHTML='<p>Ainda não tens pedidos.</p>'; return; }
     var agora=Date.now(); var html=''; var temVisivel=false;
-    snap.forEach(function(doc){
+    ordenarDocs(snap.docs).forEach(function(doc){
       var p=doc.data(); var id=doc.id;
       var status=(p.status||'pendente').toLowerCase();
       var tempoDecisao=dataPedido(p);
       var passou24h = (agora - tempoDecisao) > 24*60*60*1000;
-      if(status==='pendente'){ } else if(status==='aceito'||status==='aceite'||status==='recusado'||status==='cancelado'){ if(passou24h) return; } else { if(passou24h) return; }
+      if(status!=='pendente' && passou24h) return;
       temVisivel=true;
-      var statusTxt = status==='aceito'||status==='aceite' ? '✅ PEDIDO ACEITE - Podes levantar / pagar' : (status==='recusado' ? '❌ PEDIDO RECUSADO' : (status==='cancelado' ? '🚫 PEDIDO CANCELADO' : '🟡 PENDENTE - À espera do Admin'));
+      var statusTxt = status==='aceito'||status==='aceite' ? '✅ ACEITE' : (status==='recusado' ? '❌ RECUSADO' : (status==='cancelado' ? '🚫 CANCELADO' : '🟡 PENDENTE - A verificar pagamento'));
       var cor = status==='pendente' ? '#ffaa00' : (status==='recusado'||status==='cancelado' ? '#ff4444' : '#00d26a');
-      var falta='';
-      if(status!=='pendente'){ var restam=24*60*60*1000 - (agora-tempoDecisao); var horas=Math.floor(restam/3600000); falta='<br><span style="font-size:11px;color:#888">Esta notificação some em '+horas+'h</span>'; } else { falta='<br><span style="font-size:11px;color:#ffaa00">Esta notificação NUNCA some até o Admin aprovar / recusar / cancelar</span>'; }
-      html += '<div class="pedido-card" style="border-left:5px solid '+cor+'"><b>Pedido #'+id.slice(-6).toUpperCase()+'</b> <span class="badge-notif" style="background:'+cor+'">'+statusTxt+'</span><br><span style="font-size:12px">'+(p.itens||p.resumo||'')+'</span><br><b>Total: '+(p.total||0)+' Kz</b>'+falta+'<br><button class="btn" style="background:#25D366;color:#000;margin-top:8px" onclick="avisarWhatsApp(\''+id+'\')">📱 Avisar no WhatsApp</button></div>';
+      var refTxt = p.referenciaExpress ? '<br>Ref: '+p.referenciaExpress : '';
+      html += '<div class="pedido-card" style="border-left:5px solid '+cor+'"><b>Pedido #'+id.slice(-6).toUpperCase()+'</b> <span class="badge-notif" style="background:'+cor+'">'+statusTxt+'</span><br><span style="font-size:12px">'+(p.itens||p.resumo||'')+'</span><br><b>Total: '+(p.total||0)+' Kz</b>'+refTxt+'<br><button class="btn" style="background:#25D366;color:#000;margin-top:8px" onclick="avisarWhatsApp(\''+id+'\')">📱 Avisar no WhatsApp</button></div>';
     });
-    box.innerHTML = html || '<p>Nenhum pedido visível. Pedidos decididos há mais de 24h já sumiram. Pendentes nunca somem até decisão.</p>';
+    box.innerHTML = html || '<p>Nenhum pedido visível.</p>';
     if(!temVisivel) box.innerHTML='<p>Nenhum pedido visível.</p>';
-  }).catch(function(){ box.innerHTML='<p>Não foi possível carregar. Tenta de novo.</p>'; });
+  }).catch(function(e){ box.innerHTML='<p>Erro: '+e.message+'</p>'; console.log(e); });
 }
 function atualizarSinoCliente(user){
   if(!user) return;
@@ -470,14 +483,14 @@ window.addEventListener('load', ()=>{
 function esqueciSenhaNovoLogin(){
   var email = document.getElementById('loginEmail').value.trim();
   if(!email){ alert('Primeiro mete o teu e-mail'); return; }
-  firebase.auth().sendPasswordResetEmail(email).then(function(){ alert('Link enviado para ' + email + ' ✅ Vai ao teu Gmail e cria uma passe nova.'); }).catch(function(e){ alert('Não foi possível enviar. Essa conta ainda não existe no Firebase. Cria primeiro em Firebase > Authentication > Add user.'); });
+  firebase.auth().sendPasswordResetEmail(email).then(function(){ alert('Link enviado para ' + email + ' ✅'); }).catch(function(e){ alert('Não foi possível enviar.'); });
 }
 function criarContaAdminNovo(){
   document.getElementById('novoLogin').classList.remove('mostrar');
   if(typeof abrirLoginCliente === 'function'){
     abrirLoginCliente();
     setTimeout(function(){ if(typeof mostrarTelaCriar === 'function') mostrarTelaCriar(); var e = document.getElementById('cliEmailCriar'); if(e) e.value = 'dasilva12cabindes@gmail.com'; }, 300);
-  } else { alert('Para criar a conta Admin, usa o Firebase Console > Authentication > Add user com o e-mail dasilva12cabindes@gmail.com'); }
+  }
 }
 { document.getElementById('menuLateral').classList.remove('aberto'); document.getElementById('overlayMenu').classList.remove('mostrar'); }
 function tocarSomNotif(){ try{ var a=new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg'); a.play(); }catch(e){} }
