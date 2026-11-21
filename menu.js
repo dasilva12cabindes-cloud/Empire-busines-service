@@ -117,6 +117,73 @@
     if(h) h.textContent='👤 Conta '+nomeLoja();
   };
 
+  // ===== Nome da loja automático (avisos, recibos, relatórios, WhatsApp, cards) =====
+  // Troca numa só passagem: nome, slogan, cidade e WhatsApp da loja.
+  // O número do recibo perde o prefixo: EMPIRE-AB12CD vira AB12CD.
+  function numFmt(){
+    var d=String((window.CFG&&window.CFG.whats)||'244972370499').replace(/\D/g,'');
+    return (d.length===12&&d.indexOf('244')===0) ? '+244 '+d.slice(3,6)+' '+d.slice(6,9)+' '+d.slice(9) : '+'+d;
+  }
+  function cidadeLoja(){ return ((window.LOJA&&window.LOJA.cidade)||'').trim(); }
+  function troca(t,enc){
+    if(typeof t!=='string') return t;
+    var E=function(s){ return enc?encodeURIComponent(s):s; };
+    return t.replace(/EMPIRE-|EMPIRE|LOJA OFICIAL|\+244 972 370 499|Luanda(?:, Angola)?/g,function(m){
+      if(m==='EMPIRE-') return '';
+      if(m==='EMPIRE') return E(nomeLoja());
+      if(m==='LOJA OFICIAL') return E((window.LOJA&&window.LOJA.sloganLoja)||m);
+      if(m.charAt(0)==='+') return E(numFmt());
+      var c=cidadeLoja(); if(!c) return m;
+      return E(m.length>6 ? c : c.split(',')[0].trim());
+    });
+  }
+  function trocaNome(t){ return troca(t,false); }
+  function trocaNomeUrl(u){ return troca(u,true); }
+
+  // Campo "Cidade" no Admin → Loja (guardado junto com os dados da loja)
+  var cfgSlogan=document.getElementById('cfgSloganLoja');
+  if(cfgSlogan){
+    var inpCidade=document.createElement('input');
+    inpCidade.id='cfgCidade'; inpCidade.placeholder='Cidade, País - ex: Luanda, Angola';
+    cfgSlogan.insertAdjacentElement('afterend',inpCidade);
+    var aplicarOriginal=window.aplicarLoja;
+    window.aplicarLoja=function(){ aplicarOriginal.apply(this,arguments); inpCidade.value=(window.LOJA&&window.LOJA.cidade)||''; };
+    var salvarOriginal=window.salvarLoja;
+    window.salvarLoja=function(){ if(window.LOJA) window.LOJA.cidade=inpCidade.value.trim(); return salvarOriginal.apply(this,arguments); };
+    inpCidade.value=(window.LOJA&&window.LOJA.cidade)||'';
+  }
+
+  var _alert=window.alert, _confirm=window.confirm, _prompt=window.prompt, _open=window.open;
+  window.alert=function(t){ return _alert.call(window,trocaNome(t)); };
+  window.confirm=function(t){ return _confirm.call(window,trocaNome(t)); };
+  window.prompt=function(t,d){ return _prompt.call(window,trocaNome(t),d); };
+  window.open=function(url,alvo,feat){
+    var w=_open.call(window,trocaNomeUrl(url),alvo,feat);
+    if(w && url===''){ // janelas de recibo e relatório: depois de escritas, troca o nome no cabeçalho e no texto
+      setTimeout(function(){
+        try{
+          var d=w.document, tw=d.createTreeWalker(d.body,4), n;
+          while((n=tw.nextNode())){ n.nodeValue=trocaNome(n.nodeValue); }
+          d.title=trocaNome(d.title);
+        }catch(e){}
+      },150);
+    }
+    return w;
+  };
+
+  function ajustaCards(){
+    document.querySelectorAll('.card .info p').forEach(function(p){
+      if(p.dataset.nomeOk) return;
+      p.dataset.nomeOk='1';
+      if(p.textContent.indexOf('EMPIRE')>=0) p.textContent=trocaNome(p.textContent);
+    });
+  }
+  ['produtos','produtosDestaque'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) new MutationObserver(ajustaCards).observe(el,{childList:true});
+  });
+  ajustaCards();
+
   // ===== Liga ao botão ☰ do topo =====
   var hamb=document.querySelector('.topo .iconBtn');
   if(hamb){ hamb.onclick=abrir; hamb.setAttribute('aria-label','Menu'); }
