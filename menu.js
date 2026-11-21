@@ -3,6 +3,10 @@
   var st=document.createElement('style');
   st.textContent=
   '#emailClienteTop,p:has(#linkLojaTexto),p:has(#linkLojaAdmin){display:none!important}'+
+  'button[onclick="copiarLinkLoja()"],button[onclick="partilharWhatsAppLoja()"]{display:none!important}'+
+  'html,body{max-width:100%;overflow-x:hidden}'+
+  '.docBox,.pedidoCard,.relItem,#prevCompBox,#compMsg{max-width:100%;overflow-wrap:anywhere;word-break:break-word}'+
+  '.relItem>div{min-width:0}'+
   '.secao{scroll-margin-top:70px}'+
   '#menuFundo{position:fixed;inset:0;background:rgba(0,20,28,.65);z-index:1200;opacity:0;pointer-events:none;transition:opacity .25s}'+
   '.menuPainel{position:fixed;top:0;bottom:0;left:0;width:82%;max-width:320px;background:var(--fundo-escuro,#034556);border-right:1px solid var(--borda,rgba(255,255,255,.14));z-index:1201;transform:translateX(-100%);transition:transform .28s;overflow-y:auto;padding-bottom:30px}'+
@@ -33,7 +37,8 @@
         '<div class="menuTitulo">Categorias</div>'+catsHtml+
         '<div class="menuTitulo">Mais</div>'+
         '<button data-acao="whats"><span>💬</span>Falar no WhatsApp</button>'+
-        '<button data-acao="partilhar"><span>🔗</span>Partilhar a loja</button>'+
+        '<button data-acao="copiar"><span>📋</span>Copiar link da loja</button>'+
+        '<button data-acao="partilhar"><span>💬</span>Partilhar no WhatsApp</button>'+
         '<button data-acao="sobre"><span>👑</span>Sobre a loja</button>'+
         '<button data-acao="conta" id="menuConta"></button>'+
       '</nav>'+
@@ -73,6 +78,7 @@
       case 'whats':
         var n=String((window.CFG&&CFG.whats)||'244972370499').replace(/\D/g,'');
         fechar(); window.open('https://wa.me/'+n,'_blank'); break;
+      case 'copiar': fechar(); copiarLinkLoja(); break;
       case 'partilhar': fechar(); partilharWhatsAppLoja(); break;
       case 'sobre': irPara(secaoDe('sobreTitulo')); break;
       case 'conta':
