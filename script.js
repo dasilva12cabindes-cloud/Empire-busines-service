@@ -294,3 +294,8 @@ db.collection("config").doc("pagamentos").onSnapshot(function(s){ if(s.exists){ 
 atualizarSaudacaoELuz();
 var inpData=document.getElementById('dataRel'); if(inpData) inpData.value=dataDeHoje();
 atualizarRelatorio(dataDeHoje());
+window.addEventListener('load', function(){
+  setTimeout(function(){
+    document.getElementById('telaCarregamento').style.display = 'none';
+  }, 1000);
+});
